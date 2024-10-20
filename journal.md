@@ -1,5 +1,47 @@
 # Design Journal: Employee Workload Index
 
+## 20 October 2024
+
+### Dynamic Questions
+
+Let's say we want to define a role. We can do so via a text file of the following format:
+
+```
+# <ROLE TITLE>: <some unique ID>
+
+<Question/Metric Here> | <average value>
+<Question/Metric Here> | <average value>
+<Question/Metric Here> | <average value>
+...
+<Question/Metric Here> | <average value>
+//empty line or EoF
+```
+
+Notes: 
+
+- Ignore leading and trailing whitespace
+- `|` is the delimiter between the metric and the average value
+- All entries are assumed to have associated numeric answers.
+- Each non-empty line corresponds to a metric.
+- Duplicates are not checked.
+
+
+In theory, I could then parse this file (should I create a file extension? `.role`) and extract the
+questions and averages.
+
+**Question**: How could I update averages? Figure it out later.
+
+### Flow
+
+With this method of allowing profiles to be created, I can envision the following flow:
+
+- Load user and role profiles; parse role file
+- Prompt user to create a new entry; Generate form from parsed questions
+- Get survey results; convert to numeric data.
+- Store entry data
+- Give Emotion survey if necessary (based on time since last completion)
+
+
 ## 19 October 2024
 
 I assume a given employee's records are only valid for the company they are currently employed by.
@@ -37,6 +79,8 @@ However, does a given data entry look like?
     - Emotional component survey (~weekly-ish)
 - Role-related surveys can be overwritten in case of a mistake.
 - EWI is week-based.
+- Static averages
+- Only one profile
 
 ## 18 October 2024
 
