@@ -72,10 +72,10 @@ namespace ewi
     /// Values range from 1 to 5.
     /// Assumes the median (normal) value of each question is three.
     static std::vector<std::string> EMOTION_SURVEY {
-    "How much confidence do you have in your direct leadership?",
-    "How passionate are you about the department's current mission?",
-    "How much do you think your work challenges you?",
-    "In general, how peaceful is your life?"
+        "How much confidence do you have in your direct leadership?",
+        "How passionate are you about the department's current mission?",
+        "How much do you think your work challenges you?",
+        "In general, how peaceful is your life?"
     };
 
     /// EEO-specific metrics to evaluate workload.
