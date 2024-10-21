@@ -1,41 +1,37 @@
-#include "explore.hpp"
-
+#include <cassert>
 #include <string>
 #include <vector>
+//
 #include <cpperrors>
+//
+#include "explore.hpp"
 
-namespace ewi {
+namespace ewi 
+{
     using std::string;   
     using std::vector;
     using err::Exception;
 
     // EmotionSurvey
-    EmotionSurvey::EmotionSurvey(const SurveyResults&) {
-        // TODO: Unimplemented
-        throw Exception("Unimplemented Method");
-    }
 
-    const EmotionSurvey& EmotionSurvey::average() {
-        static EmotionSurvey avg {};
-        return avg;
-    }
 
     double calc_ewi(
-            const EEOCaseManagerSurvey& technical_survey,
-            const EEOCaseManagerSurvey& technical_median,
-            const EmotionSurvey& emotion_survey,
-            const EmotionSurvey& emotion_median
+            const SurveyResults& technical_survey,  
+            const vector<double>& technical_avgs,
+            const SurveyResults& emotion_survey,
+            const vector<double>& emotion_avgs
     ) {
         // TODO: Complete the function
         double ewi {};
         // Get the technical portion of the score
-        vector<double> technical_vals = technical_survey.values();
-        vector<double> tech_avg = technical_median.values();
-        
+        vector<double> technical_vals = technical_survey.extract_metrics();
+        assert(technical_vals.size() == technical_avgs.size());
 
-        vector<double> emotion_results = emotion_survey.values();
-        vector<double> emotion_avg = emotion_median.values();
+
+        vector<double> emotion_vals = emotion_survey.extract_metrics();
+        assert(emotion_vals.size() == emotion_avgs.size());
     
+        throw Exception("Unimplemented!");
         return ewi;
     }
 } // namespace ewi
