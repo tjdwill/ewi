@@ -1,5 +1,162 @@
 # Design Journal: Employee Workload Index
 
+## 22 October 2024
+
+Ok, let's rethink the goal here. Ultimately, I want to write a piece of software that
+allows employees to more adequately track and represent their workloads. Every mental
+iteration of this idea has some visual component that allows employers to "see" the
+employee's workload. I wanted to create a numeric index, Employee Workload Index (EWI),
+that communicates in one number how intense the workload is. This number would depend on
+two factors: an objective job-related component and a subjective emotional component. Both
+are important because the latter colors the perception of the former. 
+
+However, the job-related component also requires statistical data in order to calculate
+its portion of the EWI. The idea is that the further the employee's workload metrics
+deviate from the mean, the "stronger" the effect of the workload (or lack thereof). I have
+no such data, though, nor do I know how to get it. This is because the metrics associated
+with a given role aren't determined. Industries would need to converge on a uniform profile
+for their respective fields, and then *that* collected data could be used as a mean.
+
+Since I can't access that data, my method of reporting will need to change. As of now, I
+cannot calculate EWI. That means the idea is on backburner. It'll still exist in the
+codebase as a declaration (maybe I'll comment it out), but I won't use it until I can implement it.
+
+For now, I think I should concentrate on a more visual means of communication. One thing I
+could do is create double-bar graphs that compare the mean for a given metric to the user's
+mean value for a given date range. The problem with this, however, is that the units
+between metrics may vary, so the graph could be skewed by metrics with high default values.
+
+Alternatively, I could produce one graph per metric, but this is also undesirable for cases
+with a large quantity of metrics. What if I produced a graph that showed how each metric
+deviates from the mean? For each metric, I could take the average for the user and subtract
+it from the average of the metric. Then, I could divide this difference by the metric
+average to determine how large the deviation is? This would enable a more uniform plot (and
+also would be centered around zero as desired).
+
+## 21 October 2024
+
+### Calculating EWI
+
+The *Employee Workload Index* (EWI) is an estimate of how a given employee likely perceives
+their workload. Given data regarding the employee's current workload, the role's average
+workload, and information on the employee's emotional state, a score is calculated to
+determine how burdensome the workload is.
+
+The method of calculation is up to me. I need to create a formula that:
+
+- Acknowledges that emotional state colors perception of workload intensity.
+    - Inversely proportional
+- Allows significant deviations from the norm to have great impact on the resulting score.
+
+Ideally, I would have information regarding the standard deviation for a given metric, but,
+as of now, I have no such data, and can't base the calculation off of that. However, this
+shouldn't be a major issue because the implementation of the EWI calc can always be
+adjusted.
+
+So, let's create a prototype.
+
+```
+EWI = <Role Impact Score> + <Emotion Impact Score>
+```
+
+#### Emotional Impact
+
+This aspect is tricky to handle properly. On one hand, a subpar emotional index should
+amplify the role index in both directions.
+
+Scratch that. I think I'll report the two elements separately. This would offload the
+interpretation onto the viewer.
+
+That being said, here's one way to calculate the emotional index.
+
+Currently, the accepted values range from one to five with the baseline value being three
+(normal) and an exceptionally positive emotional state being five. Regardless of the range,
+however, it is imperative that there be an odd number of possible values. This makes the
+average center around a whole number in a monotonoically-increasing sequence of values.
+
+I want a scale that communicates how widely an employee's emotional state deviates from the
+norm:
+
+```
+ 1  2 3 4 5
+      _     // average
+
+-2 -1 0 1 2
+      _     // centered around the average
+
+-1 -0.5 0 0.5 1 
+        _   // normalized
+```
+
+So, a given procedure could be:
+
+0. Subtract all scores by the ideal average.
+1. Sum all scores.
+2. Divide by (Max\_Value * # of responses)
+
+This results in a normalized score whose center is 0 (neutral).
+
+### Data Formats
+
+- Entry
+    - Date
+    - Metric Data 
+    - Extra Notes
+- Record
+    - Collection of entries
+- CompleteRecord
+    - Job-based Data Record
+    - Emotion-based Data Record
+- EmployeeRecord
+    - Identifier
+    - Collection of CompleteRecords mapped to JobCodes
+- JobCode
+    - Identifier for a given job position
+
+Note: I don't really need to worry about the size of a given person's record. Assuming 365
+entries a year for 50 years, the person would accumulate 18,250 entries. Most people don't
+work for that long at one company, and they certainly don't work every day for that period.
+
+### File Formats
+
+**Employee Record**
+
+Vision: text file with identification information + space-delimited records. Must be easy
+to append to.
+
+```
+# Employee Record file
+## Identification Region
+Name: <HERE>
+
+
+---
+## Records
+<role_id> <SurveyType> <Date> <Metrics> <Notes String>
+<role_id> <SurveyType> <Date> <Metrics> <Notes String>
+...
+<role_id> <SurveyType> <Date> <Metrics> <Notes String>
+```
+
+The Notes string must be enclosed within quotation marks and MUST live on a single line. To
+do so, newline sequences will be converted to escape sequences (i.e. `U+0020` -> `\\n`)
+
+**Survey Profile**
+
+Vision: text file allowing the job-specific questions to be specified.
+
+See the format in [yesterday's post](#20-october-2024)
+
+### Statistical Data
+
+I'm going to need to be able to compare the user's answers with the average values for each
+question. However, I need the averages to do so. Should I make a class that represents the
+statistics for a role? The problem is that, for a newly created job profile, there's no
+data. I *could* allow estimates for a given role, but I would lack information on how the
+data varies among the set.
+
+I only need this data when generating the EWI.
+
 ## 20 October 2024
 
 ### Dynamic Questions
