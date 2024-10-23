@@ -17,7 +17,7 @@ find_package(cpptrace REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
 #find_package(cpperrors)
 
-add_executable(explore src/explore.hpp src/explore.cpp)
+add_executable(explore src/_explore.hpp src/_explore.cpp)
 target_link_libraries(explore
     PUBLIC 
     Qt5::Widgets Qt5::Core Qt5::Gui

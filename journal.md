@@ -1,5 +1,9 @@
 # Design Journal: Employee Workload Index
 
+## 23 October 2024
+
+EEO Job code: 0260
+
 ## 22 October 2024
 
 Ok, let's rethink the goal here. Ultimately, I want to write a piece of software that

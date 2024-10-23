@@ -34,27 +34,27 @@ namespace ewi
             Entry(
                     std::chrono::year_month_day date,
                     std::string const& notes,
-                    Eigen::VectorXd const& entry_data
+                    Eigen::VectorXd const& metrics
             ) noexcept
-                : d_date(date), d_notes(std::move(notes)), d_data(std::move(entry_data)) {}
+                : d_date(date), d_notes(std::move(notes)), d_metrics(std::move(metrics)) {}
                 
             Entry(
                     std::chrono::year_month_day date,
                     std::string const& notes,
-                    std::vector<double> const& entry_data
+                    std::vector<double> const& metrics
             );
 
 
             inline auto date() const noexcept -> std::chrono::year_month_day const& { return d_date; }
             inline auto notes() const noexcept -> std::string const& { return d_notes; }
-            inline auto data() const noexcept -> Eigen::VectorXd const& { return d_data; }
+            inline auto metrics() const noexcept -> Eigen::VectorXd const& { return d_metrics; }
 
-            friend auto operator<=>(Entry const& a, Entry const& b) noexcept { return a.d_date <=> b.d_date; }; // The dates are equal.
-            friend auto operator==(Entry const& a, Entry const& b) noexcept -> bool = default;  // all data members are equal.
         private:
             std::chrono::year_month_day d_date;
             std::string d_notes;
-            Eigen::VectorXd d_data;      
+            Eigen::VectorXd d_metrics;      
     };
+            inline auto operator<=>(Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
+            auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.
 } // namespace ewi
 #endif // INCLUDED_ENTRY
