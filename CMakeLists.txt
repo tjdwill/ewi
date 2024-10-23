@@ -12,6 +12,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 find_package(cpptrace REQUIRED)
+find_package(Eigen3 REQUIRED NO_MODULE)
 #find_package(cpperrors)
 
 add_executable(explore src/explore.hpp src/explore.cpp)
@@ -20,6 +21,7 @@ target_link_libraries(explore
     Qt5::Widgets Qt5::Core Qt5::Gui
     cpptrace::cpptrace
     cpperrors
+    Eigen3::Eigen
 )
 
 
