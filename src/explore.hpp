@@ -56,8 +56,12 @@ namespace ewi
 
             MetricStats(Eigen::VectorXd averages)
                 : d_averages { std::move(averages) } {}
+
+            // ACCESSORS
+            inline auto averages() const -> Eigen::VectorXd const& { return d_averages; }
+            inline auto deviations() const -> std::optional<Eigen::VectorXd> const& { return d_deviations; }
         private:
-            MetricStats(); // UNIMPLEMENTED
+            MetricStats() = delete; 
     };
 
     /// A class for representing identification.
@@ -81,28 +85,28 @@ namespace ewi
             Entry(
                     std::chrono::year_month_day date,
                     std::string const& notes,
-                    Eigen::VectorXd const& metrics
+                    Eigen::VectorXd const& entry_data
             ) noexcept
-                : d_date(date), d_notes(std::move(notes)), d_metrics(std::move(metrics)) {}
+                : d_date(date), d_notes(std::move(notes)), d_data(std::move(entry_data)) {}
                 
             Entry(
                     std::chrono::year_month_day date,
                     std::string const& notes,
-                    std::vector<double> const& metrics
+                    std::vector<double> const& entry_data
             );
 
 
             inline auto date() const noexcept -> std::chrono::year_month_day const& { return d_date; }
             inline auto notes() const noexcept -> std::string const& { return d_notes; }
-            inline auto metrics() const noexcept -> Eigen::VectorXd const& { return d_metrics; }
+            inline auto data() const noexcept -> Eigen::VectorXd const& { return d_data; }
 
+            friend auto operator<=>(Entry const& a, Entry const& b) noexcept { return a.d_date <=> b.d_date; }; // The dates are equal.
+            friend auto operator==(Entry const& a, Entry const& b) noexcept -> bool = default;  // all data members are equal.
         private:
             std::chrono::year_month_day d_date;
             std::string d_notes;
-            Eigen::VectorXd d_metrics;      
+            Eigen::VectorXd d_data;      
     };
-    auto operator<=>(Entry const& a, Entry const& b) noexcept; // The dates are equal.
-    auto operator==(Entry const& a, Entry const& b) noexcept;  // all data members are equal.
                                                       
 
     /// A collection of entries
@@ -120,12 +124,6 @@ namespace ewi
             // returns the total entry count
             inline auto num_entries() const noexcept -> int { return (int) d_entries.size(); }
             inline auto entries() const noexcept -> std::vector<Entry> const& { return d_entries; }
-            // Generate statistics for the given date
-            // range [from, until)
-            auto get_stats(
-                    std::chrono::year_month_day const& from,
-                    std::chrono::year_month_day const& until
-            ) const -> MetricStats;
             // Replace exisiting entry with a new one.
             void update_entry(Entry const&);
             // Inserts an entry to the record.
@@ -136,6 +134,13 @@ namespace ewi
         private:
             std::vector<Entry> d_entries {};
     };
+    // Generate statistics for the given date
+    // range [from, until)
+    auto get_stats(
+            Record const& record,
+            std::chrono::year_month_day const& from,
+            std::chrono::year_month_day const& until
+    ) -> MetricStats;
 
     /// Represents an employee's entire survey information
     /// for a given job. 
