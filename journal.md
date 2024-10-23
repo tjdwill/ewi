@@ -1,8 +1,19 @@
 # Design Journal: Employee Workload Index
 
+## Quick Navigation
+
+- [Journal](#journal)
+- [Living Questions List](#living-questions) 
+- [To-Do List](#ewi-todo)
+
+---
+
+## Journal
+
 ## 23 October 2024
 
 EEO Job code: 0260
+
 
 ## 22 October 2024
 
@@ -285,3 +296,37 @@ three.
 
 I'm honestly not sure how to structure this data. Should a given entry be a type? What is the domain
 language for this application's business logic?
+
+---
+
+## Living Questions
+
+Here are some questions that have come up as I work this project.
+
+- [ ] How do I compare two Eigen objects?
+- [ ] When do I specify `noexcept`?
+- [ ] East-style const?
+- [ ] When do I need to create a physical dependency vs. use a forward declaration?
+- [ ] `class` vs. `struct`: semantic meanings?
+- [ ] How are boolean comparision operator overloads implemented? What is the spaceship operator `<=>`?
+
+---
+
+## EWI ToDo
+
+- Eigen
+    - [ ] Eigen semantics
+    - [ ] Instantiation, comparison, arithmethmetic operations 
+    - [ ] Manipulation, basic and advanced access
+- Qt
+    - [ ] Ch. 4 of Book
+    - [ ] Read fundamentals in docs
+- CMake Book
+    - [ ] Learn to write tests
+    - [ ] How to structure a project
+    - [ ] Compiling components
+- Notes Updates
+    - [ ] East-style const (basics)
+    - [ ] Function declarations using `auto` and `->`
+    - [ ] Important keywords (`explicit`, `noexcept`, `protected`, `friend`, `private/public`, `inline`, `static`, `constexpr`, `const`)
+    - [ ] Making a third-party library visible
