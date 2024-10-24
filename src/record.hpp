@@ -10,6 +10,11 @@
 #include "metricstats.hpp"
 #endif
 
+#ifndef INCLUDED_STD_EXPECTED
+#include <expected>
+#define INCLUDED_STD_EXPECTED
+#endif
+
 #ifndef INCLUDED_STD_CHRONO
 #include <chrono>
 #define INCLUDED_STD_CHRONO
@@ -33,56 +38,67 @@
 namespace ewi
 {
     /// A general type that represents an ordered,
-    /// monotonically-increasing range [from, until) when
+    /// monotonically-increasing range `[min, max]` when
     /// fully defined.
     /// If an optional member is empty, that given member
     /// semantically takes the value that makes the range
     /// widest.
     ///
-    /// Ex. if we are representing a range of real numbers,
+    /// Ex. if we are representing a range of container indices:
     ///
-    /// ```c++
-    /// using RealRange = Range<int>;
-    /// // define some RealRange rng;
-    /// if (!rng.from) {
-    ///    // assume negative infinity as the lower bound.
+    /// ```cpp
+    ///
+    /// using IndexRange = InclusiveRange<int>;
+    /// // define some IndexRange idxs;
+    /// if (!idxs.min) { 
+    ///     // use 0 as the index 
+    ///
+    /// }
+    /// else if (!idxs.max) {
+    ///     // use vec.size() - 1 (ranges are inclusive) 
+    /// 
     /// }
     /// ```
     template<typename T>
-    struct Range
+    struct InclusiveRange
     {
-        std::optional<T> from;
-        std::optional<T> until;
+        std::optional<T> min;
+        std::optional<T> max;
     };
+    using IndexRange = InclusiveRange<int>;
+    using DateRange = InclusiveRange<std::chrono::year_month_day>;
 
-    using IndexRange = Range<int>;
-    using DateRange = Range<std::chrono::year_month_day>;
     /// A collection of entries
     class Record 
     {
+        enum class Err { InconsistentMetrics, DisorderedDate, EntryNotFound };
         public:
             // CONSTRUCTORS
-            Record(std::vector<Entry>& entries) noexcept
-                : d_entries{ std::move(entries) } {
-                    assert(!d_entries.empty());
-                }
+            Record(std::vector<Entry>& entries);
 
             // ACCESSORS and METHODS
             
-            // returns the total entry count
             inline auto num_entries() const noexcept -> int { return (int) d_entries.size(); }
             inline auto entries() const noexcept -> std::vector<Entry> const& { return d_entries; }
-            auto find_entries(DateRange const& range) const noexcept -> std::optional<IndexRange> ;
-            // Replace exisiting entry with a new one.
-            void update_entry(Entry const&);
-            // Inserts an entry to the record.
-            void add_entry(Entry const&);
-            // Sorts entries by date (least to most recent).
-            void sort() noexcept;
+
+            /// Get the index range of entries within a given date range.
+            auto find_entries(DateRange range) const noexcept -> std::optional<IndexRange>;
+            
+            /// Inserts an entry to the record.
+            auto add_entry(Entry const& entry) noexcept -> std::expected<void, Err>;
+
+            /// Replace exisiting entry with a new one.
+            /// If no such entry exists, it's added.
+            void update_entry(Entry const& entry);
+
+            /// Removes entry with specified date.
+            /// If entry doesn't exist, do nothing.
+            void remove_entry(std::chrono::year_month_day date);
 
         private:
             std::vector<Entry> d_entries {};
     };
+
     // Generate statistics for the given date
     // range [from, until)
     auto get_stats(
