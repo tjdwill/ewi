@@ -30,6 +30,11 @@
 #define INCLUDED_STD_OPTIONAL
 #endif
 
+#ifndef INCLUDED_STD_OSTREAM
+#include <ostream>
+#define INCLUDED_STD_OSTREAM
+#endif
+
 #ifndef INCLUDED_STD_VECTOR
 #include <vector>
 #define INCLUDED_STD_VECTOR
@@ -67,8 +72,10 @@ namespace ewi
     };
     template<typename T>
     inline auto operator==(InclusiveRange<T> const& a, InclusiveRange<T> const& b) { return a.min==b.min && a.max==b.max; }
-    using IndexRange = InclusiveRange<int>;
     using DateRange = InclusiveRange<std::chrono::year_month_day>;
+    using IndexRange = InclusiveRange<int>;
+    // std::ostream& operator<< (std::ostream& os, DateRange const&);
+    std::ostream& operator<< (std::ostream& os, IndexRange const&);
 
     /// A collection of entries
     class Record 

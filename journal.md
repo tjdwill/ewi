@@ -10,6 +10,12 @@
 
 ## Journal
 
+## 25 October 2024
+
+## 24 October 2024
+
+Worked to implement `Record::find_entries()` method.
+
 ## 23 October 2024
 
 EEO Job code: 0260

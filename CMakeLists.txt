@@ -5,6 +5,7 @@ project(workload-index)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include_directories("$ENV{HOME}/.local/include/eigen3")
 
 # Qt
 set(CMAKE_AUTOMOC ON)
@@ -15,16 +16,31 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 # Other dependencies
 find_package(cpptrace REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
-#find_package(cpperrors)
+#find_package(cpperrors)  # No .cmake file
 
-add_executable(explore src/_explore.hpp src/_explore.cpp)
-target_link_libraries(explore
-    PUBLIC 
-    Qt5::Widgets Qt5::Core Qt5::Gui
-    cpptrace::cpptrace
-    cpperrors
+set(exception cpptrace cpperrors)
+
+add_library(entry OBJECT src/entry.cpp)
+target_link_libraries(entry
+    PRIVATE
     Eigen3::Eigen
 )
+
+add_library(record OBJECT src/record.cpp)
+add_dependencies(record entry)
+target_link_libraries(record
+    PUBLIC
+    ${exception}
+    Eigen3::Eigen
+)
+
+add_executable(record_test 
+    src/record.t.cpp
+    $<TARGET_OBJECTS:entry>
+    $<TARGET_OBJECTS:record>
+)
+add_dependencies(record_test record)
+target_link_libraries(record_test ${exception})
 
 #[[
 add_library(metricstats OBJECT src/metricstats.hpp src/metricstats.cpp)

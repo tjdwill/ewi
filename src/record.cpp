@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <expected>
+#include <iostream>
 #include <optional>
 #include <vector>
 #include <cpperrors>
@@ -18,6 +19,20 @@ constexpr inline int floored_avg(int a, int b)
 namespace ewi
 {
     using err::Exception;
+
+    using std::ostream;
+    ostream& operator<< (ostream& os, IndexRange const& rng)
+    {
+        if (!(rng.min))
+            os << "[None,";
+        else
+            os << '[' << *rng.min << ',';
+        if (!(rng.max))
+            os << " None]";
+        else
+            os << ' ' << *rng.max << ']';
+        return os;
+    }
 
     Record::Record (std::vector<Entry>& entries)
         : d_entries{ std::move(entries) }
