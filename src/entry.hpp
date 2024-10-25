@@ -26,6 +26,9 @@ namespace ewi
 {
     /// A given data entry. Can be for either 
     /// job-related surveys or emotion surveys.
+    /// TODO: Should I require metrics to be non-empty?
+    /// Or, should I allow it and enforce non-empty entries
+    /// up the design chain (like when declaring a job profile?)
     struct Entry 
     {
         public:
@@ -54,7 +57,7 @@ namespace ewi
             std::string d_notes;
             Eigen::VectorXd d_metrics;      
     };
-            inline auto operator<=>(Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
-            auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.
+    inline auto operator<=>(Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
+    auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.
 } // namespace ewi
 #endif // INCLUDED_ENTRY

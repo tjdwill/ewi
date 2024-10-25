@@ -65,6 +65,8 @@ namespace ewi
         std::optional<T> min;
         std::optional<T> max;
     };
+    template<typename T>
+    inline auto operator==(InclusiveRange<T> const& a, InclusiveRange<T> const& b) { return a.min==b.min && a.max==b.max; }
     using IndexRange = InclusiveRange<int>;
     using DateRange = InclusiveRange<std::chrono::year_month_day>;
 
@@ -74,6 +76,7 @@ namespace ewi
         enum class Err { InconsistentMetrics, DisorderedDate, EntryNotFound };
         public:
             // CONSTRUCTORS
+            Record() = default;
             Record(std::vector<Entry>& entries);
 
             // ACCESSORS and METHODS

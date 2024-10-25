@@ -1,6 +1,5 @@
 // record.cpp
 #include "record.hpp"
-#include "cpperrors.hpp"
 #include "entry.hpp"
 #include "metricstats.hpp"
 
@@ -210,7 +209,8 @@ namespace ewi
 
         if (!index_min && !index_max)
             return std::nullopt;
-        else return IndexRange { index_min, index_max };
+        else
+            return IndexRange { index_min, index_max };
     }
 } // namespace ewi
 
