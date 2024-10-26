@@ -80,6 +80,12 @@ namespace ewi
     /// A collection of entries
     class Record 
     {
+        /*  TODO Space
+         *
+         *  - Should I implement an iterator for this
+         *  class? It would help further encapsulate the
+         *  vector data member.
+         */
         enum class Err { InconsistentMetrics, DisorderedDate, EntryNotFound };
         public:
             // CONSTRUCTORS
