@@ -149,7 +149,8 @@ namespace ewi
             //
             // The same logic can be applied to the right end of the search space:
             //
-            //    3 4 _   // poll_index
+            //    3 4 
+            //    _   // poll_index
             //
             // `3` is ss_min, so the loop breaks. However, index 4 maps right back to index
             // 3 because it's the end of the PaddedView, so no information is lost.
