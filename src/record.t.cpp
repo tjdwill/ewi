@@ -1,11 +1,9 @@
 // Test for record.cpp
 #include "record.hpp"
 #include "entry.hpp"
-#include <Eigen/src/Geometry/AlignedBox.h>
 #include <cassert>
 #include <chrono>
 #include <vector>
-#include <iostream>
 
 // imports 
 using namespace std::chrono_literals;
@@ -24,7 +22,7 @@ std::vector<Date> const dates
 
 auto entry_from(Date d) -> Entry
 {
-    return Entry(d, "", std::vector<double>{});
+return Entry(d, "", std::vector<double>{});
 }
 auto gen_record(int num_entries) -> Record
 {
@@ -39,6 +37,20 @@ auto gen_record(int num_entries) -> Record
 /// Testing the date-based inquiry mechanism.
 void test_find_entries()
 {
+    /*
+     * find_entries required test cases:
+     *  - 0-element Record
+     *  - 1-element Record
+     *      - Successful and non-successful
+     *  - 2-element Record
+     *  - 3+ element Record
+     *
+     *  - DateRanges:
+     *      - Singularity
+     *      - Fully-specified
+     *      - None:Max
+     *      - Min:None
+     */
     DateRange singularity { dates[0], dates[0] };
     DateRange all {};
     
@@ -82,8 +94,37 @@ void test_find_entries()
     assert(!result);
 }
 
+void test_record_ops()
+{
+    std::vector<Entry> vec {
+        Entry(dates[0], "First entry", std::vector<double>{0.0}),
+        Entry(dates[1], "Second entry", std::vector<double>{0.0}),
+        Entry(dates[2], "Third Entry", std::vector<double>{0.0}),
+    };
+    int SIZE = vec.size();
+    Record rec {vec};
+    //std::cout << "Initial Record\n" << rec << "\n";
+
+    Entry replacement ( dates[1], "Replacement Entry", std::vector<double>{1.0});
+    Entry insertion0 (2025y/std::chrono::April/22d, "Inserted from update_entry", std::vector<double>{2.0});
+    Entry insertion1 (dates[3], "Inserted from add_entry", std::vector<double>{2.0});
+
+    rec.update_entry(replacement);
+    assert(rec.get_entry(dates[1])->notes() == "Replacement Entry");
+    //std::cout << "\nFirst Replacement\n" << rec << "\n";
+    rec.update_entry(insertion0);
+    assert(rec.size() == SIZE + 1);
+    assert(rec.add_entry(insertion1));
+    assert(rec.size() == SIZE + 2);
+    
+    //std::cout << "\nBefore Deletion\n" << rec << "\n";
+    rec.remove_entry(dates[3]);
+    assert((rec.entries().back().date() != dates[3]) && rec.size() == SIZE + 1);
+    //std::cout << "\nAfter Deletion\n" << rec << "\n";
+}
 
 int main()
 {
     test_find_entries();
+    test_record_ops();
 }

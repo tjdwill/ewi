@@ -10,7 +10,18 @@
 
 ## Journal
 
+## 26 October 2024
+
+- Fixed `Record::find_entries` and passed all tests.
+- Implemented many methods for `Record`.
+    - `update_entry`, `add_entry`, `remove_entry`, `find_entry`
+- Wrote `operator<<` overloads for `Entry` and `Record`.
+- Learned that we can't return references from a `std::optional<T>`
+
 ## 25 October 2024
+
+Worked on `Record::find_entries`. Found a bug. Need to find a way to organize my data such
+that I can think of edge cases as normal cases.
 
 ## 24 October 2024
 

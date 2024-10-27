@@ -10,14 +10,14 @@
 #include "metricstats.hpp"
 #endif
 
-#ifndef INCLUDED_STD_EXPECTED
-#include <expected>
-#define INCLUDED_STD_EXPECTED
-#endif
-
 #ifndef INCLUDED_STD_CHRONO
 #include <chrono>
 #define INCLUDED_STD_CHRONO
+#endif
+
+#ifndef INCLUDED_STD_EXPECTED
+#include <expected>
+#define INCLUDED_STD_EXPECTED
 #endif
 
 #ifndef INCLUDED_STD_MAP
@@ -86,34 +86,37 @@ namespace ewi
          *  class? It would help further encapsulate the
          *  vector data member.
          */
-        enum class Err { InconsistentMetrics, DisorderedDate, EntryNotFound };
+        enum class Err { InconsistentMetrics, DisorderedDate, };
         public:
             // CONSTRUCTORS
             Record() = default;
             Record(std::vector<Entry>& entries);
 
             // ACCESSORS and METHODS
-            
-            inline auto num_entries() const noexcept -> int { return (int) d_entries.size(); }
-            inline auto entries() const noexcept -> std::vector<Entry> const& { return d_entries; }
 
-            /// Get the index range of entries within a given date range.
-            auto find_entries(DateRange range) const noexcept -> std::optional<IndexRange>;
-            
             /// Inserts an entry to the record.
             auto add_entry(Entry const& entry) noexcept -> std::expected<void, Err>;
-
-            /// Replace exisiting entry with a new one.
-            /// If no such entry exists, it's added.
-            void update_entry(Entry const& entry);
+            inline auto entries() const noexcept -> std::vector<Entry> const& { return d_entries; }
+            /// Gets the direct index for a single entry, if it exists.
+            auto find_entry(std::chrono::year_month_day date) const noexcept -> std::optional<int>;
+            /// Get the index range of entries within a given date range.
+            auto find_entries(DateRange range) const noexcept -> std::optional<IndexRange>;
+            /// Retrieves a copy of the entry with the given date if it exists.
+            auto get_entry(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>;
+            inline auto size() const noexcept -> int { return (int) d_entries.size(); }
 
             /// Removes entry with specified date.
             /// If entry doesn't exist, do nothing.
             void remove_entry(std::chrono::year_month_day date);
 
+            /// Replace exisiting entry with a new one.
+            /// If no such entry exists, it's added.
+            void update_entry(Entry const& entry);
+
         private:
             std::vector<Entry> d_entries {};
     };
+    auto operator<< (std::ostream& os, Record const& rec) noexcept -> std::ostream&;
 
     // Generate statistics for the given date
     // range [from, until)
@@ -140,11 +143,6 @@ namespace ewi
         public:
             Record d_job;
             Record d_emotion;
-
-            JobRecord() = delete;
-            // TODO: Assert that the two records aren't
-            // equal
-            JobRecord(Record& job_record, Record& emotion_record);
     };
 
     /// Represents an employee's entire workload record for a given company.
@@ -155,8 +153,6 @@ namespace ewi
         public:
             EmployeeID d_employee;
             std::map<JobID, JobRecord> d_records;
-
-            EmployeeRecord() = delete;
     };
 
     /// Export record data to a file

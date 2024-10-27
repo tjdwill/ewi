@@ -4,6 +4,7 @@
 ///     - Entry equality comparison
 #include "entry.hpp"
 #include <chrono>
+#include <iostream>
 #include <string>
 #include <Eigen/Eigen>
 

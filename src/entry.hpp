@@ -7,6 +7,11 @@
 #define INCLUDED_STD_CHRONO
 #endif
 
+#ifndef INCLUDED_STD_OSTREAM
+#include <ostream>
+#define INCLUDED_STD_OSTREAM
+#endif
+
 #ifndef INCLUDED_STD_STRING
 #include <string>
 #define INCLUDED_STD_STRING
@@ -59,5 +64,6 @@ namespace ewi
     };
     inline auto operator<=>(Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
     auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.
+    auto operator<<(std::ostream& os, Entry const& e) noexcept -> std::ostream&;
 } // namespace ewi
 #endif // INCLUDED_ENTRY

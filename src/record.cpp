@@ -4,6 +4,7 @@
 #include "metricstats.hpp"
 #include "utils.hpp"   // PaddedView
 
+#include <algorithm>
 #include <chrono>
 #include <expected>
 #include <iostream>
@@ -67,26 +68,32 @@ namespace ewi
         return {};
     }
 
-    /*
-     * find_entries required test cases:
-     *  - 0-element Record
-     *  - 1-element Record
-     *      - Successful and non-successful
-     *  - 2-element Record
-     *  - 3+ element Record
-     *
-     *  - DateRanges:
-     *      - Singularity
-     *      - Fully-specified
-     *      - None:Max
-     *      - Min:None
-     *
-     */
+    auto Record::find_entry(std::chrono::year_month_day date) const noexcept -> std::optional<int>
+    {
+        auto idx = std::distance(
+                d_entries.begin(), 
+                std::find_if(d_entries.begin(), d_entries.end(), 
+                    [date](Entry const& e )-> bool { return e.date() == date; })
+         );
+        if ((int) idx == (int) d_entries.size())
+            return std::nullopt;
+        else 
+            return idx;
+    }
+
     auto Record::find_entries(DateRange date_range) const noexcept -> std::optional<IndexRange>
     {
+        // Empty case
         if (d_entries.empty())
             return std::nullopt;
-        
+        // Handle single date case
+        if (date_range.min && date_range.max && (*date_range.min == *date_range.max)) {
+            auto idx = find_entry(*date_range.min);
+            if (!idx) 
+                return std::nullopt;
+            else
+                return IndexRange{idx, idx};
+        }
         // Use a PaddedView in order to treat
         // all non-empty vectors as if there
         // are at least three elements. This
@@ -167,9 +174,7 @@ namespace ewi
                     // search to the right
                     ss_min = poll_idx + 1;
                     poll_idx = floored_avg(ss_min, ss_max);
-                } else 
-                    // found exact match
-                    break;
+                } else break; // found exact match
             }
             if (poll_idx == global_min) { 
                 // NOTE: The following logic only works because of PaddedView's behavior in
@@ -210,9 +215,8 @@ namespace ewi
                     // search to the left
                     ss_max = poll_idx - 1;
                     poll_idx = floored_avg(ss_min, ss_max);
-                } else {
-                    break;
-                }
+                } else break;
+                
             }
             // minimum > largest? Nothing there.
             if (poll_idx == global_min) { 
@@ -233,30 +237,44 @@ namespace ewi
             return IndexRange{ index_min, index_max };
     }
 
+    auto Record::get_entry(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>
+    {
+        auto idx = find_entry(date);
+        if (!idx)
+            return std::nullopt;
+        else 
+            return d_entries[*idx]; // this copies!
+    }
+
+    void Record::remove_entry(std::chrono::year_month_day date)
+    {
+       auto idx = find_entry(date);
+        if (idx)
+           d_entries.erase(d_entries.begin() + *idx);
+    }
+
     void Record::update_entry(Entry const& entry)
     {
         auto date = entry.date();
-        auto index = find_entries(DateRange{ date, date });
-        if(index) {
-            auto i = *(index->min);
-            assert(i == *(index->max)); // Ensure no duplicates
-            d_entries[i] = std::move(entry);
+        auto idx = find_entry(date);
+        if(idx) {
+            d_entries[*idx] = std::move(entry);
         } else {  
             // Add entry to the record
             // We sort here instead of in add_entry to
-            // precent frequent sorting operations.
+            // prevent frequent sorting operations.
             d_entries.push_back(std::move(entry));
             std::sort(d_entries.begin(), d_entries.end(), 
                     [] (Entry const& a, Entry const& b) { return a < b; });
         }
     }
 
-    void Record::remove_entry(std::chrono::year_month_day date)
+    auto operator<<(std::ostream& os, Record const& rec) noexcept -> std::ostream&
     {
-       auto index = find_entries(DateRange {date, date});
-       if (index) {
-           int i = (index->min).value();
-           d_entries.erase(d_entries.begin() + i);
-       }
+        os << "[";
+        for (Entry const& e: rec.entries())
+            os  << e << ",\n";
+        os << "]";
+        return os;
     }
 } // namespace ewi

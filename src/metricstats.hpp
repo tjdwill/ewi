@@ -22,14 +22,13 @@ namespace ewi
 {
     
     /// Stores statistics for a given set of metrics.
-    struct MetricStats
+    class MetricStats
     {
         public:
-            Eigen::VectorXd d_averages;  // mean value for each metric
-            std::optional<Eigen::VectorXd> d_deviations {};
-
             // CONSTRUCTORS
             // TODO: Check semantics of Eigen objects. Pass-by-value, reference, or move?
+            MetricStats() = delete;
+
             MetricStats(Eigen::VectorXd averages, Eigen::VectorXd deviations)
                 : d_averages { std::move(averages) }, d_deviations { std::move(deviations) }
             {
@@ -44,7 +43,8 @@ namespace ewi
             inline auto averages() const -> Eigen::VectorXd const& { return d_averages; }
             inline auto deviations() const -> std::optional<Eigen::VectorXd> const& { return d_deviations; }
         private:
-            MetricStats() = delete; 
+            Eigen::VectorXd d_averages;  // mean value for each metric
+            std::optional<Eigen::VectorXd> d_deviations {};
     };
 
 }

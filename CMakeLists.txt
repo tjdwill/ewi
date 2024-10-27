@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.20)
 project(workload-index)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+#set(CMAKE_CXX_COMPILER /usr/bin/clang++-17)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("$ENV{HOME}/.local/include/eigen3")
@@ -25,6 +26,11 @@ target_link_libraries(entry
     PRIVATE
     Eigen3::Eigen
 )
+add_executable(entry_test 
+    src/entry.t.cpp
+    $<TARGET_OBJECTS:entry>
+)
+add_dependencies(entry_test entry)
 
 add_library(record OBJECT src/record.cpp)
 add_dependencies(record entry)
