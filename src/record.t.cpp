@@ -3,6 +3,7 @@
 #include "entry.hpp"
 #include <cassert>
 #include <chrono>
+#include <iostream>
 #include <vector>
 
 // imports 
@@ -22,8 +23,9 @@ std::vector<Date> const dates
 
 auto entry_from(Date d) -> Entry
 {
-return Entry(d, "", std::vector<double>{});
+    return Entry(d, "", std::vector<double> { 0.0, 1.0, 5.0, 6.0 });
 }
+
 auto gen_record(int num_entries) -> Record
 {
     std::vector<Entry> entries {};
@@ -94,6 +96,7 @@ void test_find_entries()
     assert(!result);
 }
 
+/// Tests entry insertion, update, and removal
 void test_record_ops()
 {
     std::vector<Entry> vec {
@@ -123,8 +126,20 @@ void test_record_ops()
     //std::cout << "\nAfter Deletion\n" << rec << "\n";
 }
 
+void test_record_metrics()
+{
+    Record r = gen_record((int) dates.size());
+    auto metrics = ewi::get_record_metrics(r);
+    assert((int) metrics.rows() == r.size());
+    assert((int) metrics.cols() == r.metric_dim());
+    std::cout << "The Record:\n" << r << "\n";
+    std::cout << "Record metrics:\n" << metrics << "\n";
+}
+
+
 int main()
 {
     test_find_entries();
     test_record_ops();
+    test_record_metrics();
 }

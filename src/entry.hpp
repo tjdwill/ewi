@@ -22,11 +22,6 @@
 #define INCLUDED_STD_VECTOR
 #endif
 
-#ifndef INCLUDED_EIGEN
-#include <Eigen/Eigen>
-#define INCLUDED_EIGEN
-#endif
-
 namespace ewi
 {
     /// A given data entry. Can be for either 
@@ -42,25 +37,19 @@ namespace ewi
             Entry(
                     std::chrono::year_month_day date,
                     std::string const& notes,
-                    Eigen::VectorXd const& metrics
+                    std::vector<double> const& metrics
             ) noexcept
                 : d_date(date), d_notes(std::move(notes)), d_metrics(std::move(metrics)) {}
-                
-            Entry(
-                    std::chrono::year_month_day date,
-                    std::string const& notes,
-                    std::vector<double> const& metrics
-            );
 
 
             inline auto date() const noexcept -> std::chrono::year_month_day const& { return d_date; }
             inline auto notes() const noexcept -> std::string const& { return d_notes; }
-            inline auto metrics() const noexcept -> Eigen::VectorXd const& { return d_metrics; }
+            inline auto metrics() const noexcept -> std::vector<double> const& { return d_metrics; }
 
         private:
             std::chrono::year_month_day d_date;
             std::string d_notes;
-            Eigen::VectorXd d_metrics;      
+            std::vector<double> d_metrics;      
     };
     inline auto operator<=> (Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
     auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.

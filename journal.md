@@ -10,6 +10,21 @@
 
 ## Journal
 
+## 1 November 2024
+
+So, I was able to achieve the vast majority of my goals. Most importantly, I learned how to
+run tests using CMake, which will greatly improve my workflow. I also learned more about
+the system in general in terms of best practices, but CMake is definitely something that
+requires time and experimentation to learn properly.
+
+In terms of design, I made some small adjustments to the classes. `Entry` has had its Eigen
+dependency removed. It now only concerns itself with std::vector<double>. For `Record`, I
+removed the dependency on `MetricStats`. Now, I simply have it return an Eigen matrix that
+can then be used to construct a MetricStats object. I did it this way, however, so that
+neither `Record` nor `MetricStats` need know about the other. finally, I added some more
+convenience methods and moved the greater record types to the draft space for now; I still
+need to determine how to organize them into components.
+
 ## 27 October 2024
 
 Lord willing, the next two weeks will be research and skill improvement focused. I
@@ -19,10 +34,10 @@ down the road.
 
 To summarize, here are my goals:
 
-- [ ] Read two chapters of the CMake book.
-- [ ] Write notes on const correctness and CMake
-- [ ] Skim Ch. 4 of Qt book.
-- [ ] Read various blog articles in my backlog.
+- [x] Read ~~two~~ eight chapters of the CMake book.
+- [x] Write notes on const correctness and CMake
+- ~~[ ] Skim Ch. 4 of Qt book.~~
+- [x] Read various blog articles in my backlog.
 
 ## 26 October 2024
 
@@ -336,10 +351,10 @@ Here are some questions that have come up as I work this project.
 
 - [ ] How do I compare two Eigen objects?
 - [ ] When do I specify `noexcept`?
-- [ ] East-style const?
+- [x] East-style const?
 - [ ] When do I need to create a physical dependency vs. use a forward declaration?
 - [ ] `class` vs. `struct`: semantic meanings?
-- [ ] How are boolean comparision operator overloads implemented? What is the spaceship operator `<=>`?
+- [x] How are boolean comparision operator overloads implemented? What is the spaceship operator `<=>`?
 - [ ] Difference: Initialization vs. Assignment
 
 ---
@@ -354,11 +369,11 @@ Here are some questions that have come up as I work this project.
     - [ ] Ch. 4 of Book
     - [ ] Read fundamentals in docs
 - CMake Book
-    - [ ] Learn to write tests
-    - [ ] How to structure a project
-    - [ ] Compiling components
+    - [x] Learn to write tests
+    - [x] How to structure a project
+    - [x] Compiling components
 - Notes Updates
-    - [ ] East-style const (basics)
+    - [x] East-style const (basics)
     - [ ] Function declarations using `auto` and `->`
     - [ ] Important keywords (`explicit`, `noexcept`, `protected`, `friend`, `private/public`, `inline`, `static`, `constexpr`, `const`)
     - [ ] Making a third-party library visible

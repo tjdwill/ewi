@@ -1,5 +1,4 @@
 add_library(entry entry.cpp)
-target_link_libraries(entry PUBLIC Eigen3::Eigen)
 
 add_executable(entry_test entry.t.cpp)
 add_dependencies(entry_test entry)
@@ -11,6 +10,7 @@ add_library(record record.cpp)
 target_link_libraries(record
     PUBLIC
     ${exception}
+    Eigen3::Eigen
     entry
 )
 

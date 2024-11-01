@@ -3,6 +3,7 @@
 #ifndef INCLUDED_METRICSTATS
 #define INCLUDED_METRICSTATS
 
+#include <Eigen/src/Core/util/Constants.h>
 #ifndef INCLUDED_STD_CASSERT
 #include <cassert>
 #define INCLUDED_STD_CASSERT
@@ -29,22 +30,27 @@ namespace ewi
             // TODO: Check semantics of Eigen objects. Pass-by-value, reference, or move?
             MetricStats() = delete;
 
-            MetricStats(Eigen::VectorXd averages, Eigen::VectorXd deviations)
-                : d_averages { std::move(averages) }, d_deviations { std::move(deviations) }
+            explicit MetricStats(
+                    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> metrics,
+                    Eigen::RowVectorXd deviations
+            )
+                : d_metrics { std::move(metrics) }, d_deviations { std::move(deviations) }
             {
                 assert(d_deviations);
-                assert(d_averages.size() == d_deviations->size()); 
+                assert(d_metrics.cols() == d_deviations->size()); 
             }
 
-            MetricStats(Eigen::VectorXd averages)
-                : d_averages { std::move(averages) } {}
-
+            explicit MetricStats(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> metrics) noexcept
+                : d_metrics { std::move(metrics) } {}
             // ACCESSORS
-            inline auto averages() const -> Eigen::VectorXd const& { return d_averages; }
-            inline auto deviations() const -> std::optional<Eigen::VectorXd> const& { return d_deviations; }
+
+            /// Averages each column of the metrics matrix,
+            /// resulting in a row vector.
+            auto averages() const -> Eigen::RowVectorXd const&;
+            inline auto deviations() const -> std::optional<Eigen::RowVectorXd> const& { return d_deviations; }
         private:
-            Eigen::VectorXd d_averages;  // mean value for each metric
-            std::optional<Eigen::VectorXd> d_deviations {};
+            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> d_metrics;  // mean value for each metric
+            std::optional<Eigen::RowVectorXd> d_deviations {};
     };
 
 }

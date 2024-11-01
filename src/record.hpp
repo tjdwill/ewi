@@ -6,10 +6,6 @@
 #include "entry.hpp"
 #endif
 
-#ifndef INCLUDE_METRICSTATS
-#include "metricstats.hpp"
-#endif
-
 #ifndef INCLUDED_STD_CHRONO
 #include <chrono>
 #define INCLUDED_STD_CHRONO
@@ -38,6 +34,11 @@
 #ifndef INCLUDED_STD_VECTOR
 #include <vector>
 #define INCLUDED_STD_VECTOR
+#endif
+
+#ifndef INCLUDED_EIGEN
+#include <Eigen/Eigen>
+#define INCLUDED_EIGEN
 #endif
 
 namespace ewi
@@ -96,17 +97,28 @@ namespace ewi
 
             /// Inserts an entry to the record.
             auto add_entry(Entry const& entry) noexcept -> std::expected<void, Err>;
-            inline auto entries() const noexcept -> std::vector<Entry> const& { return d_entries; }
             /// Gets the direct index for a single entry, if it exists.
             auto find_entry(std::chrono::year_month_day date) const noexcept -> std::optional<int>;
             /// Get the index range of entries within a given date range.
             auto find_entries(DateRange range) const noexcept -> std::optional<IndexRange>;
             /// Retrieves a copy of the entry with the given date if it exists.
             auto get_entry(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>;
+
+            /// Iterators
+            inline auto begin() const noexcept { return d_entries.begin(); }
+            inline auto end() const noexcept { return d_entries.end(); }
+            //TODO: Adjust this to have better
+            //encapsulation.
+            inline auto entries() const noexcept -> std::vector<Entry> const& { return d_entries; }
+            inline auto is_empty() const noexcept -> bool { return size() == 0;}
+            inline auto operator[] (int idx) const -> Entry const& { return d_entries[idx]; }
+            /// Query how many metrics are recorded per entry.
+            inline auto metric_dim() const noexcept -> int { return is_empty() ? 0 : d_entries[0].metrics().size(); }
+            /// Query number of entries in the record.
             inline auto size() const noexcept -> int { return (int) d_entries.size(); }
 
             /// Removes entry with specified date.
-            /// If entry doesn't exist, do nothing.
+            /// If no such entry exists, do nothing.
             void remove_entry(std::chrono::year_month_day date);
 
             /// Replace exisiting entry with a new one.
@@ -116,48 +128,10 @@ namespace ewi
         private:
             std::vector<Entry> d_entries {};
     };
-    auto operator<< (std::ostream& os, Record const& rec) noexcept -> std::ostream&;
+    auto operator<<(std::ostream& os, Record const& rec) noexcept -> std::ostream&;
+    /// Produce a matrix of metric data. Each row corresponds
+    /// to a given entry.
+    auto get_record_metrics(Record const& r) -> Eigen::MatrixXd;
 
-    // Generate statistics for the given date
-    // range [from, until)
-    auto get_stats(
-            Record const& record,
-            DateRange const& range
-    ) -> MetricStats;
-
-    /// A class for representing identification.
-    /// Includes unambiguous data member (d_id)
-    /// and a more "human-readable" member (d_name).
-    struct AbstractID
-    {
-        std::string d_id;
-        std::string d_name;
-    };
-    struct JobID : AbstractID {};
-    struct EmployeeID : AbstractID {};
-
-    /// Represents an employee's entire survey information
-    /// for a given job. 
-    struct JobRecord 
-    {
-        public:
-            Record d_job;
-            Record d_emotion;
-    };
-
-    /// Represents an employee's entire workload record for a given company.
-    /// This type is meant to enable tracking the employee's workload through
-    /// multiple positions in their tenure.
-    struct EmployeeRecord 
-    {
-        public:
-            EmployeeID d_employee;
-            std::map<JobID, JobRecord> d_records;
-    };
-
-    /// Export record data to a file
-    void export_employee(EmployeeRecord const&, std::string path="");
-    /// load employee from file
-    EmployeeRecord load_employee(std::string id_string);
 } // namespace ewi
 #endif // INCLUDED_RECORD
