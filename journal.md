@@ -10,6 +10,20 @@
 
 ## Journal
 
+## 27 October 2024
+
+Lord willing, the next two weeks will be research and skill improvement focused. I
+especially plan to concentrate on CMake to make the build process easier to complete.
+Testing needs careful attention, so investing time up front to learn will have great payoff
+down the road.
+
+To summarize, here are my goals:
+
+- [ ] Read two chapters of the CMake book.
+- [ ] Write notes on const correctness and CMake
+- [ ] Skim Ch. 4 of Qt book.
+- [ ] Read various blog articles in my backlog.
+
 ## 26 October 2024
 
 - Fixed `Record::find_entries` and passed all tests.

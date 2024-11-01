@@ -62,7 +62,7 @@ namespace ewi
             std::string d_notes;
             Eigen::VectorXd d_metrics;      
     };
-    inline auto operator<=>(Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
+    inline auto operator<=> (Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
     auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.
     auto operator<<(std::ostream& os, Entry const& e) noexcept -> std::ostream&;
 } // namespace ewi
