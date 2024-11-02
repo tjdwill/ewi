@@ -1,6 +1,5 @@
 #include "entry.hpp"
 #include <vector>
-#include <Eigen/Eigen>
 #include <iostream>
 #include <format>
 

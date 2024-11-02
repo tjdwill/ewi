@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("$ENV{HOME}/.local/include/eigen3")
-option(BUILD_SHARED_LIB "Build shareable libraries" ON)
+option(BUILD_SHARED_LIBS "Build shareable libraries" ON)
 #=============== Packages =====================
 #[[
 ## Qt

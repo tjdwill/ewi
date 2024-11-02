@@ -41,7 +41,6 @@ namespace ewi
             ) noexcept
                 : d_date(date), d_notes(std::move(notes)), d_metrics(std::move(metrics)) {}
 
-
             inline auto date() const noexcept -> std::chrono::year_month_day const& { return d_date; }
             inline auto notes() const noexcept -> std::string const& { return d_notes; }
             inline auto metrics() const noexcept -> std::vector<double> const& { return d_metrics; }
