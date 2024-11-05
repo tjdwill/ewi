@@ -1,8 +1,8 @@
 // record.hpp
-#ifndef INCLUDED_RECORD
-#define INCLUDED_RECORD
+#ifndef INCLUDED_EWI_RECORD
+#define INCLUDED_EWI_RECORD
 
-#ifndef INCLUDE_ENTRY
+#ifndef INCLUDE_EWI_ENTRY
 #include "entry.hpp"
 #endif
 
@@ -14,11 +14,6 @@
 #ifndef INCLUDED_STD_EXPECTED
 #include <expected>
 #define INCLUDED_STD_EXPECTED
-#endif
-
-#ifndef INCLUDED_STD_MAP
-#include <map>
-#define INCLUDED_STD_MAP
 #endif
 
 #ifndef INCLUDED_STD_OPTIONAL
@@ -78,6 +73,7 @@ namespace ewi
     // std::ostream& operator<< (std::ostream& os, DateRange const&);
     std::ostream& operator<< (std::ostream& os, IndexRange const&);
 
+    
     /// A collection of entries
     class Record 
     {
@@ -87,8 +83,8 @@ namespace ewi
          *  class? It would help further encapsulate the
          *  vector data member.
          */
-        enum class Err { InconsistentMetrics, DisorderedDate, };
         public:
+            enum class Err { InconsistentMetrics, DisorderedDate, };
             // CONSTRUCTORS
             Record() = default;
             Record(std::vector<Entry>& entries);
@@ -134,4 +130,4 @@ namespace ewi
     auto get_record_metrics(Record const& r) -> Eigen::MatrixXd;
 
 } // namespace ewi
-#endif // INCLUDED_RECORD
+#endif // INCLUDED_EWI_RECORD

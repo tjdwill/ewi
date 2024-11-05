@@ -1,8 +1,8 @@
 // survey.hpp
-#ifndef INCLUDED_SURVEY
-#define INCLUDED_SURVEY
+#ifndef INCLUDED_EWI_SURVEY
+#define INCLUDED_EWI_SURVEY
 
-#ifndef INCLUDED_RECORD
+#ifndef INCLUDED_EWI_RECORD
 #include "record.hpp"
 #endif 
 
@@ -113,4 +113,4 @@ namespace ewi
     };
 
 } // namespace ewi
-#endif // INCLUDED_SURVEY
+#endif // INCLUDED_EWI_SURVEY

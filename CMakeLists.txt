@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("$ENV{HOME}/.local/include/eigen3")
+include_directories("src")
 option(BUILD_SHARED_LIBS "Build shareable libraries" ON)
 #=============== Packages =====================
 #[[

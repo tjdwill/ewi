@@ -1,6 +1,6 @@
 // entry.hpp
-#ifndef INCLUDED_ENTRY
-#define INCLUDED_ENTRY
+#ifndef INCLUDED_EWI_ENTRY
+#define INCLUDED_EWI_ENTRY
 
 #ifndef INCLUDED_STD_CHRONO
 #include <chrono>
@@ -54,4 +54,4 @@ namespace ewi
     auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.
     auto operator<<(std::ostream& os, Entry const& e) noexcept -> std::ostream&;
 } // namespace ewi
-#endif // INCLUDED_ENTRY
+#endif // INCLUDED_EWI_ENTRY

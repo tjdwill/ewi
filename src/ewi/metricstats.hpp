@@ -1,9 +1,8 @@
 // metricstats.hpp
 // Defines a data aggregate for statistical data.
-#ifndef INCLUDED_METRICSTATS
-#define INCLUDED_METRICSTATS
+#ifndef INCLUDED_EWI_METRICSTATS
+#define INCLUDED_EWI_METRICSTATS
 
-#include <Eigen/src/Core/util/Constants.h>
 #ifndef INCLUDED_STD_CASSERT
 #include <cassert>
 #define INCLUDED_STD_CASSERT
@@ -54,5 +53,5 @@ namespace ewi
     };
 
 }
-#endif // INCLUDED_METRICSTATS
+#endif // INCLUDED_EWI_METRICSTATS
 

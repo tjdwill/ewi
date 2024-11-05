@@ -349,13 +349,20 @@ language for this application's business logic?
 
 Here are some questions that have come up as I work this project.
 
+### Language
+
 - [ ] How do I compare two Eigen objects?
 - [ ] When do I specify `noexcept`?
 - [x] East-style const?
-- [ ] When do I need to create a physical dependency vs. use a forward declaration?
 - [ ] `class` vs. `struct`: semantic meanings?
 - [x] How are boolean comparision operator overloads implemented? What is the spaceship operator `<=>`?
 - [ ] Difference: Initialization vs. Assignment
+
+### Software Design/Project Management
+
+- [ ] Is it worth it to test *every* class (ex. a class of basic getters and setters?)
+- [ ] When do I need to create a physical dependency vs. use a forward declaration?
+- [ ] Is it wise to use a namespace-wide enum class that serves as an error type?
 
 ---
 
