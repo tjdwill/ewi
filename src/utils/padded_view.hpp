@@ -1,5 +1,5 @@
-#ifndef INCLUDED_UTILS
-#define INCLUDED_UTILS
+#ifndef INCLUDED_UTILS_PADDED_VIEW
+#define INCLUDED_UTILS_PADDED_VIEW
 
 #ifndef INCLUDED_STD_VECTOR
 #include <vector>
@@ -51,4 +51,4 @@ namespace utils
             return d_vec[pos-1];
     }
 } // namespace utils
-#endif // INCLUDED_UTILS
+#endif // INCLUDED_UTILS_PADDED_VIEW

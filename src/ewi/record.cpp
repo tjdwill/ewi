@@ -1,7 +1,7 @@
 // record.cpp
 #include "record.hpp"
 #include "entry.hpp"
-#include <utils/utils.hpp>   // PaddedView
+#include <utils/padded_view.hpp>   // PaddedView
 
 #include <algorithm>
 #include <chrono>

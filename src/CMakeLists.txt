@@ -1,10 +1,10 @@
 # UTILS
-add_library(utils utils/utils.cpp)
-target_link_libraries(utils PUBLIC ${exception})
+add_library(padded_view utils/padded_view.cpp)
+target_link_libraries(padded_view PUBLIC ${exception})
 
-add_executable(test_utils utils/utils.t.cpp)
-target_link_libraries(test_utils PRIVATE utils)
-add_test(NAME utils.t COMMAND test_utils)
+add_executable(test_padded utils/padded_view.t.cpp)
+target_link_libraries(test_padded PRIVATE padded_view)
+add_test(NAME padded_view.t COMMAND test_padded)
 
 # EWI
 
@@ -26,7 +26,7 @@ target_link_libraries(record
     ${exception}
     Eigen3::Eigen
     entry
-    utils
+    padded_view
 )
 
 add_executable(record_test ewi/record.t.cpp)

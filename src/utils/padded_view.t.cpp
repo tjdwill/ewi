@@ -1,5 +1,5 @@
 // Test Driver for utils component
-#include "utils.hpp"
+#include <utils/padded_view.hpp>
 #include <cassert>
 #include <cpperrors>
 #include <iostream>

@@ -10,7 +10,13 @@
 
 ## Journal
 
-## 1 November 2024
+### 6 November 2024
+
+I've been working on a lot without writing about it. So far, I've done a few refactors, segmenting the codebase into components and modules. Currently, I'm working on the file types and parsing operations described earlier in the journal. I need to review C++ I/O as well as basic string manipulation. 
+
+One goal for exporting `EmployeeRecord`s to file is to represent each `Entry` within a line (one per line). To do so, I need to find a way to convert a potentially multi-line string to a one-line string. I'm thinking of replacing all `\n` with `\1` since no one uses that ASCII sequence. I wanted to use `\0`, but that makes the compiler think the string has terminated (word to C-style strings).
+
+### 1 November 2024
 
 So, I was able to achieve the vast majority of my goals. Most importantly, I learned how to
 run tests using CMake, which will greatly improve my workflow. I also learned more about
@@ -25,7 +31,7 @@ neither `Record` nor `MetricStats` need know about the other. finally, I added s
 convenience methods and moved the greater record types to the draft space for now; I still
 need to determine how to organize them into components.
 
-## 27 October 2024
+### 27 October 2024
 
 Lord willing, the next two weeks will be research and skill improvement focused. I
 especially plan to concentrate on CMake to make the build process easier to complete.
@@ -39,7 +45,7 @@ To summarize, here are my goals:
 - ~~[ ] Skim Ch. 4 of Qt book.~~
 - [x] Read various blog articles in my backlog.
 
-## 26 October 2024
+### 26 October 2024
 
 - Fixed `Record::find_entries` and passed all tests.
 - Implemented many methods for `Record`.
@@ -47,21 +53,21 @@ To summarize, here are my goals:
 - Wrote `operator<<` overloads for `Entry` and `Record`.
 - Learned that we can't return references from a `std::optional<T>`
 
-## 25 October 2024
+### 25 October 2024
 
 Worked on `Record::find_entries`. Found a bug. Need to find a way to organize my data such
 that I can think of edge cases as normal cases.
 
-## 24 October 2024
+### 24 October 2024
 
 Worked to implement `Record::find_entries()` method.
 
-## 23 October 2024
+### 23 October 2024
 
 EEO Job code: 0260
 
 
-## 22 October 2024
+### 22 October 2024
 
 Ok, let's rethink the goal here. Ultimately, I want to write a piece of software that
 allows employees to more adequately track and represent their workloads. Every mental
@@ -94,9 +100,9 @@ it from the average of the metric. Then, I could divide this difference by the m
 average to determine how large the deviation is? This would enable a more uniform plot (and
 also would be centered around zero as desired).
 
-## 21 October 2024
+### 21 October 2024
 
-### Calculating EWI
+#### Calculating EWI
 
 The *Employee Workload Index* (EWI) is an estimate of how a given employee likely perceives
 their workload. Given data regarding the employee's current workload, the role's average
@@ -120,7 +126,7 @@ So, let's create a prototype.
 EWI = <Role Impact Score> + <Emotion Impact Score>
 ```
 
-#### Emotional Impact
+##### Emotional Impact
 
 This aspect is tricky to handle properly. On one hand, a subpar emotional index should
 amplify the role index in both directions.
@@ -157,7 +163,7 @@ So, a given procedure could be:
 
 This results in a normalized score whose center is 0 (neutral).
 
-### Data Formats
+#### Data Formats
 
 - Entry
     - Date
@@ -178,7 +184,7 @@ Note: I don't really need to worry about the size of a given person's record. As
 entries a year for 50 years, the person would accumulate 18,250 entries. Most people don't
 work for that long at one company, and they certainly don't work every day for that period.
 
-### File Formats
+#### File Formats
 
 **Employee Record**
 
@@ -208,7 +214,7 @@ Vision: text file allowing the job-specific questions to be specified.
 
 See the format in [yesterday's post](#20-october-2024)
 
-### Statistical Data
+#### Statistical Data
 
 I'm going to need to be able to compare the user's answers with the average values for each
 question. However, I need the averages to do so. Should I make a class that represents the
@@ -218,9 +224,9 @@ data varies among the set.
 
 I only need this data when generating the EWI.
 
-## 20 October 2024
+### 20 October 2024
 
-### Dynamic Questions
+#### Dynamic Questions
 
 Let's say we want to define a role. We can do so via a text file of the following format:
 
@@ -249,7 +255,7 @@ questions and averages.
 
 **Question**: How could I update averages? Figure it out later.
 
-### Flow
+#### Flow
 
 With this method of allowing profiles to be created, I can envision the following flow:
 
@@ -260,7 +266,7 @@ With this method of allowing profiles to be created, I can envision the followin
 - Give Emotion survey if necessary (based on time since last completion)
 
 
-## 19 October 2024
+### 19 October 2024
 
 I assume a given employee's records are only valid for the company they are currently employed by.
 Knowing that the questions used to evaluate workload will vary according to the role the employee
@@ -290,7 +296,7 @@ However, does a given data entry look like?
 - How do I allow the entry questions to change as a function of the role?
 - How do I keep the averages in sync with the entry questions?
 
-### Barebones Prototype
+#### Barebones Prototype
 
 - Get data through survey forms
     - Role-related survey ("daily")
@@ -300,7 +306,7 @@ However, does a given data entry look like?
 - Static averages
 - Only one profile
 
-## 18 October 2024
+### 18 October 2024
 
 I'm not going to get the design right on the first try, so let's just try something that can work.
 
@@ -314,9 +320,9 @@ I know I need:
 
 Rather than re-inventing the wheel as the first option, can I repurpose existing technology?
 
-## 14 October 2024
+### 14 October 2024
 
-### Evaluating Employee Workload
+#### Evaluating Employee Workload
 
 In order to get the data I need, I want the following:
 
@@ -367,6 +373,15 @@ Here are some questions that have come up as I work this project.
 ---
 
 ## EWI ToDo
+
+### Implementation
+
+- [ ] `ewi/metricstats.cpp`
+- [ ] `ewi/employee_record.cpp`
+- [ ]
+- [ ]
+
+### Learning
 
 - Eigen
     - [ ] Eigen semantics
