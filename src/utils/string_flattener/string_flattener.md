@@ -1,0 +1,5 @@
+# StringFlattener
+
+The idea is to take mulit-line text data and flatten it to fit on one line. To do this, I need to replace the newline signifier with something that can serve as an easy conversion token. The conversion token can't be a sequence that is commonly or even plausibly used (ex. replacing U+00A0 with a literal `\` followed by `n` would not work because `\n` is used as the newline literal. Meaning, there would be no distinction between *actual* newlines and someone literally typing `\n` when the expansion operation is performed following conversion.
+
+In my Rust TOML parser project, I was able to use `\0` as a delimiter token because that byte sequence was prohibited from being used in the TOML file, meaning I had a guarantee that the user would never insert the null byte. However, C++ has compatibility with C-style, null-terminated strings, so I can't use this as the token; the program may think the text data ends prematurely. Instead, I'll use `\1` for now. This character, the "Start of Heading" control character, is rarely used in practice. I have never seen someone use it, and I don't see someone inserting it into a text sequence.

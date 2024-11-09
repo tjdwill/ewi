@@ -1,3 +1,4 @@
+// basic_id.hpp
 #ifndef INCLUDED_EWI_BASIC_ID
 #define INCLUDED_EWI_BASIC_ID
 
@@ -14,24 +15,14 @@ namespace ewi
     {
         public:
             BasicID() = delete;
-            BasicID(std::string const& formal, std::string const& informal) noexcept
-                : d_formal{ std::move(formal) }, d_informal{ std::move(informal) } {}
-            BasicID(std::string const& formal) noexcept 
-            {
-                BasicID(formal, "");
-            }
-
+            BasicID(std::string const& formal) noexcept
+                : d_formal{ std::move(formal) } {}
             // Accessors
 
             /// Get the unambiguous ID
             inline auto formal() const noexcept -> std::string const& { return d_formal; }
-            /// Get the informal entity shortname
-            inline auto informal() const noexcept -> std::string const& { return d_informal; }
-            /// Update the entity shortname
-            inline void informal(std::string const& shortname) noexcept { d_informal = shortname; }
         private:
             std::string d_formal;
-            std::string d_informal {};
     };
 } // namespace ewi
 #endif // INCLUDED_EWI_BASIC_ID

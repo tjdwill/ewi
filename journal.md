@@ -10,6 +10,14 @@
 
 ## Journal
 
+### 8 November 2024
+
+Still working on the `EmployeeRecord` transmission mechanism. I now know how to compress a
+string down to fit into a line, but now I want to flesh the mechanism fully. I think I may
+need a parser struct that can import and export `EmployeeRecord`s. The good news is that
+these files are meant to be created internally, so the parser can assume incoming files are
+written correctly, throwing an error if not.
+
 ### 6 November 2024
 
 I've been working on a lot without writing about it. So far, I've done a few refactors, segmenting the codebase into components and modules. Currently, I'm working on the file types and parsing operations described earlier in the journal. I need to review C++ I/O as well as basic string manipulation. 

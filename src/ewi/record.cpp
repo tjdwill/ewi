@@ -13,9 +13,12 @@
 #include <Eigen/Eigen>
 
 // Helper Functions
-constexpr inline int floored_avg(int a, int b)
+namespace
 {
-    return (a+b)/2;
+    constexpr inline int floored_avg(int a, int b)
+    {
+        return (a+b)/2;
+    }
 }
 namespace ewi
 {

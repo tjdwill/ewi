@@ -1,11 +1,11 @@
-/// employee_record.hpp 
+// employee_record.hpp 
 /// Meant to represent a given employee's workload history throughout their tenure at a
 /// given company.
 #ifndef INCLUDED_EWI_EMPLOYEE_RECORD
 #define INCLUDED_EWI_EMPLOYEE_RECORD
 
 #ifndef INCLUDED_EWI_RECORD
-#include "record.hpp"
+#include <ewi/record.hpp>
 #endif 
 
 #ifndef INCLUDED_EWI_BASIC_ID
@@ -42,7 +42,11 @@ namespace ewi
 {
     using JobID = BasicID;
     using EmployeeID = BasicID;
-
+    struct Employee 
+    {
+        EmployeeID id;
+        std::string name;
+    };
     /// A structure binding the technical-based entries with the personal (emotional
     /// component) entries. Together, the records semantically form a unit representing an
     /// employee's workload record for a given job.
@@ -57,8 +61,8 @@ namespace ewi
     class EmployeeRecord
     {
         public:
-            EmployeeRecord(EmployeeID id)
-                : d_id{ id } {}
+            EmployeeRecord(Employee emp)
+                : d_employee{ emp } {}
 
 
             /// Adds a new job to the data set. Returns `std::nullopt` if the job is
@@ -71,10 +75,10 @@ namespace ewi
             /// Returns a mutable reference to tbe given work record.
             /// Throws exception if the job isn't present.
             auto get_mut(JobID job) -> WIRecord&;
-            /// Return an iterator over the current jobs in the record
-            auto jobs();
+            /// Return an iterator over the current job IDs in the record
+            auto jobs() const;
         private:
-            EmployeeID d_id;
+            Employee d_employee;
             std::map<JobID, WIRecord> d_data {};
     };
     /// Loads record from file based on provided employee ID.  In theory, the application

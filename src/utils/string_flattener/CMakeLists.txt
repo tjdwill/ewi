@@ -1,0 +1,4 @@
+add_library(string_flattener string_flattener.cpp)
+add_executable(test_string_flattener string_flattener.t.cpp)
+target_link_libraries(test_string_flattener PRIVATE string_flattener)
+add_test(NAME string_flattener.t COMMAND test_string_flattener)
