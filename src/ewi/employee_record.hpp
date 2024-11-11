@@ -12,6 +12,12 @@
 #include <ewi/basic_id.hpp>
 #endif
 
+
+#ifndef INCLUDED_STD_CHRONO
+#include <chrono>
+#define INCLUDED_STD_CHRONO
+#endif
+
 #ifndef INCLUDED_STD_EXPECTED
 #include <expected>
 #define INCLUDED_STD_EXPECTED
@@ -27,6 +33,11 @@
 #define INCLUDED_STD_OPTIONAL
 #endif
 
+#ifndef INCLUDED_STD_SSTREAM
+#include <sstream>
+#define INCLUDED_STD_SSTREAM
+#endif
+
 #ifndef INCLUDED_STD_STRING
 #include <string>
 #define INCLUDED_STD_STRING
@@ -36,12 +47,6 @@
 #include <vector>
 #define INCLUDED_STD_VECTOR
 #endif
-
-
-// Forward Declarations
-class ifstream;
-class ofstream;
-class year_month_day;
 
 namespace ewi
 {
@@ -69,17 +74,22 @@ namespace ewi
             EmployeeRecord(Employee emp)
                 : d_employee{ emp } {}
 
+            // MANIPULATORS
 
-            /// Adds a new job to the data set. Returns `std::nullopt` if the job is
+            /// Adds a new job to the data set. Returns `false` and does no operation if the job is
             /// already present.
-            auto add(JobID job, WIRecord const& wi_rec) -> std::optional<void>;
+            auto add(JobID job, WIRecord const& wi_rec) -> bool;
+            /// Returns a mutable reference to tbe given work record.
+            /// Throws exception if the job isn't present.
+            auto get_mut(JobID job) -> WIRecord&;
+
+            // ACCESSORS
+
             /// Retrieves a specific job's record. Due to how `optional`, `expected`, and
             /// `variant` work, this method instead throws an exception if the key doesn't
             /// exist.
             auto get(JobID job) const -> WIRecord const&;
-            /// Returns a mutable reference to tbe given work record.
-            /// Throws exception if the job isn't present.
-            auto get_mut(JobID job) -> WIRecord&;
+
             /// Return an iterator over the current job IDs in the record
             auto jobs() const;
         private:
@@ -118,19 +128,25 @@ namespace ewi
         /// The functions will, however, propagate any unexpected I/O errors.
  
         /// Parses the Employee from the file.
-        static auto parse_employee(ifstream& ifs) -> Employee;
+        static auto parse_employee(std::istringstream& iss) -> Employee;
         /// Parses a JobID from the current line.
-        static auto parse_job(ifstream& ifs) -> JobID;
+        static auto parse_job(std::istringstream& iss) -> JobID;
         /// Parses the RecordType
-        static auto parse_recordtype(ifstream& ifs) -> RecordType;
+        static auto parse_recordtype(std::istringstream& iss) -> RecordType;
         /// Parses the Entry date
-        static auto parse_date(ifstream& ifs) -> year_month_day;
+        static auto parse_date(std::istringstream& iss) -> std::chrono::year_month_day;
+        /// Parses the Entry Notes If something goes awry, throws a
+        /// cpperrors::TypedException<std::string> containing the information
+        /// parsed up to that point.
+        static auto parse_notes(std::istringstream& iss) -> std::string;
         /// Parses the Entry metrics
-        static auto parse_metrics(ifstream& ifs) -> std::vector<double>;
-        /// Parses the Entry Notes
-        static auto parse_notes(ifstream& ifs) -> std::string;
+        /// This is the last operation performed on a given Entry line due to
+        /// the parsing method.  Assumes reasonable inputs.  This function does
+        /// not check for Inf or NaN, as metrics should be validated when an
+        /// Entry is created.
+        static auto parse_metrics(std::istringstream& iss) -> std::vector<double>;
         /// Seeks next non-whitespace character.
-        static void seek_nonws(ifstream& ifs);
+        static void seek_nonws(std::istringstream& iss);
         // EXPORT Functions
 
         /// Write an employee record to file in a format that is parsable by `load_record`.

@@ -21,8 +21,10 @@ namespace ewi
 
             /// Get the unambiguous ID
             inline auto formal() const noexcept -> std::string const& { return d_formal; }
+            auto operator<=>(BasicID const& rhs) const = default;
         private:
             std::string d_formal;
     };
+    
 } // namespace ewi
 #endif // INCLUDED_EWI_BASIC_ID
