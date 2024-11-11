@@ -27,7 +27,7 @@ namespace utils
                 : d_vec{container} 
             {
                 if (container.empty())
-                    throw err::Exception("Cannot pad an empty vector.");
+                    throw cpperrors::Exception("Cannot pad an empty vector.");
             }
             
            inline auto size() const -> int { return ((int)d_vec.size()) + 2; }

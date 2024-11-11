@@ -19,7 +19,6 @@ namespace utils {
 
         /// The character used for newline replacement. 
         static constexpr auto SUBTITUTION_STR {'\u0001'};
-
         static constexpr auto NEWLINE {'\n'};
         /// Given a potentially multi-line string `str`, this function replaces each
         /// newline symbol `\n` with a substitution character. The substitution character

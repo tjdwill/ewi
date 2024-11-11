@@ -22,7 +22,7 @@ namespace
 }
 namespace ewi
 {
-    using err::Exception;
+    using cpperrors::Exception;
 
     using std::ostream;
     ostream& operator<< (ostream& os, IndexRange const& rng)

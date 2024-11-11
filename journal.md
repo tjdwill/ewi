@@ -10,6 +10,96 @@
 
 ## Journal
 
+### 10 November 2024
+
+The goal for the `EmployeeRecord` parser is two-fold:
+
+- Write an `EmployeeRecord` to file.
+- Load `EmployeeRecord` from file.
+
+To make the `EmployeeRecord` parser, I assume the following:
+
+1. All functions must take either an `ifstream` or an `ofstream`.
+2. Parsing functions each being with the payload on a non-whitespace character.
+3. Any error will ultimately result in a `cpperrors::Exception`.
+
+Performance Note:
+
+Initially, I was going to structure the program such that I could simply append a line to
+the employee rec file when a new Entry was created, which would be faster than overwriting
+the entire file with a new export. However, I don't actually have any data that proves the
+latter method would be slow. Therefore, I'm going to use the slower approach since it's
+easier, but I'm making a note here in case I need to make a change. Basically, the parsing
+function will have a per-entry focus instead of a `WIRecord` focus.
+
+So, to be clear, the program will do a complete export of the `EmployeeRecord` every time a
+write operation occurs.
+
+**Update**:
+
+I wrote a test to benchmark the performance for writing the entire `EmployeeRecord`. The
+program takes in the number of lines to write to a file and subsequently writes a long
+*lorem ipsum* string. I ran the test using multiple `N` values to simulate potential load.
+Each `n` value is run five times using a `bash` script. Not sure if this is the "official" way
+to test, but it serves as a good baseline benchmark. 
+
+`n` cases:
+
+- 1: Simulates the case in which we only append a single `Entry` to the file instead
+  writing the entire `EmployeeRecord`
+- 3650: Number of entries when recording two entries a day for five years. This is what I assume to be more
+  "realistic" in terms of load.
+- 36500: Recording two entries a day for 50 years. This is the upper extreme.
+
+I'm testing using my Chromebook 14b-na0001nr with an AMD Athlon Silver 3050C with Radeon Graphics CPU.
+
+| `n`   | Avg. Real Time (s) | Std. Deviation (s) |
+| ---   | ------------------ | ------------------ |
+| 1     |       0.0032       |      0.000748      |
+| 3650  |       0.008        |      0.0021        |
+| 36500 |       0.0198       |      0.00527       |
+
+As we can see, even in the extreme case, the write operation should be on the order of
+milliseconds, making the overwrite method a viable option.
+
+#### Benchmark Script
+
+```c++
+// write_speed.t.cpp
+// This test is meant to serve as a performance test for writing files.
+#include <fstream>
+#include <iostream>
+#include <string>
+
+int main(int argc, char* argv[])
+{
+    if (argc != 2) {
+        std::cerr << "Usage: ./write_speed <Num of lines to write>" << "\n";
+        std::exit(1);
+    }
+    int num_lines { std::stoi(argv[1]) };
+    // Generator: https://www.lipsum.com/
+    std::string const long_line {"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel commodo lorem, eget commodo ligula. Pellentesque euismod interdum lorem, sit amet dapibus urna scelerisque quis."};
+
+    std::ofstream ofs { "/tmp/write_speed.txt" };
+    if (!ofs.is_open()) {
+        std::cerr << "Could not open file." << "\n";
+        std::exit(1);
+    }
+    for (int i {}; i < num_lines; ++i)
+        ofs << long_line << "\n";
+
+    if (!ofs) {
+        std::cerr << "Write Error." << "\n";
+        std::exit(1);
+    }
+}
+```
+
+```bash
+$ for i in {0..4}; do time ./write_speed <n>; done
+```
+
 ### 8 November 2024
 
 Still working on the `EmployeeRecord` transmission mechanism. I now know how to compress a

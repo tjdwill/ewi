@@ -25,7 +25,7 @@ void test_padded()
         bad_padded[0]; // just to silence the unused
                        // variable warning.
     }
-    catch (err::Exception const& e)
+    catch (cpperrors::Exception const& e)
     {
         std::cout << e.what() << "\n";    
     }

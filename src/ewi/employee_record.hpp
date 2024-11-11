@@ -38,6 +38,11 @@
 #endif
 
 
+// Forward Declarations
+class ifstream;
+class ofstream;
+class year_month_day;
+
 namespace ewi
 {
     using JobID = BasicID;
@@ -81,13 +86,56 @@ namespace ewi
             Employee d_employee;
             std::map<JobID, WIRecord> d_data {};
     };
-    /// Loads record from file based on provided employee ID.  In theory, the application
-    /// stores employee data in a designated directory. Each employee is represented by
-    /// their formal ID value (`formalIDVal.txt`).  Throws an exception if the file doesn't
-    /// exist or if the file is ill-formatted.
-    auto import_record(EmployeeID user) -> EmployeeRecord;
-    /// Write an employee record to file in a format that is parsable by `load_record`.
-    /// Throws exception on I/O error.
-    void export_record(EmployeeRecord const& rec, std::string const& path);
+
+    /// A type that facilitates importing and exporting `EmployeeRecord` objects.
+    struct EmployeeRecordIOUtils 
+    {
+        /// A type to help determine which Record a parsed
+        /// Entry should be placed while forming a WIRecord.
+        enum class RecordType { Technical, Personal };
+
+        /// Symbols that describe which Record an Entry comes from.
+        static constexpr char TECHINCAL_TKN {'T'};
+        static constexpr char PERSONAL_TKN {'P'};
+        /// The delimiter used to signal the start of an Entry's notes.
+        /// There must be NUM_NOTES_DELIMS consecutive delimiter characters to signal start
+        /// and end of the notes string.
+        static constexpr char NOTES_DELIM {'\''}; 
+        static constexpr int NUM_NOTES_DELIMS { 3 };  
+        /// The delimiter to separate EmployeeID from informal name.
+        static constexpr char ID_DELIM {':'};
+        
+        // IMPORT Functions
+
+        /// Loads record from file based on provided employee ID.  In theory, the application
+        /// stores employee data in a designated directory. Each employee is represented by
+        /// their formal ID value (`formalIDVal.txt`).  Throws an exception if the file doesn't
+        /// exist or if the file is ill-formatted.
+        static auto import_record(std::string const& path) -> EmployeeRecord;
+
+        /// All parsing functions assume a well-formed file. This is reasonable, however,
+        /// because all parsable EmployeeRecord files are to be created with this struct. 
+        /// The functions will, however, propagate any unexpected I/O errors.
+ 
+        /// Parses the Employee from the file.
+        static auto parse_employee(ifstream& ifs) -> Employee;
+        /// Parses a JobID from the current line.
+        static auto parse_job(ifstream& ifs) -> JobID;
+        /// Parses the RecordType
+        static auto parse_recordtype(ifstream& ifs) -> RecordType;
+        /// Parses the Entry date
+        static auto parse_date(ifstream& ifs) -> year_month_day;
+        /// Parses the Entry metrics
+        static auto parse_metrics(ifstream& ifs) -> std::vector<double>;
+        /// Parses the Entry Notes
+        static auto parse_notes(ifstream& ifs) -> std::string;
+        /// Seeks next non-whitespace character.
+        static void seek_nonws(ifstream& ifs);
+        // EXPORT Functions
+
+        /// Write an employee record to file in a format that is parsable by `load_record`.
+        /// Throws exception on I/O error.
+        static void export_record(EmployeeRecord const& rec, std::string const& path);
+    };
 }  // namespace ewi
 #endif // INCLUDED_EWI_EMPLOYEE_RECORD
