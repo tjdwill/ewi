@@ -14,7 +14,7 @@
 
 Implemented parsing functions for `EmployeeRecordIOUtils`. Now, I need to write the
 `EmployeeRecordIOUtils::import_record()` and `EmployeeRecordIOUtils::export_record()`
-static methods.
+static methods. I also need to test `EmployeeRecordIOUtils::parse_employee()`.
 
 Also, I changed the format for the EmployeeRecord file. Now, the metrics come last for any
 given line.
@@ -119,9 +119,16 @@ written correctly, throwing an error if not.
 
 ### 6 November 2024
 
-I've been working on a lot without writing about it. So far, I've done a few refactors, segmenting the codebase into components and modules. Currently, I'm working on the file types and parsing operations described earlier in the journal. I need to review C++ I/O as well as basic string manipulation. 
+I've been working on a lot without writing about it. So far, I've done a few refactors,
+segmenting the codebase into components and modules. Currently, I'm working on the file
+types and parsing operations described earlier in the journal. I need to review C++ I/O as
+well as basic string manipulation. 
 
-One goal for exporting `EmployeeRecord`s to file is to represent each `Entry` within a line (one per line). To do so, I need to find a way to convert a potentially multi-line string to a one-line string. I'm thinking of replacing all `\n` with `\1` since no one uses that ASCII sequence. I wanted to use `\0`, but that makes the compiler think the string has terminated (word to C-style strings).
+One goal for exporting `EmployeeRecord`s to file is to represent each `Entry` within a line
+(one per line). To do so, I need to find a way to convert a potentially multi-line string
+to a one-line string. I'm thinking of replacing all `\n` with `\1` since no one uses that
+ASCII sequence. I wanted to use `\0`, but that makes the compiler think the string has
+terminated (word to C-style strings).
 
 ### 1 November 2024
 

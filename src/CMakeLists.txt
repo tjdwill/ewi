@@ -23,6 +23,7 @@ target_link_libraries(metricstats PUBLIC Eigen3::Eigen)
 
 
 add_library(entry ewi/entry.cpp)
+target_link_libraries(entry PUBLIC string_flattener)
 
 add_executable(entry_test ewi/entry.t.cpp)
 add_dependencies(entry_test entry)

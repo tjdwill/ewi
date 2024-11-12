@@ -4,7 +4,9 @@
 #include <cassert>
 #include <chrono>
 #include <cpperrors>
+#include <fstream>
 #include <ios>  // std::{skipws, noskipws}
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <ranges> // std::views::keys
@@ -47,6 +49,162 @@ namespace ewi
 
 
     // EmployeeRecordIOUtils
+    void EmployeeRecordIOUtils::export_record(EmployeeRecord const& rec, std::string const& path)
+    {
+        std::ofstream file {path, std::ios::trunc};
+        if (!file.is_open())
+            throw Exception("Could not open file.");
+
+        // Write Employee information
+        auto person = rec.who();
+        file << person.id.formal() << ": " << person.name << "\n";
+        file << "\n";
+        // Write out all Job WIRecords
+        // TODO: Find a cleaner way to write this. I don't
+        // like the repeating code.
+        for (auto const& job: rec.jobs())
+        {
+            auto wirec = rec.get(job);
+            // write both techincal and personal records to
+            // file
+            auto const& tech_record = wirec.technical;
+            char rec_type {EmployeeRecordIOUtils::TECHINCAL_TKN};
+            for (auto const& e: tech_record)
+            {
+                file << job.formal() << ' ' << rec_type << ' '
+                    << std::format("{:%F} ", e.date());
+                // Export Notes
+                for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
+                    file << EmployeeRecordIOUtils::NOTES_DELIM;
+                file << StringFlattener::flatten(e.notes());
+                for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
+                    file << EmployeeRecordIOUtils::NOTES_DELIM;
+                file << ' ';
+                // Export metrics
+                for (auto val: e.metrics())
+                    file << val << ' ';
+
+                file << "\n";
+            }
+
+            // write personal records
+            auto const& personal_record = wirec.personal;
+            rec_type = EmployeeRecordIOUtils::PERSONAL_TKN;
+            for (auto const& e: personal_record)
+            {
+                file << job.formal() << ' ' << rec_type << ' '
+                    << std::format("{:%F} ", e.date());
+                // Export Notes
+                for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
+                    file << EmployeeRecordIOUtils::NOTES_DELIM;
+                file << StringFlattener::flatten(e.notes());
+                for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
+                    file << EmployeeRecordIOUtils::NOTES_DELIM;
+                file << ' ';
+                // Export metrics
+                for (auto val: e.metrics())
+                    file << val << ' ';
+
+                file << "\n";
+            }
+        }
+        file.flush();
+    }
+    auto EmployeeRecordIOUtils::import_record(std::string const& path) -> EmployeeRecord
+    {
+        std::ifstream file {path};
+        if (!file.is_open()) {
+            std::ostringstream err_msg {};
+            err_msg << "Could not open file: " << std::quoted(path);
+            throw Exception(err_msg.str());
+        }
+
+        std::string line {};
+        std::getline(file, line); 
+        std::istringstream iss {line};
+        
+        // get Employee
+        auto employee = parse_employee(iss);
+        if (!iss && !iss.eof())
+            throw Exception("Read Error.");
+        EmployeeRecord output {employee};
+
+        // skip blank line(s)
+        char check {};
+        while (true)
+        {
+            iss.clear();
+            std::getline(file, line);
+            iss.str(line);
+            std::cout << line << "\n";
+            // Chew up whitespace by attempting to read a
+            // character. This works due to the default
+            // behavior of an istream to skip whitespace.
+            if (iss >> check) {
+                iss.putback(check);
+                break;
+            }
+        }
+        // Set up loop by parsing the first Entry
+        JobID prev = parse_job(iss);
+        auto type = parse_recordtype(iss);
+        auto date = parse_date(iss);
+        auto notes = parse_notes(iss);
+        auto metrics = parse_metrics(iss);
+        Entry entry { date, notes, metrics };
+        assert(iss.eof());
+        WIRecord curr_rec {};
+        switch (type) {
+            case RecordType::Technical:
+                assert(curr_rec.technical.add_entry(entry));
+                break;
+            case RecordType::Personal:
+                assert(curr_rec.personal.add_entry(entry));
+                break;
+            default:
+                throw Exception("Unidentified RecordType.");
+        }
+
+        // Parse remaining Entries
+        while (std::getline(file, line) && !line.empty())
+        {
+            iss.clear();
+            iss.str(line);
+            std::cout << "LINE: " << line << "\n";
+
+            auto job = parse_job(iss);
+
+            if (job != prev)
+            {
+                // add WIRecord to EmployeeRecord
+                assert(output.add(prev, curr_rec));
+                curr_rec = WIRecord {};
+                prev = job;
+            }
+
+            auto type = parse_recordtype(iss);
+            auto date = parse_date(iss);
+            auto notes = parse_notes(iss);
+            auto metrics = parse_metrics(iss);
+            assert(iss.eof());
+            Entry e (date, notes, metrics);
+            
+            switch (type) {
+                case RecordType::Technical:
+                    assert(curr_rec.technical.add_entry(e));
+                    break;
+                case RecordType::Personal:
+                    assert(curr_rec.personal.add_entry(e));
+                    break;
+                default:
+                    throw Exception("Unidentified RecordType.");
+            }
+        }
+        // add the final record
+        assert(output.add(prev, curr_rec));
+
+        return output;
+    }
     auto EmployeeRecordIOUtils::parse_employee(std::istringstream &iss) -> Employee
     {
         EmployeeRecordIOUtils::seek_nonws(iss);
@@ -55,6 +213,8 @@ namespace ewi
         
         std::getline(iss, id_str, EmployeeRecordIOUtils::ID_DELIM);
         EmployeeID id { id_str };
+
+        EmployeeRecordIOUtils::seek_nonws(iss);
         std::getline(iss, name);
         assert(iss.eof());
         return Employee{ id, name };
@@ -70,7 +230,7 @@ namespace ewi
     }
     auto EmployeeRecordIOUtils::parse_recordtype(std::istringstream &iss) -> RecordType
     {
-        EmployeeRecordIOUtils::seek_nonws(iss);
+        //EmployeeRecordIOUtils::seek_nonws(iss);
         char type {};
         iss >> type;
         RecordType ret;
@@ -80,6 +240,7 @@ namespace ewi
                 break;
             case EmployeeRecordIOUtils::PERSONAL_TKN:
                 ret = RecordType::Personal;
+                break;
             default:
                 throw Exception("Incorrect RecordType value.");
         }

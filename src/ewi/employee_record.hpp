@@ -56,6 +56,8 @@ namespace ewi
     {
         EmployeeID id;
         std::string name;
+        auto operator<=>(Employee const& rhs) const = default;
+        auto operator==(Employee const& rhs) const { return id == rhs.id; } 
     };
     /// A structure binding the technical-based entries with the personal (emotional
     /// component) entries. Together, the records semantically form a unit representing an
@@ -64,6 +66,8 @@ namespace ewi
     {
         Record technical {};
         Record personal {};
+
+        auto operator<=>(WIRecord const& rhs) const  = default;
     };
 
     /// The class representing the employee's workload history for all job roles undertaken
@@ -92,6 +96,9 @@ namespace ewi
 
             /// Return an iterator over the current job IDs in the record
             auto jobs() const;
+            /// Return a refernce to the Employee
+            auto inline who() const -> Employee const& { return d_employee; }
+            auto operator<=>(EmployeeRecord const& rhs) const  = default;
         private:
             Employee d_employee;
             std::map<JobID, WIRecord> d_data {};
@@ -128,8 +135,13 @@ namespace ewi
         /// The functions will, however, propagate any unexpected I/O errors.
  
         /// Parses the Employee from the file.
+        /// Assumes the EmployeeID does not contain a
+        /// colon character `:`. The results will be
+        /// malformed if this does not hold.
         static auto parse_employee(std::istringstream& iss) -> Employee;
         /// Parses a JobID from the current line.
+        /// JobID must be contiguous (contains no
+        /// whitespace).
         static auto parse_job(std::istringstream& iss) -> JobID;
         /// Parses the RecordType
         static auto parse_recordtype(std::istringstream& iss) -> RecordType;

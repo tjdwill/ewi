@@ -4,6 +4,8 @@
 #include <iostream>
 #include <format>
 
+#include <utils/string_flattener/string_flattener.hpp>
+
 namespace ewi {
     
     auto operator== (Entry const& a, Entry const& b) noexcept -> bool
@@ -22,14 +24,11 @@ namespace ewi {
 
     auto operator<< (std::ostream& os, Entry const& e) noexcept -> std::ostream&
     {
-        os << "{\n";
-        os << "\tDate: " << std::format("{:%F}", e.date()) << '\n'
-           << "\tMetrics: [ ";
+        os << std::format("{:%F}", e.date()) << ' '
+           << utils::StringFlattener::flatten(e.notes()) << ' ';
     
         for (double d: e.metrics())
             os << d << " "; 
-        os << ']'<< '\n'
-           << "\tNotes:\n\t\"" << e.notes() << "\"\n}";
 
         return os;
     }

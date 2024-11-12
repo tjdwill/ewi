@@ -120,7 +120,7 @@ namespace ewi
             /// Replace exisiting entry with a new one.
             /// If no such entry exists, it's added.
             void update_entry(Entry const& entry);
-
+            auto operator<=> (Record const& rhs) const = default;
         private:
             std::vector<Entry> d_entries {};
     };
