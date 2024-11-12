@@ -10,6 +10,15 @@
 
 ## Journal
 
+### 11 November 2024
+
+Implemented parsing functions for `EmployeeRecordIOUtils`. Now, I need to write the
+`EmployeeRecordIOUtils::import_record()` and `EmployeeRecordIOUtils::export_record()`
+static methods.
+
+Also, I changed the format for the EmployeeRecord file. Now, the metrics come last for any
+given line.
+
 ### 10 November 2024
 
 The goal for the `EmployeeRecord` parser is two-fold:
@@ -458,15 +467,23 @@ Here are some questions that have come up as I work this project.
 - [ ] How do I compare two Eigen objects?
 - [ ] When do I specify `noexcept`?
 - [x] East-style const?
-- [ ] `class` vs. `struct`: semantic meanings?
+- [x] `class` vs. `struct`: semantic meanings?
 - [x] How are boolean comparision operator overloads implemented? What is the spaceship operator `<=>`?
 - [ ] Difference: Initialization vs. Assignment
 
 ### Software Design/Project Management
 
 - [ ] Is it worth it to test *every* class (ex. a class of basic getters and setters?)
-- [ ] When do I need to create a physical dependency vs. use a forward declaration?
-- [ ] Is it wise to use a namespace-wide enum class that serves as an error type?
+- [x] When do I need to create a physical dependency vs. use a forward declaration?
+    - This was a misguided question because even if you *do* only use a forward
+      declaration, the physical dependency on the component defining that entity still
+      exists. What I really wanted to know was when to add an include directive in a
+      component header. That's answered in Section 6.3.7 of *Large Scale C++ Software
+      Design* (Lakos 1996).
+- [x] Is it wise to use a namespace-wide enum class that serves as an error type?
+    - No, because you create a project-wide dependecy. What happens when you need to modify
+      the enum, either by renaming something or removing? You'd have to change *every*
+      single use across the project.
 
 ---
 
@@ -476,7 +493,7 @@ Here are some questions that have come up as I work this project.
 
 - [ ] `ewi/metricstats.cpp`
 - [ ] `ewi/employee_record.cpp`
-- [ ]
+- [ ] `ewi/survey.cpp`
 - [ ]
 
 ### Learning

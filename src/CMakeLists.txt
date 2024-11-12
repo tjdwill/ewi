@@ -13,6 +13,11 @@ add_subdirectory(utils/string_flattener)
 
 # EWI
 
+add_library(basic_id ewi/basic_id.cpp)
+add_executable(test_basic_id ewi/basic_id.t.cpp)
+target_link_libraries(test_basic_id PRIVATE basic_id)
+add_test(NAME basic_id.t COMMAND test_basic_id)
+
 add_library(metricstats ewi/metricstats.cpp)
 target_link_libraries(metricstats PUBLIC Eigen3::Eigen)
 
@@ -41,5 +46,13 @@ add_test(NAME record.t COMMAND record_test)
 
 
 add_library(employee_record ewi/employee_record.cpp)
-target_link_libraries(employee_record PUBLIC record)
+target_link_libraries(employee_record PUBLIC 
+    basic_id
+    record
+    string_flattener
+    ${exception}
+)
 
+add_executable(test_employee_record ewi/employee_record.t.cpp)
+target_link_libraries(test_employee_record PRIVATE employee_record ${exception})
+add_test(NAME employee_record.t COMMAND test_employee_record)

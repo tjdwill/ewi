@@ -97,12 +97,12 @@ namespace ewi
             std::map<JobID, WIRecord> d_data {};
     };
 
+    /// A type to help determine which Record a parsed
+    /// Entry should be placed while forming a WIRecord.
+    enum class RecordType { Technical, Personal };
     /// A type that facilitates importing and exporting `EmployeeRecord` objects.
     struct EmployeeRecordIOUtils 
     {
-        /// A type to help determine which Record a parsed
-        /// Entry should be placed while forming a WIRecord.
-        enum class RecordType { Technical, Personal };
 
         /// Symbols that describe which Record an Entry comes from.
         static constexpr char TECHINCAL_TKN {'T'};
