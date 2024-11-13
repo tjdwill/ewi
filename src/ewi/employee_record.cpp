@@ -69,10 +69,10 @@ namespace ewi
             // Write both techincal and personal records to file
             using type_pair = std::pair<Record const&, char>;
             for (
-                    auto [record, rec_type]: {
-                    type_pair(wirec.technical, EmployeeRecordIOUtils::TECHINCAL_TKN), 
-                    type_pair(wirec.personal, EmployeeRecordIOUtils::PERSONAL_TKN) 
-                    }) 
+                auto [record, rec_type]: 
+                { type_pair(wirec.technical, EmployeeRecordIOUtils::TECHINCAL_TKN), 
+                  type_pair(wirec.personal, EmployeeRecordIOUtils::PERSONAL_TKN) }
+            ) 
             {
                 for (auto const& e: record)
                 {
