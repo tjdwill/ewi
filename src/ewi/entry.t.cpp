@@ -8,7 +8,6 @@
 #include <chrono>
 #include <string>
 #include <vector>
-#include <iostream>
 
 using Date = std::chrono::year_month_day;
 using ewi::Entry;

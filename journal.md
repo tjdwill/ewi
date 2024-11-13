@@ -10,6 +10,21 @@
 
 ## Journal
 
+### 12 November 2024
+
+I've completed the parsing functions and wrote a test to validate them. In the process, I
+had to implement comparison operators for `Record`, `WIRecord`, `EmployeeRecord`, and
+`Employee`. This was to make testing easier by allowing equality comparisons between the
+original and parsed `EmployeeRecord` objects.
+
+I also wound up needing to add a dependency upon `StringFlattener` to `Entry` for printing
+the notes on a single line. Also, I found a useful way to write a for loop with
+heterogeneous-but-related values using `std::pair` (and the more general `std::tuple`).
+
+We can write structured bindings in `for` loops. Check
+`EmployeeRecordIOUtils::export_record`'s implementation in `employee_record.cpp`.
+
+
 ### 11 November 2024
 
 Implemented parsing functions for `EmployeeRecordIOUtils`. Now, I need to write the
@@ -499,9 +514,9 @@ Here are some questions that have come up as I work this project.
 ### Implementation
 
 - [ ] `ewi/metricstats.cpp`
-- [ ] `ewi/employee_record.cpp`
+- [x] `ewi/employee_record.cpp`
 - [ ] `ewi/survey.cpp`
-- [ ]
+- [ ] Front-end (UI, front-end/back-end coordinator)
 
 ### Learning
 

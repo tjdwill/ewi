@@ -5,7 +5,6 @@
 #include <cassert>
 #include <chrono>
 #include <cpperrors>
-#include <filesystem>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -18,6 +17,7 @@ using namespace std::chrono_literals;
 using utils::StringFlattener;
 
 
+/// A convenience function for generating records for this test.
 auto gen_record() -> Record 
 {
     Entry a0 (
@@ -40,9 +40,10 @@ auto gen_record() -> Record
     return Record(entries);
 }
 
+/// Tests EmployeeRecord parsing by exporting and then reimporting an instance.
 void test_ER_IO()
 {
-    // I have to build a record manually :(
+    // Manually construct an EmployeeRecord
     Employee person { EmployeeID { "55555"}, "Bugs Bunny" };
     JobID merry_melodies { "1940" };
     JobID looney_tunes { "1970" };
@@ -54,14 +55,15 @@ void test_ER_IO()
     emp_rec.add(merry_melodies, mm);
     emp_rec.add(looney_tunes, lt);
 
+    // Try parsing functions
     std::string file_name {"bugs_record_00.txt"};
     EmployeeRecordIOUtils::export_record(emp_rec, file_name);
 
     auto parsed_rec = EmployeeRecordIOUtils::import_record(file_name);
-    EmployeeRecordIOUtils::export_record(parsed_rec, "bugs_bunny_01.txt");
     assert(parsed_rec == emp_rec);
 }
 
+/// Tests `EmployeeRecordIOUtils::parse_employee()`
 void test_employee_parse()
 {
     std::stringstream ss {};
@@ -72,6 +74,12 @@ void test_employee_parse()
     assert(test.name == "Terrance Williams");
 }
 
+/// Tests all `EmployeeRecordIOUtils` functions that work to parse an Entry:
+/// - `parse_job`
+/// - `parse_recordtype`
+/// - `parse_date`
+/// - `parse_notes`
+/// - `parse_metrics`
 void test_entry_parse()
 {
     std::stringstream ss {};

@@ -59,7 +59,7 @@ namespace ewi
         auto operator<=>(Employee const& rhs) const = default;
         auto operator==(Employee const& rhs) const { return id == rhs.id; } 
     };
-    /// A structure binding the technical-based entries with the personal (emotional
+    /// Work Index Record: A structure binding the technical-based entries with the personal (emotional
     /// component) entries. Together, the records semantically form a unit representing an
     /// employee's workload record for a given job.
     struct WIRecord

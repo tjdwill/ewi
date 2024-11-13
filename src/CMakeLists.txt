@@ -25,10 +25,10 @@ target_link_libraries(metricstats PUBLIC Eigen3::Eigen)
 add_library(entry ewi/entry.cpp)
 target_link_libraries(entry PUBLIC string_flattener)
 
-add_executable(entry_test ewi/entry.t.cpp)
-add_dependencies(entry_test entry)
-target_link_libraries(entry_test PRIVATE entry)
-add_test(NAME entry.t COMMAND entry_test)
+add_executable(test_entry ewi/entry.t.cpp)
+add_dependencies(test_entry entry)
+target_link_libraries(test_entry PRIVATE entry)
+add_test(NAME entry.t COMMAND test_entry)
 
 
 add_library(record ewi/record.cpp) 
@@ -40,10 +40,10 @@ target_link_libraries(record
     padded_view
 )
 
-add_executable(record_test ewi/record.t.cpp)
-add_dependencies(record_test record)
-target_link_libraries(record_test PRIVATE record)
-add_test(NAME record.t COMMAND record_test)
+add_executable(test_record ewi/record.t.cpp)
+add_dependencies(test_record record)
+target_link_libraries(test_record PRIVATE record)
+add_test(NAME record.t COMMAND test_record)
 
 
 add_library(employee_record ewi/employee_record.cpp)

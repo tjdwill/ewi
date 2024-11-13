@@ -24,11 +24,7 @@
 
 namespace ewi
 {
-    /// A given data entry. Can be for either 
-    /// job-related surveys or emotion surveys.
-    /// TODO: Should I require metrics to be non-empty?
-    /// Or, should I allow it and enforce non-empty entries
-    /// up the design chain (like when declaring a job profile?)
+    /// A given data entry. Can be for either job-related surveys or personal surveys.
     struct Entry 
     {
         public:
@@ -52,6 +48,8 @@ namespace ewi
     };
     inline auto operator<=> (Entry const& a, Entry const& b) noexcept { return a.date() <=> b.date(); }  // The dates are equal.
     auto operator==(Entry const& a, Entry const& b) noexcept -> bool;  // all data members are equal.
+    /// Output the Entry on a single line. To do so, the notes string is flattened,
+    /// replacing newline characters with a symbol that doesn't break the line.
     auto operator<<(std::ostream& os, Entry const& e) noexcept -> std::ostream&;
 } // namespace ewi
 #endif // INCLUDED_EWI_ENTRY
