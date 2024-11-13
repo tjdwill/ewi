@@ -2,6 +2,7 @@
 #ifndef INCLUDED_EWI_RECORD
 #define INCLUDED_EWI_RECORD
 
+#include <iterator>
 #ifndef INCLUDE_EWI_ENTRY
 #include "entry.hpp"
 #endif
@@ -77,50 +78,52 @@ namespace ewi
     /// A collection of entries
     class Record 
     {
-        /*  TODO Space
-         *
-         *  - Should I implement an iterator for this
-         *  class? It would help further encapsulate the
-         *  vector data member.
-         */
         public:
             enum class Err { InconsistentMetrics, DisorderedDate, };
             // CONSTRUCTORS
             Record() = default;
             Record(std::vector<Entry>& entries);
 
-            // ACCESSORS and METHODS
+            // ACCESSORS
 
-            /// Inserts an entry to the record.
-            auto add_entry(Entry const& entry) noexcept -> std::expected<void, Err>;
             /// Gets the direct index for a single entry, if it exists.
-            auto find_entry(std::chrono::year_month_day date) const noexcept -> std::optional<int>;
-            /// Get the index range of entries within a given date range.
-            auto find_entries(DateRange range) const noexcept -> std::optional<IndexRange>;
+            auto find(std::chrono::year_month_day date) const noexcept -> std::optional<int>;
+            /// Get the index range of entries within a given date range. Returns
+            /// singularity IndexRange (ex. {0, 0}) if a singularity DateRange is passed in
+            /// and an Entry exists for that date.
+            auto find(DateRange range) const noexcept -> std::optional<IndexRange>;
             /// Retrieves a copy of the entry with the given date if it exists.
-            auto get_entry(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>;
-
+            auto get(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>;
+          
             /// Iterators
+            /// TODO: Read about std::ranges to understand how it works and what type I
+            /// should return. Currently, I'm deriving the type via `auto` (and
+            /// inlining the function) because I don't
+            /// know how to define the signature myself.
             inline auto begin() const noexcept { return d_entries.begin(); }
             inline auto end() const noexcept { return d_entries.end(); }
-            //TODO: Adjust this to have better
-            //encapsulation.
-            inline auto entries() const noexcept -> std::vector<Entry> const& { return d_entries; }
-            inline auto is_empty() const noexcept -> bool { return size() == 0;}
-            inline auto operator[] (int idx) const -> Entry const& { return d_entries[idx]; }
-            /// Query how many metrics are recorded per entry.
-            inline auto metric_dim() const noexcept -> int { return is_empty() ? 0 : d_entries[0].metrics().size(); }
-            /// Query number of entries in the record.
-            inline auto size() const noexcept -> int { return (int) d_entries.size(); }
 
+            /// Query if Record has no entries.
+            auto is_empty() const noexcept -> bool; 
+            /// Query how many metrics are recorded per entry.
+            auto metric_dim() const noexcept -> int;
+            /// Query number of entries in the record.
+            auto size() const noexcept -> int;
+            /// Access the Record via numeric index. This is useful if one wants to access
+            /// the entries found via the `find` function.
+            auto operator[] (int idx) const -> Entry const&; 
+            auto operator<=> (Record const& rhs) const = default;
+
+            // MANIPULATORS
+
+            /// Inserts an entry to the record.
+            auto add(Entry const& entry) noexcept -> std::expected<void, Err>;
             /// Removes entry with specified date.
             /// If no such entry exists, do nothing.
-            void remove_entry(std::chrono::year_month_day date);
-
+            void remove(std::chrono::year_month_day date);
             /// Replace exisiting entry with a new one.
             /// If no such entry exists, it's added.
-            void update_entry(Entry const& entry);
-            auto operator<=> (Record const& rhs) const = default;
+            void update(Entry const& entry);
         private:
             std::vector<Entry> d_entries {};
     };

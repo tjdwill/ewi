@@ -37,7 +37,7 @@ namespace ewi
             os << ' ' << *rng.max << ']';
         return os;
     }
-
+/* Record */
     Record::Record (std::vector<Entry>& entries)
         : d_entries{ std::move(entries) }
     {
@@ -56,7 +56,15 @@ namespace ewi
         }
     }
 
-    auto Record::add_entry(Entry const& entry) noexcept -> std::expected<void, Err>
+    auto Record::is_empty() const noexcept -> bool { return size() == 0;}
+    
+    auto Record::metric_dim() const noexcept -> int { return is_empty() ? 0 : d_entries[0].metrics().size(); }
+    
+    auto Record::size() const noexcept -> int { return (int) d_entries.size(); }
+    
+    auto Record::operator[] (int idx) const -> Entry const& { return d_entries[idx]; }
+
+    auto Record::add(Entry const& entry) noexcept -> std::expected<void, Err>
     {
         if (!d_entries.empty())
         {
@@ -70,7 +78,7 @@ namespace ewi
         return {};
     }
 
-    auto Record::find_entry(std::chrono::year_month_day date) const noexcept -> std::optional<int>
+    auto Record::find(std::chrono::year_month_day date) const noexcept -> std::optional<int>
     {
         auto idx = std::distance(
                 d_entries.begin(), 
@@ -83,14 +91,14 @@ namespace ewi
             return idx;
     }
 
-    auto Record::find_entries(DateRange date_range) const noexcept -> std::optional<IndexRange>
+    auto Record::find(DateRange date_range) const noexcept -> std::optional<IndexRange>
     {
         // Empty case
         if (d_entries.empty())
             return std::nullopt;
         // Handle single date case
         if (date_range.min && date_range.max && (*date_range.min == *date_range.max)) {
-            auto idx = find_entry(*date_range.min);
+            auto idx = find(*date_range.min);
             if (!idx) 
                 return std::nullopt;
             else
@@ -239,26 +247,26 @@ namespace ewi
             return IndexRange{ index_min, index_max };
     }
 
-    auto Record::get_entry(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>
+    auto Record::get(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>
     {
-        auto idx = find_entry(date);
+        auto idx = find(date);
         if (!idx)
             return std::nullopt;
         else 
             return d_entries[*idx]; // this copies!
     }
 
-    void Record::remove_entry(std::chrono::year_month_day date)
+    void Record::remove(std::chrono::year_month_day date)
     {
-       auto idx = find_entry(date);
+       auto idx = find(date);
         if (idx)
            d_entries.erase(d_entries.begin() + *idx);
     }
 
-    void Record::update_entry(Entry const& entry)
+    void Record::update(Entry const& entry)
     {
         auto date = entry.date();
-        auto idx = find_entry(date);
+        auto idx = find(date);
         if(idx) {
             d_entries[*idx] = std::move(entry);
         } else {  
@@ -274,7 +282,7 @@ namespace ewi
     auto operator<<(std::ostream& os, Record const& rec) noexcept -> std::ostream&
     {
         os << "[";
-        for (Entry const& e: rec.entries())
+        for (Entry const& e: rec)
             os  << e << ",\n";
         os << "]";
         return os;

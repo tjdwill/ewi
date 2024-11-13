@@ -70,6 +70,10 @@ namespace ewi
         auto operator<=>(WIRecord const& rhs) const  = default;
     };
 
+    /// A type to help determine which Record a parsed
+    /// Entry should be placed while forming a WIRecord.
+    enum class RecordType { Technical, Personal };
+
     /// The class representing the employee's workload history for all job roles undertaken
     /// at a given company.
     class EmployeeRecord
@@ -82,7 +86,9 @@ namespace ewi
 
             /// Adds a new job to the data set. Returns `false` and does no operation if the job is
             /// already present.
-            auto add(JobID job, WIRecord const& wi_rec) -> bool;
+            auto add(JobID job, WIRecord const& wi_rec) -> std::expected<void, std::string>;
+            /// Adds an Entry to the structure
+            auto add(JobID job, RecordType type, Entry const& entry) -> std::expected<void, std::string>;
             /// Returns a mutable reference to tbe given work record.
             /// Throws exception if the job isn't present.
             auto get_mut(JobID job) -> WIRecord&;
@@ -97,16 +103,13 @@ namespace ewi
             /// Return an iterator over the current job IDs in the record
             auto jobs() const;
             /// Return a refernce to the Employee
-            auto inline who() const -> Employee const& { return d_employee; }
+            inline auto who() const -> Employee const& { return d_employee; }
             auto operator<=>(EmployeeRecord const& rhs) const  = default;
         private:
             Employee d_employee;
             std::map<JobID, WIRecord> d_data {};
     };
 
-    /// A type to help determine which Record a parsed
-    /// Entry should be placed while forming a WIRecord.
-    enum class RecordType { Technical, Personal };
     /// A type that facilitates importing and exporting `EmployeeRecord` objects.
     struct EmployeeRecordIOUtils 
     {
@@ -159,6 +162,7 @@ namespace ewi
         static auto parse_metrics(std::istringstream& iss) -> std::vector<double>;
         /// Seeks next non-whitespace character.
         static void seek_nonws(std::istringstream& iss);
+
         // EXPORT Functions
 
         /// Write an employee record to file in a format that is parsable by `load_record`.

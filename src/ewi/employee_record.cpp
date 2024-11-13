@@ -4,6 +4,7 @@
 #include <cassert>
 #include <chrono>
 #include <cpperrors>
+#include <expected>
 #include <format>
 #include <fstream>
 #include <ios>       // std::{skipws, noskipws}
@@ -24,10 +25,70 @@ using utils::StringFlattener;
 namespace ewi
 {
     /* EmployeeRecord */
-    auto EmployeeRecord::add(JobID job, WIRecord const& wi_rec) -> bool 
+    auto EmployeeRecord::add(JobID job, WIRecord const& wi_rec) -> std::expected<void, std::string> 
     { 
-        return d_data.insert({job, wi_rec}).second; 
+        if (!d_data.insert({job, wi_rec}).second)
+            return std::unexpected("Job already exists for this record.");
+        else 
+            return {};
     }
+
+    auto EmployeeRecord::add(JobID job, RecordType type, Entry const& e) -> std::expected<void, std::string>
+    {
+        if (auto test = d_data.find(job); test != d_data.end())
+        {
+            // Try to add the Entry to the specified Record.
+            std::string msg {};
+            auto& wi_rec = get_mut(job);
+            std::expected<void, Record::Err> result;
+            switch (type) 
+            {
+                case RecordType::Technical:
+                    result = wi_rec.technical.add(e);
+                    break;
+                case RecordType::Personal:
+                    result = wi_rec.personal.add(e);
+                    break;
+                default:
+                    throw Exception("Unknown RecordType");
+            }
+            // check results of the operation.
+            if (!result)
+            {
+                switch (result.error())
+                {
+                    case Record::Err::DisorderedDate:
+                        msg = "Attempted to add Entry earlier than last Entry date.";
+                        break;
+                    case Record::Err::InconsistentMetrics:
+                        msg = "Entry metrics are incompatible in quantity with those already present in the record.";
+                        break;
+                    default:
+                        throw Exception("Unknown Record::Err type.");
+                }
+            }
+            
+            if (!msg.empty())
+                return std::unexpected(msg);
+            else 
+                return {};
+        }
+        // Key doesn't exist, so create record.
+        WIRecord wi_rec {};
+        switch (type)
+        {
+            case RecordType::Technical:
+                assert(wi_rec.technical.add(e));  // should never fail.
+                break;
+            case RecordType::Personal:
+                assert(wi_rec.personal.add(e));
+                break;
+            default:
+                throw Exception("Unknown RecordType");
+        }
+        return add(job, wi_rec);
+    }
+    
     auto EmployeeRecord::get_mut(JobID job) -> WIRecord& 
     {
         try {
@@ -36,6 +97,7 @@ namespace ewi
             throw Exception(e.what());
         }
     }
+    
     auto EmployeeRecord::get(JobID job) const -> WIRecord const& 
     {
         try {
@@ -44,6 +106,7 @@ namespace ewi
             throw Exception(e.what());
         }
     }
+    
     auto EmployeeRecord::jobs() const 
     {
         return std::views::keys(d_data);
@@ -129,28 +192,9 @@ namespace ewi
                 break;
             }
         }
-        // Set up loop by parsing the first Entry
-        JobID prev = parse_job(iss);
-        auto type = parse_recordtype(iss);
-        auto date = parse_date(iss);
-        auto notes = parse_notes(iss);
-        auto metrics = parse_metrics(iss);
-        Entry entry { date, notes, metrics };
-        assert(iss.eof());
-        WIRecord curr_rec {};
-        switch (type) {
-            case RecordType::Technical:
-                assert(curr_rec.technical.add_entry(entry));
-                break;
-            case RecordType::Personal:
-                assert(curr_rec.personal.add_entry(entry));
-                break;
-            default:
-                throw Exception("Unidentified RecordType.");
-        }
-
-        // Parse remaining Entries
-        // Condition: (successful read + non-blank line)
+        // Parse Entries
+        //
+        // Condition: non-blank line
         //
         // Since we are parsing files that were created with
         // `EmployeeRecordIOUtils::export_record()`, we can make some assumptions (and
@@ -159,41 +203,25 @@ namespace ewi
         // JobID associated with it. The sole exception to this statement is the trailing
         // blank line at the end of the file. We don't wnat to deal with that, so we check
         // if the line's non-empty.
-        while (std::getline(file, line) && !line.empty())
+        while (!line.empty())
         {
-            iss.clear();
+            iss.clear(); // clears eof status flag
             iss.str(line);
 
             auto job = parse_job(iss);
-
-            if (job != prev)
-            {
-                // Add WIRecord to EmployeeRecord
-                assert(output.add(prev, curr_rec));
-                curr_rec = WIRecord {};
-                prev = job;
-            }
-
             auto type = parse_recordtype(iss);
             auto date = parse_date(iss);
             auto notes = parse_notes(iss);
             auto metrics = parse_metrics(iss);
-            assert(iss.eof());
+            assert(iss.eof());  // eof in this case means "end of line"
             Entry e (date, notes, metrics);
-            
-            switch (type) {
-                case RecordType::Technical:
-                    assert(curr_rec.technical.add_entry(e));
-                    break;
-                case RecordType::Personal:
-                    assert(curr_rec.personal.add_entry(e));
-                    break;
-                default:
-                    throw Exception("Unidentified RecordType.");
-            }
+            assert(output.add(job, type, e)); 
+
+            // Get next line; This is done at the end of the iteration due to the way the
+            // function is structured. Not doing so would skip the first entry since we
+            // loaded that line previously when skipping the blank line(s).
+            std::getline(file, line);
         }
-        // add the final record
-        assert(output.add(prev, curr_rec));
 
         return output;
     }
