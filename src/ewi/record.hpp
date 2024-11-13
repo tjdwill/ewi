@@ -2,7 +2,6 @@
 #ifndef INCLUDED_EWI_RECORD
 #define INCLUDED_EWI_RECORD
 
-#include <iterator>
 #ifndef INCLUDE_EWI_ENTRY
 #include "entry.hpp"
 #endif

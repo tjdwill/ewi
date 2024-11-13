@@ -10,6 +10,23 @@
 
 ## Journal
 
+### 13 November 2024
+
+I'd planned to move on to a different portion of the program, but I ended up reworking the
+API to the record types. Some of the functions are cleaner now, and I think the return
+types are more uniform. In the process, I had a fun lesson in the use of `auto` and
+implicit copies due to neglecting to specify `auto &`. That was fun to debug.
+
+Soon, I want to figure out the survey component as well as the metrics. The latter will be
+especially important because I will need to decide how to present workload data. In my
+mind, I want a `Matplotlib`-style figure, but I'm not sure how to 1.) make that with C++ and
+2.) display it via Qt. Qt has a data visualization module, but that's for Commerical and
+GPLv3 licenses, so no, especially for the former.
+
+I think I may look into the `matplot++` library. It's MIT licensed, and the plots I've seen
+are beautiful.
+
+
 ### 12 November 2024
 
 I've completed the parsing functions and wrote a test to validate them. In the process, I
