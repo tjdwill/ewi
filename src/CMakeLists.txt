@@ -57,3 +57,14 @@ target_link_libraries(employee_record PUBLIC
 add_executable(test_employee_record ewi/employee_record.t.cpp)
 target_link_libraries(test_employee_record PRIVATE employee_record ${exception})
 add_test(NAME employee_record.t COMMAND test_employee_record)
+
+
+add_library(survey ewi/survey.cpp)
+target_link_libraries(survey PUBLIC ${exception} basic_id)
+
+add_executable(test_survey ewi/survey.t.cpp)
+target_link_libraries(test_survey PRIVATE survey)
+add_test(
+    NAME survey.t 
+    COMMAND test_survey "${CMAKE_SOURCE_DIR}/test_resources/ewi/eeo_profile.txt"
+)

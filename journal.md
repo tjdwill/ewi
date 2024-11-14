@@ -10,6 +10,20 @@
 
 ## Journal
 
+### 14 November 2024
+
+Working job profile parser. This parser loads any type of file (may change that in the
+future), but does expect a certain format:
+
+```
+JobCode: Informal Job Title
+
+<Question 1 is asked here> | <Metric Estimate>  # don't include the angled brackets
+```
+
+As an aside, why doesn't C++ have the useful string algorithm functions like `trim` or
+`split`?
+
 ### 13 November 2024
 
 I'd planned to move on to a different portion of the program, but I ended up reworking the
@@ -23,7 +37,7 @@ mind, I want a `Matplotlib`-style figure, but I'm not sure how to 1.) make that 
 2.) display it via Qt. Qt has a data visualization module, but that's for Commerical and
 GPLv3 licenses, so no, especially for the former.
 
-I think I may look into the `matplot++` library. It's MIT licensed, and the plots I've seen
+I think I may look into the [`matplot++` library](https://github.com/alandefreitas/matplotplusplus). It's MIT licensed, and the plots I've seen
 are beautiful.
 
 
