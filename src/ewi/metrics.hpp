@@ -1,7 +1,7 @@
-// metricstats.hpp
+// metrics.hpp
 // Defines a data aggregate for statistical data.
-#ifndef INCLUDED_EWI_METRICSTATS
-#define INCLUDED_EWI_METRICSTATS
+#ifndef INCLUDED_EWI_METRICS
+#define INCLUDED_EWI_METRICS
 
 #ifndef INCLUDED_STD_CASSERT
 #include <cassert>
@@ -20,7 +20,7 @@
 
 namespace ewi
 {
-    
+    /*
     /// Stores statistics for a given set of metrics.
     class MetricStats
     {
@@ -51,7 +51,12 @@ namespace ewi
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> d_metrics;  // mean value for each metric
             std::optional<Eigen::RowVectorXd> d_deviations {};
     };
-
+*/
+    class Record; 
+    
+    /// Produce a matrix of metric data. Each row corresponds
+    /// to a given entry.
+    auto get_record_metrics(Record const& r) -> std::optional<Eigen::MatrixXd>;
 }
 #endif // INCLUDED_EWI_METRICSTATS
 

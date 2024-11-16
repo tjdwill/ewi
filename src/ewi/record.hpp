@@ -31,11 +31,6 @@
 #define INCLUDED_STD_VECTOR
 #endif
 
-#ifndef INCLUDED_EIGEN
-#include <Eigen/Eigen>
-#define INCLUDED_EIGEN
-#endif
-
 namespace ewi
 {
     /// A general type that represents an ordered,
@@ -127,9 +122,6 @@ namespace ewi
             std::vector<Entry> d_entries {};
     };
     auto operator<<(std::ostream& os, Record const& rec) noexcept -> std::ostream&;
-    /// Produce a matrix of metric data. Each row corresponds
-    /// to a given entry.
-    auto get_record_metrics(Record const& r) -> Eigen::MatrixXd;
 
 } // namespace ewi
 #endif // INCLUDED_EWI_RECORD

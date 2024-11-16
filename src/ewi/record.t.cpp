@@ -4,7 +4,6 @@
 // record.t.cpp
 #include <cassert>
 #include <chrono>
-#include <iostream>
 #include <vector>
 
 // imports 
@@ -127,20 +126,9 @@ void test_record_ops()
     //std::cout << "\nAfter Deletion\n" << rec << "\n";
 }
 
-void test_record_metrics()
-{
-    Record r = gen_record((int) dates.size());
-    auto metrics = ewi::get_record_metrics(r);
-    assert((int) metrics.rows() == r.size());
-    assert((int) metrics.cols() == r.metric_dim());
-    std::cout << "The Record:\n" << r << "\n";
-    std::cout << "Record metrics:\n" << metrics << "\n";
-}
-
 
 int main()
 {
     test_find_entries();
     test_record_ops();
-    test_record_metrics();
 }

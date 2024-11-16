@@ -10,6 +10,32 @@
 
 ## Journal
 
+### 15 November 2024
+
+Let's regroup a bit. So far, I've been working on the infrastructure of my application,
+creating data structures and functions that store user data, job data, and information
+regarding metrics. I've created a file format to store the entire record of a given
+employee and wrote functions to import from and export to said format. Finally, I created
+a format that allows users to define the metrics associated with their given job. 
+
+Now, I want to focus on actually calculating reportable data. I've [already
+laid](#22-october-2024) some
+[groundwork in this area](#21-october-2024), so let's continue along that track.
+
+The entire point of this tool is that workload is difficult to measure because the metrics
+vary depending on the industry and the roles *within* said industry. My idea is to have a
+definable set of metrics for a job and over time collect numerous survey responses that
+will ultimately enable comparing a given employee's workload (using technical and
+personal/emotional metrics) to a global average. 
+
+This proposed method makes sense to me due to how we implicitly evaluate workload. We tend
+to compare our current or recent quantity of work with what we perceive as "normal".
+Therefore, having a relative comparison seems more of a faithful representation of
+workload than attempting to create a singular formula. However, I acknowledge that I may
+change my mind as I continue this project and improve my understanding of mathematics and
+model creation.
+
+
 ### 14 November 2024
 
 Working job profile parser. This parser loads any type of file (may change that in the
@@ -526,7 +552,9 @@ Here are some questions that have come up as I work this project.
 
 ### Software Design/Project Management
 
-- [ ] Is it worth it to test *every* class (ex. a class of basic getters and setters?)
+- [x] Is it worth it to test *every* class (ex. a class of basic getters and setters?)
+    - Personally, I don't think so, unless the getter or setter is more involved than
+      simply returning a reference to some inner object.
 - [x] When do I need to create a physical dependency vs. use a forward declaration?
     - This was a misguided question because even if you *do* only use a forward
       declaration, the physical dependency on the component defining that entity still
@@ -546,7 +574,7 @@ Here are some questions that have come up as I work this project.
 
 - [ ] `ewi/metricstats.cpp`
 - [x] `ewi/employee_record.cpp`
-- [ ] `ewi/survey.cpp`
+- [x] `ewi/survey.cpp`
 - [ ] Front-end (UI, front-end/back-end coordinator)
 
 ### Learning
