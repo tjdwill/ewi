@@ -32,16 +32,16 @@ target_link_libraries(ewi_views_app PRIVATE
 )
 
 
-add_library(ewi_ui ewi_ui.cpp)
-target_link_libraries(ewi_ui PUBLIC
+add_library(ewiUI ewiUI.cpp)
+target_link_libraries(ewiUI PUBLIC
     form
     ewi_views
     Qt::Core
     Qt::Widgets
 )
-add_executable(ewiApp ewi_ui.t.cpp)
-target_link_libraries(ewiApp PRIVATE
-    ewi_ui
+add_executable(ewiUIApp ewiUI.t.cpp)
+target_link_libraries(ewiUIApp PRIVATE
+    ewiUI
     ewi_views
     profileLoader
 )

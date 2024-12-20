@@ -1,40 +1,40 @@
-#include "ewi_ui.hpp"
+#include "ewiUI.hpp"
 #include <QApplication>
 #include <QtWidgets>
 #include <qlist.h>
 
 
-using ewiQt::EWIApp;
+using ewiQt::EWIUi;
 
 QStringList PERSONAL_Qs { "How many personal questions?" };
 QStringList TECHNICAL_Qs { "What technical questions?" };
-class EWIAppTestController : public QWidget
+class EWIUiTestController : public QWidget
 {
     Q_OBJECT;
 public:
-    EWIAppTestController(QWidget* parent=nullptr);
+    EWIUiTestController(QWidget* parent=nullptr);
     void show();
 private:
     void createConnections();
 
-    EWIApp* d_app {};
+    EWIUi* d_app {};
     QTextStream qout { stdout };
 };
 
 int main(int argc, char* argv[])
 {
     QApplication app { argc, argv };
-    EWIAppTestController myApp {};
+    EWIUiTestController myApp {};
     myApp.show();
 
     return app.exec();
 }
 
 //-----------------------------TestController Implementation-----------------------------------
-EWIAppTestController::EWIAppTestController(QWidget* parent)
+EWIUiTestController::EWIUiTestController(QWidget* parent)
     : QWidget(parent)
 {
-    d_app = new EWIApp(this);
+    d_app = new EWIUi(this);
     createConnections();
 
     emit d_app->setPersonalQuestionsSig(PERSONAL_Qs);
@@ -42,11 +42,11 @@ EWIAppTestController::EWIAppTestController(QWidget* parent)
     emit d_app->profileLoadedSig();
 }
 
-void EWIAppTestController::createConnections()
+void EWIUiTestController::createConnections()
 {
-    connect(d_app, &EWIApp::appShutdownSig, this, &EWIAppTestController::close);
+    connect(d_app, &EWIUi::appShutdownSig, this, &EWIUiTestController::close);
     connect(
-            d_app, &EWIApp::createUserSig,
+            d_app, &EWIUi::createUserSig,
             this, [this](QStringList data)
             {
                 qout << "Create User w/ Data: [";
@@ -57,7 +57,7 @@ void EWIAppTestController::createConnections()
             }
     );
     connect(
-            d_app, &EWIApp::exportUserSig,
+            d_app, &EWIUi::exportUserSig,
             this, [this](QString pathName)
             {
                 this->qout << "Exporting User Data to: " << pathName << "\n";            
@@ -65,7 +65,7 @@ void EWIAppTestController::createConnections()
             }
     );
     connect(
-            d_app, &EWIApp::loadJobSig,
+            d_app, &EWIUi::loadJobSig,
             this, [this](QString jobDefPath)
             {
                 this->qout << "Load Job Definition from: " << jobDefPath << "\n";
@@ -73,14 +73,14 @@ void EWIAppTestController::createConnections()
             }
     );
     connect(
-            d_app, &EWIApp::loadUserSig,
+            d_app, &EWIUi::loadUserSig,
             this, [this](QString userID)
             {
                 this->qout << "Load User w/ ID: " << userID << "\n";
                 this->qout.flush();
             }
     );
-    connect(d_app, &EWIApp::surveyResponsesSig,
+    connect(d_app, &EWIUi::surveyResponsesSig,
             this, [this](QStringList responses)
             {
                 this->qout << "Responses\n---------" << "\n";
@@ -90,7 +90,7 @@ void EWIAppTestController::createConnections()
             }
     );
     connect(
-            d_app, &EWIApp::getMetricsSig,
+            d_app, &EWIUi::getMetricsSig,
             this, [this](QVector<QDate> dates)
             {
                 this->qout << "Get metrics from: " << dates[0].toString()
@@ -100,8 +100,8 @@ void EWIAppTestController::createConnections()
     );
 }
 
-void EWIAppTestController::show()
+void EWIUiTestController::show()
 {
     d_app->show();
 }
-#include "ewi_ui.t.moc"
+#include "ewiUI.t.moc"

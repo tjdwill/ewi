@@ -1,19 +1,15 @@
-// ewi_ui.cpp
-#include "ewi_ui.hpp"
+// ewiUI.cpp
+#include "ewiUI.hpp"
 #include "views.hpp"
 #include "profileLoader.hpp"
 #include "userOpsWidget.hpp"
 #include "form.hpp"
 #include <QtWidgets>
-#include <qdatetimeedit.h>
-#include <qdialogbuttonbox.h>
-#include <qformlayout.h>
-#include <qvector.h>
 
 
 namespace ewiQt
 {
-    EWIApp::EWIApp(QWidget* parent)
+    EWIUi::EWIUi(QWidget* parent)
         : QMainWindow(parent)
     {
         setup();
@@ -24,7 +20,7 @@ namespace ewiQt
         setWindowTitle(tr("EWI App"));
     }
 
-    void EWIApp::createActions()
+    void EWIUi::createActions()
     {
         aboutAction = new QAction(tr("About")); 
 
@@ -49,7 +45,7 @@ namespace ewiQt
         serveTechnicalSurveyAction = new QAction(tr("Create Technical Entry"));
     }
 
-    void EWIApp::createConnections()
+    void EWIUi::createConnections()
     {
         // Connect Actions
         /// Connect buttons to action triggers
@@ -86,27 +82,27 @@ namespace ewiQt
         );
         
         /// connect action triggers to slots
-        connect(aboutAction, &QAction::triggered, this, &EWIApp::about); 
+        connect(aboutAction, &QAction::triggered, this, &EWIUi::about); 
         connect(aboutQtAction, &QAction::triggered, qApp, &QApplication::aboutQt); 
-        connect(createUserAction, &QAction::triggered, this, &EWIApp::fireCreateUser);
-        connect(exitAction, &QAction::triggered, this, &EWIApp::fireAppShutdown);
-        connect(exportUserAction, &QAction::triggered, this, &EWIApp::fireExportUser);
-        connect(getMetricsAction, &QAction::triggered, this, &EWIApp::fireGetMetrics);
-        connect(helpAction, &QAction::triggered, this, &EWIApp::viewHelp);
-        connect(loadJobAction, &QAction::triggered, this, &EWIApp::fireLoadJob);
-        connect(loadUserAction, &QAction::triggered, this, &EWIApp::fireLoadUser);
+        connect(createUserAction, &QAction::triggered, this, &EWIUi::fireCreateUser);
+        connect(exitAction, &QAction::triggered, this, &EWIUi::fireAppShutdown);
+        connect(exportUserAction, &QAction::triggered, this, &EWIUi::fireExportUser);
+        connect(getMetricsAction, &QAction::triggered, this, &EWIUi::fireGetMetrics);
+        connect(helpAction, &QAction::triggered, this, &EWIUi::viewHelp);
+        connect(loadJobAction, &QAction::triggered, this, &EWIUi::fireLoadJob);
+        connect(loadUserAction, &QAction::triggered, this, &EWIUi::fireLoadUser);
         // TODO: Revise survey action sequence.
         connect(servePersonalSurveyAction, &QAction::triggered, this, [this]() { serveSurvey(PERSONAL_SURVEY); });
         connect(serveTechnicalSurveyAction, &QAction::triggered, this, [this]() { serveSurvey(TECHNICAL_SURVEY); });
 
         // Communication signsls
-        connect(this, &EWIApp::profileLoadedSig, this, &EWIApp::profileLoaded);
-        connect(this, &EWIApp::setPersonalQuestionsSig, this, &EWIApp::setPersonalQuestions);
-        connect(this, &EWIApp::jobChangedSig, this, &EWIApp::jobChanged);
+        connect(this, &EWIUi::profileLoadedSig, this, &EWIUi::profileLoaded);
+        connect(this, &EWIUi::setPersonalQuestionsSig, this, &EWIUi::setPersonalQuestions);
+        connect(this, &EWIUi::jobChangedSig, this, &EWIUi::jobChanged);
 
     }
 
-    void EWIApp::setup()
+    void EWIUi::setup()
     {
         d_appPages = new Views(this);
 
@@ -115,7 +111,7 @@ namespace ewiQt
         d_appPages->d_userOpsButton->setEnabled(false);
     }
 
-    void EWIApp::validatePtrs()
+    void EWIUi::validatePtrs()
     {
         Q_ASSERT(d_appPages);
         Q_ASSERT(aboutAction);
@@ -131,13 +127,13 @@ namespace ewiQt
         Q_ASSERT(serveTechnicalSurveyAction);
     }
 
-    auto EWIApp::getUserData(bool createMode) -> QStringList
+    auto EWIUi::getUserData(bool createMode) -> QStringList
     {
        return d_appPages->getProfileLoader()
            ->loadUser(createMode); 
     }
 
-    auto EWIApp::getDateRange() -> QVector<QDate>
+    auto EWIUi::getDateRange() -> QVector<QDate>
     {
         QVector<QDate> dates {};
         // Create a simple dialog to gather date information
@@ -187,19 +183,19 @@ namespace ewiQt
 
     // SLOTS
    
-    void EWIApp::enableUserOpsButton()
+    void EWIUi::enableUserOpsButton()
     {
         d_appPages->d_userOpsButton->setEnabled(true);
     }
     // TODO: Remove this QTextStream when implementing real functions.
     QTextStream qerr { stderr };
-    void EWIApp::about()
+    void EWIUi::about()
     {
         qerr << "About\n";
         qerr.flush();
     }
 
-    void EWIApp::serveSurvey(QString const& surveyType)
+    void EWIUi::serveSurvey(QString const& surveyType)
     {
         qerr << "serveSurvey: " << qPrintable(surveyType) << "\n";
         qerr.flush();
@@ -209,26 +205,26 @@ namespace ewiQt
             survey = { new Form(d_personalQuestions, tr("Personal Survey"), this) };
         else
             survey = { new Form(d_technicalQuestions, tr("Technical Survey"), this) };
-        connect(survey, &Form::responsesReady, this, &EWIApp::surveyResponsesSig);
+        connect(survey, &Form::responsesReady, this, &EWIUi::surveyResponsesSig);
 
         survey->exec();
         survey->deleteLater();
     }
 
-    void EWIApp::viewHelp()
+    void EWIUi::viewHelp()
     {
         qerr << "Help Page" << "\n";
         qerr.flush();
     }
 
-    void EWIApp::fireAppShutdown()
+    void EWIUi::fireAppShutdown()
     {
         // TODO: Who should be responsible for the save action?
         // This object or its controller?
         emit appShutdownSig();
     }
 
-    void EWIApp::fireCreateUser()
+    void EWIUi::fireCreateUser()
     {
         qerr << "Create User Fired\n";
         qerr.flush();
@@ -238,7 +234,7 @@ namespace ewiQt
             emit createUserSig(userData);
     }
 
-    void EWIApp::fireExportUser()
+    void EWIUi::fireExportUser()
     {
         qerr << "Export User" << "\n";
         qerr.flush();
@@ -253,43 +249,43 @@ namespace ewiQt
             emit exportUserSig(pathName);
     }
 
-    void EWIApp::fireGetMetrics()
+    void EWIUi::fireGetMetrics()
     {
         auto dates = getDateRange();
         if (!dates.empty())
             emit getMetricsSig(dates);
     }
 
-    void EWIApp::fireLoadJob()
+    void EWIUi::fireLoadJob()
     {
         QString jobDefPath { d_appPages->getProfileLoader()->loadJob() };
         if (!jobDefPath.isEmpty())
             emit loadJobSig(jobDefPath);
     }
 
-    void EWIApp::fireLoadUser() 
+    void EWIUi::fireLoadUser() 
     {
         QStringList userData = getUserData();
         if (!userData.isEmpty())
             emit loadUserSig(userData[0]);
     }
 
-    void EWIApp::jobChanged(QStringList job_questions)
+    void EWIUi::jobChanged(QStringList job_questions)
     {
         d_technicalQuestions = job_questions;
     }
 
-    void EWIApp::profileLoaded()
+    void EWIUi::profileLoaded()
     {
         enableUserOpsButton();
     }
 
-    void EWIApp::sendSurveyResponses(QStringList responses)
+    void EWIUi::sendSurveyResponses(QStringList responses)
     {
         emit surveyResponsesSig(responses);
     }
 
-    void EWIApp::setPersonalQuestions(QStringList questions)
+    void EWIUi::setPersonalQuestions(QStringList questions)
     {
         d_personalQuestions = questions;
     }

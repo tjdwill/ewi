@@ -1,7 +1,7 @@
-// ewi_app.hpp
+// ewiUI.hpp
 // This file defines the interface to the Graphical User Interface for the EWI project.
-#ifndef INCLUDED_EWI_APP
-#define INCLUDED_EWI_APP
+#ifndef INCLUDED_EWIQT_EWIUI
+#define INCLUDED_EWIQT_EWIUI
 
 #ifndef INCLUDED_QT_QMAINWINDOW
 #include <QMainWindow>
@@ -21,13 +21,13 @@ namespace ewiQt
 {
 
 class Views;
-class EWIApp : public QMainWindow
+class EWIUi : public QMainWindow
 {
     Q_OBJECT;
 
 public:
     /// In practice, it would make sense to make the controller this object's parent.
-    EWIApp(QWidget* parent=nullptr);
+    EWIUi(QWidget* parent=nullptr);
     
 public slots:
 
@@ -123,4 +123,4 @@ private:
     QAction* serveTechnicalSurveyAction {};
 };
 } // namespace ewiQt
-#endif // INCLUDED_EWI_APP
+#endif // INCLUDED_EWIUI
