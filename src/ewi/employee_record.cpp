@@ -128,12 +128,12 @@ namespace ewi
         // Write out all Job WIRecords
         for (auto const& job: rec.jobs())
         {
-            auto const& wirec = rec.get(job);
+            auto const& wi_rec = rec.get(job);
             // Write both techincal and personal records to file
             using type_pair = std::pair<Record const&, char>;
             for (auto [record, rec_type]: {
-                    type_pair(wirec.technical, EmployeeRecordIOUtils::TECHINCAL_TKN),
-                    type_pair(wirec.personal, EmployeeRecordIOUtils::PERSONAL_TKN) 
+                    type_pair(wi_rec.technical, EmployeeRecordIOUtils::TECHINCAL_TKN),
+                    type_pair(wi_rec.personal, EmployeeRecordIOUtils::PERSONAL_TKN) 
                  }
             ) 
             {
@@ -187,10 +187,8 @@ namespace ewi
             iss.str(line);
             // Chew up whitespace by attempting to read a character. This works due to the
             // default behavior of an istream to skip whitespace.
-            if (iss >> check) {
-                iss.putback(check);
+            if (iss >> check)
                 break;
-            }
         }
         // Parse Entries
         //

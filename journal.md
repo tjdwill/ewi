@@ -10,6 +10,27 @@
 
 ## Journal
 
+### 20 December 2024
+
+So, it's been a month since my last entry, but I've been actively working. Specifically,
+I've been experimenting with Qt for designing the application, and I've learned a
+tremendous amount in the process. Now, I have a barebones application that works in
+testing. The goal at this stage is to implement the controller for the app in order to
+connect the interface logic with the business logic.
+
+Doing this will require the controller to have the means to convert between Qt data
+structures and STL data structures. This will likely incur a performance penalty, but
+that shouldn't be too intense for the purpose of this application; it's not a high-speed
+trading app, for instance.
+
+Also, I still need to implement the metrics plotting by integrating `matplot++`. 
+
+I am, however, concerned about the building and release of the application. Quite frankly,
+I don't know what I'm doing. I don't know how to package dependencies nor do I know how to
+make the build more flexible. For instance, currently the top-level `CMakeLists.txt` file
+has to include the installation path to `Eigen` in order to build properly. I don't know
+why that's the case.
+
 ### 15 November 2024
 
 Let's regroup a bit. So far, I've been working on the infrastructure of my application,
