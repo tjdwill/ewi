@@ -31,6 +31,35 @@ make the build more flexible. For instance, currently the top-level `CMakeLists.
 has to include the installation path to `Eigen` in order to build properly. I don't know
 why that's the case.
 
+#### Proposed Idea for Handling Divide by Zero
+
+Based on my proposed metric comparison method, this situation arises when the global mean
+for a given metric is zero. Ordinarily, floating point operations in which the denominator
+is zero results in `inf` (ex. `1.0/0`) or `nan` (`0./0.0`). However, for the purposes on
+this application, we actually want to extract information from the global average being
+zero. 
+
+For example, if heart surgeons have a global fatality average of 0, a given surgeon
+having a local average above that could be cause for (great) concern. In other words, I
+need a way to communicate a level of intensity based on the local average's distance from
+zero. This intensity should grow quickly the further away from zero the value is.
+
+I propose using an exponential function. The base is must lie between (1, 2) in order to
+get a correct "feel" in terms of growth. I've selected 1.5. The idea is to do the
+following:
+
+    When global average is 0:
+
+    EWI(x) = 
+    {
+        -(1.5^|x|), x<0
+
+          1.5^x,    x>=0
+    }
+
+This way, the calculate value is still 1 if the local and global values are equivalent, and
+we get rapid group as the local average trails away from 0.
+
 ### 15 November 2024
 
 Let's regroup a bit. So far, I've been working on the infrastructure of my application,
