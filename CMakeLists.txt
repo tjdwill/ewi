@@ -31,6 +31,7 @@ endif()
 ## Other dependencies
 find_package(cpptrace REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
+find_package(Matplot++ REQUIRED)
 #find_package(cpperrors)  # No .cmake file
 ## Workaround until I figure out how to make my errors
 ## library a single package.
