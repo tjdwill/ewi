@@ -110,10 +110,23 @@ void test_comparison_calc()
     auto compare = ewi::calculate_ewi(locals, zeros);
     std::cout << "Zero Check: " << compare.transpose() << "\n";
     assert(compare.isApprox(check));
+}
 
+void test_stl_conversion()
+{
+    Eigen::MatrixXd m 
+    {
+        {0, 1, 2},
+        {3, 4, 5},
+        {6, 7, 8},
+    };
 
- 
+    std::vector<double> check 
+    {
+        0, 1, 2, 3, 4, 5, 6, 7, 8
+    };
 
+    assert(ewi::to_std_vec(m) == check);
 }
 
 int main()

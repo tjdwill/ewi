@@ -76,6 +76,9 @@ namespace ewi
     ///     conversion does not affect the efficacy of the data; instead, it aids in
     ///     communicating the desired information.
     auto calculate_ewi(Eigen::VectorXd const& local_means, Eigen::VectorXd const& global_means) -> Eigen::VectorXd;
+
+    /// Convert to STL container
+    auto to_std_vec(Eigen::MatrixXd const& input) -> std::vector<double>;
 }
 #endif // INCLUDED_EWI_METRICSTATS
 

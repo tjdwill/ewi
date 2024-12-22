@@ -1,10 +1,12 @@
 // metrics.cpp
 #include "metrics.hpp"
 
+#include <Eigen/Core>
 #include <optional>
 #include <Eigen/Eigen>
 
 #include <ewi/record.hpp>
+#include <string>
 
 // #include <iostream>
 
@@ -88,6 +90,19 @@ namespace ewi
         Eigen::VectorXd ewi_vals { temp1.matrix() };
 
         return ewi_vals;
+    }
+
+    auto to_std_vec(Eigen::MatrixXd const& input) -> std::vector<double>
+    {
+        // https://stackoverflow.com/questions/26094379/typecasting-eigenvectorxd-to-stdvector
+        // https://stackoverflow.com/questions/39951553/is-it-possible-to-flatten-an-eigen-matrix-without-copying
+
+        std::vector<double> stl;
+        stl.reserve(input.size());
+        Eigen::VectorXd vec = Eigen::Map<const Eigen::VectorXd>(input.data(), input.size());
+        Eigen::VectorXd::Map(&stl[0], vec.size()) = vec;
+
+        return stl;
     }
 
 } // namespace ewi
