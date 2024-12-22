@@ -281,7 +281,7 @@ namespace ewi
 
     auto operator<<(std::ostream& os, Record const& rec) noexcept -> std::ostream&
     {
-        os << "[";
+        os << "[\n";
         for (Entry const& e: rec)
             os  << e << ",\n";
         os << "]";
