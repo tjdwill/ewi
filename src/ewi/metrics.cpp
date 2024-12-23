@@ -1,12 +1,12 @@
 // metrics.cpp
 #include "metrics.hpp"
 
-#include <Eigen/Core>
 #include <optional>
+//-
 #include <Eigen/Eigen>
-
+#include <matplot/matplot.h>
+//-
 #include <ewi/record.hpp>
-#include <string>
 
 // #include <iostream>
 
@@ -92,17 +92,47 @@ namespace ewi
         return ewi_vals;
     }
 
-    auto to_std_vec(Eigen::MatrixXd const& input) -> std::vector<double>
+    auto to_std_vec(Eigen::VectorXd const& input) -> std::vector<double>
     {
         // https://stackoverflow.com/questions/26094379/typecasting-eigenvectorxd-to-stdvector
         // https://stackoverflow.com/questions/39951553/is-it-possible-to-flatten-an-eigen-matrix-without-copying
 
-        std::vector<double> stl;
-        stl.reserve(input.size());
-        Eigen::VectorXd vec = Eigen::Map<const Eigen::VectorXd>(input.data(), input.size());
-        Eigen::VectorXd::Map(&stl[0], vec.size()) = vec;
+        std::vector<double> stl {};
+        stl.resize(input.size());
+        Eigen::VectorXd::Map(&stl[0], input.size()) = input;
 
         return stl;
+    }
+
+    auto plot_ewi(std::vector<double> const& ewi_vals, PlotCustomization const& opts) -> bool
+    {
+        namespace mpl = matplot;
+        
+        auto fig = mpl::figure(true);
+        auto ax = fig->current_axes();
+        // Customization
+        ax->grid(true);
+        if (opts.xlim.has_value())
+            ax->xlim(opts.xlim.value());
+        if (opts.ylim.has_value())
+            ax->ylim(opts.ylim.value());
+        ax->title(opts.title);
+        ax->legend({"Baseline", "EWI"});
+        ax->legend()
+            ->location(mpl::legend::general_alignment::bottomright);
+        ax->ylabel(opts.ylabel);
+        ax->xlabel(opts.xlabel);
+        
+        // Create the plot
+        ax->line(0, 1, ewi_vals.size(), 1);  // Create a baseline at y=1
+        ax->hold(true);                                                          
+        std::vector<double> x = mpl::linspace(1, ewi_vals.size(), ewi_vals.size());
+        ax->scatter(x, ewi_vals, opts.dot_size)
+            ->marker_color({ 1.f, 0.f, 0.f }) // Red
+            .marker_face(true);
+        
+        // Export plot
+        return fig->save(opts.filename);
     }
 
 } // namespace ewi

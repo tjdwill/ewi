@@ -1,5 +1,5 @@
 // metrics.hpp
-// Defines a data aggregate for statistical data.
+// Defines various functions for processing and presenting user metric data.
 #ifndef INCLUDED_EWI_METRICS
 #define INCLUDED_EWI_METRICS
 
@@ -13,6 +13,12 @@
 #define INCLUDED_STD_OPTIONAL
 #endif
 
+#ifndef INCLUDED_STD_STRING
+#include <string>
+#define INCLUDED_STD_STRING
+#endif
+
+
 #ifndef INCLUDED_EIGEN
 #include <Eigen/Eigen>
 #define INCLUDED_EIGEN
@@ -20,40 +26,7 @@
 
 namespace ewi
 {
-    /*
-    /// Stores statistics for a given set of metrics.
-    class MetricStats
-    {
-        public:
-            // CONSTRUCTORS
-            // TODO: Check semantics of Eigen objects. Pass-by-value, reference, or move?
-            MetricStats() = delete;
-
-            explicit MetricStats(
-                    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> metrics,
-                    Eigen::RowVectorXd deviations
-            )
-                : d_metrics { std::move(metrics) }, d_deviations { std::move(deviations) }
-            {
-                assert(d_deviations);
-                assert(d_metrics.cols() == d_deviations->size()); 
-            }
-
-            explicit MetricStats(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> metrics) noexcept
-                : d_metrics { std::move(metrics) } {}
-            // ACCESSORS
-
-            /// Averages each column of the metrics matrix,
-            /// resulting in a row vector.
-            auto averages() const -> Eigen::RowVectorXd const&;
-            inline auto deviations() const -> std::optional<Eigen::RowVectorXd> const& { return d_deviations; }
-        private:
-            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> d_metrics;  // mean value for each metric
-            std::optional<Eigen::RowVectorXd> d_deviations {};
-    };
-*/
     class Record; 
-    
     /// Produce a matrix of metric data. Each row corresponds
     /// to a given entry.
     auto get_record_metrics(Record const& r) -> std::optional<Eigen::MatrixXd>;
@@ -78,7 +51,24 @@ namespace ewi
     auto calculate_ewi(Eigen::VectorXd const& local_means, Eigen::VectorXd const& global_means) -> Eigen::VectorXd;
 
     /// Convert to STL container
-    auto to_std_vec(Eigen::MatrixXd const& input) -> std::vector<double>;
+    auto to_std_vec(Eigen::VectorXd const& input) -> std::vector<double>;
+
+
+    /// A simple data structure for passing in plot
+    /// customization options.
+    struct PlotCustomization
+    {
+        std::string filename {};
+        std::string title {};
+        std::string xlabel {};
+        std::string ylabel { "EWI" };
+        double dot_size { 6 }; // how large is a given scatter point
+        std::optional< std::array<double, 2> > xlim {};
+        std::optional< std::array<double, 2> > ylim {};
+    };
+    /// Visualizes the workload and exports to a specified save location.
+    auto plot_ewi(std::vector<double> const& ewi_vals, PlotCustomization const& opts) -> bool;
+
 }
 #endif // INCLUDED_EWI_METRICSTATS
 

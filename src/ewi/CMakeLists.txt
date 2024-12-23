@@ -50,7 +50,10 @@ add_test(
 
 
 add_library(metrics metrics.cpp)
-target_link_libraries(metrics PUBLIC Eigen3::Eigen)
+target_link_libraries(metrics PUBLIC 
+    Eigen3::Eigen
+    Matplot++::matplot
+)
 add_executable(test_metrics metrics.t.cpp)
 target_link_libraries(test_metrics PRIVATE metrics entry record)
 add_test(NAME metrics.t COMMAND test_metrics)

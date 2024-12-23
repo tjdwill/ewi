@@ -10,8 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("$ENV{HOME}/.local/include/eigen3")
 include_directories("src")
 option(BUILD_SHARED_LIBS "Build shareable libraries" ON)
-#=============== Packages =====================
 
+#=============== Packages =====================
 # Qt config
 set(QT_VSN Qt5 CACHE STRING "Sets the Qt version to use.")
 list(APPEND 

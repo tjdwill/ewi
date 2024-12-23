@@ -10,6 +10,15 @@
 
 ## Journal
 
+### 21 December 2024
+
+I was able to implement the proposed solution for the divide by zero error.
+I also added the necessary `vcpkg` configuration in order to use `Matplot++`. Now, I need
+to program the visualization. The first iteration will be simple. The idea is to have a
+basline centered at one, and scatter points at discrete `(idx, ewi)` pairs.
+
+**Update**: I was able to create a function that exports the EWI visualization to a file.
+
 ### 20 December 2024
 
 So, it's been a month since my last entry, but I've been actively working. Specifically,
