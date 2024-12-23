@@ -1,3 +1,10 @@
+add_library(QtConverter QtConverter.cpp)
+target_link_libraries(QtConverter PUBLIC Qt::Core)
+add_executable(testQtConverter QtConverter.t.cpp)
+target_link_libraries(testQtConverter PRIVATE QtConverter)
+add_test(NAME QtConverter.t COMMAND testQtConverter)
+
+
 add_library(form form.cpp)
 target_link_libraries(form PUBLIC Qt::Widgets Qt::Core)
 add_executable(form_app form.t.cpp)

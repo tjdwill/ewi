@@ -1,7 +1,7 @@
 // profileLoader.hpp
 // A widget for gathering the information needed to start an EWI session.
-#ifndef INCLUDED_EWI_PROFILELOADER
-#define INCLUDED_EWI_PROFILELOADER
+#ifndef INCLUDED_EWIQT_PROFILELOADER
+#define INCLUDED_EWIQT_PROFILELOADER
 
 #ifndef INCLUDED_QT_QWIDGET
 #include <QWidget>
@@ -56,4 +56,4 @@ private:
 
 } // namespace ewiQt
 
-#endif // INCLUDED_EWI_PROFILELOADER
+#endif // INCLUDED_EWIQT_PROFILELOADER

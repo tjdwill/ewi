@@ -4,8 +4,8 @@
 // I don't want the top-level interface to communicate with inner-widgets of a given page,
 // so this class serves to emit signals that pass data up the chain. At the time of
 // writing, I'm unaware of the more idiomatic way to do this.
-#ifndef INCLUDED_VIEWS
-#define INCLUDED_VIEWS
+#ifndef INCLUDED_EWIQT_VIEWS
+#define INCLUDED_EWIQT_VIEWS
 
 #ifndef INCLUDED_QT_QTCORE
 #include <QtCore>
@@ -76,4 +76,4 @@ private:
 };
 
 } // namespace ewiQt
-#endif //INCLUDED_VIEWS
+#endif //INCLUDED_EWIQT_VIEWS

@@ -10,7 +10,17 @@
 
 ## Journal
 
-### 21 December 2024
+### 23 December 2024
+
+- Implemented a basic Qt ↔ STL type converter.
+- Edited multiple files for increased style conformity
+- Began draft for the app controller.
+
+I will need to learn how to display images via Qt. I must also decide how I want the
+visualization action to work in practice. Who should be in charge of displaying the image?
+Exporting it to a file?
+
+### 22 December 2024
 
 I was able to implement the proposed solution for the divide by zero error.
 I also added the necessary `vcpkg` configuration in order to use `Matplot++`. Now, I need

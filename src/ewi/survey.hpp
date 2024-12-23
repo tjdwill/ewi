@@ -79,7 +79,7 @@ namespace ewi
     /// After a blank line, the questions are processed. Each question lives on its own line with its estimated mean
     /// value. Because I have no insight into what metrics a given industry or job requires, few assumptions can be
     /// made regarding what values are valid. Therefore, the values are parsed as-is.
-    ParsedProfile load_profile(std::string const& file_path);
+    auto load_profile(std::string const& file_path) -> ParsedProfile;
 
 
     /// Stores the answers to a given survey. At the time of writing, the results will be a
@@ -98,6 +98,7 @@ namespace ewi
             auto extract_metrics() const -> std::vector<double> const;
 
         private:
+            SurveyResults() = delete;
             int d_metric_cnt;  // How many questions were number-based?
             std::vector<std::string> d_responses;   // All of the form responses
     };

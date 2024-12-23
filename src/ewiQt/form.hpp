@@ -1,16 +1,16 @@
 // form.hpp
 // A prototype for a survey widget in Qt.
-#ifndef INCLUDED_QT_SURVEY
-#define INCLUDED_QT_SURVEY
+#ifndef INCLUDED_EWIQT_FORM
+#define INCLUDED_EWIQT_FORM
 
 #ifndef INCLUDED_QT_QDIALOG
 #include <QDialog>
 #define INCLUDED_QT_QDIALOG
 #endif
 
-#ifndef INCLUDED_QT_CORE
+#ifndef INCLUDED_QT_QTCORE
 #include <QtCore>  // for Q_OBJECT macro
-#define INCLUDED_QT_CORE
+#define INCLUDED_QT_QTCORE
 #endif
 
 
@@ -71,4 +71,4 @@ private:
     QDialogButtonBox* d_submit;
 };
 } // namespace ewiQt
-#endif // INCLUDED_QT_SURVEY
+#endif // INCLUDED_EWIQT_FORM

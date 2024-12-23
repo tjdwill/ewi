@@ -1,0 +1,14 @@
+// ewi_controller.cpp
+#include "ewi_controller.hpp"
+//- STL
+#include <optional>
+#include <string>
+#include <vector>
+//- Third-party
+#include <QtWidgets>
+//- In-house
+#include <ewiQt/ewiUI.hpp>
+#include <ewiQt/QtConverter.hpp>
+#include <ewi/employee_record.hpp>
+#include <ewi/metrics.hpp>
+#include <ewi/survey.hpp>

@@ -1,6 +1,6 @@
 // userOperations.hpp
-#ifndef INCLUDED_EWI_USEROPSWIDGET
-#define INCLUDED_EWI_USEROPSWIDGET
+#ifndef INCLUDED_EWIQT_USEROPSWIDGET
+#define INCLUDED_EWIQT_USEROPSWIDGET
 
 #ifndef INCLUDED_QT_QTCORE
 #include <QtCore>
@@ -34,4 +34,4 @@ private:
 };
 } // namespace ewiQt
 
-#endif // INCLUDED_EWI_USEROPSWIDGET
+#endif // INCLUDED_EWIQT_USEROPSWIDGET
