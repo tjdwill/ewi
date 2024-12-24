@@ -114,6 +114,8 @@ namespace ewi
         ax->grid(true);
         if (opts.xlim.has_value())
             ax->xlim(opts.xlim.value());
+        else
+            ax->xlim({0, static_cast<double>(ewi_vals.size() + 1)});
         if (opts.ylim.has_value())
             ax->ylim(opts.ylim.value());
         ax->title(opts.title);
@@ -124,7 +126,7 @@ namespace ewi
         ax->xlabel(opts.xlabel);
         
         // Create the plot
-        ax->line(0, 1, ewi_vals.size(), 1);  // Create a baseline at y=1
+        ax->line(0, 1, ewi_vals.size() + 1, 1);  // Create a baseline at y=1
         ax->hold(true);                                                          
         std::vector<double> x = mpl::linspace(1, ewi_vals.size(), ewi_vals.size());
         ax->scatter(x, ewi_vals, opts.dot_size)

@@ -62,7 +62,7 @@ namespace ewi
         std::string title {};
         std::string xlabel {};
         std::string ylabel { "EWI" };
-        double dot_size { 6 }; // how large is a given scatter point
+        double dot_size { 10 }; // how large is a given scatter point
         std::optional< std::array<double, 2> > xlim {};
         std::optional< std::array<double, 2> > ylim {};
     };
