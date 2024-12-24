@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QtWidgets>
 #include <qlist.h>
+#include <qpixmap.h>
 
 
 using ewiQt::EWIUi;
@@ -96,6 +97,11 @@ void EWIUiTestController::createConnections()
                 this->qout << "Get metrics from: " << dates[0].toString()
                 << " to " << dates[1].toString() << "\n";
                 this->qout.flush();
+
+                // Test display function
+                //  PROJECT_SOURCE_DIR defined in CMake target
+                QPixmap img { PROJECT_SOURCE_DIR "/test_resources/ewiQt/test_ewi.png" };
+                emit d_app->sendImg(img);
             }
     );
 }

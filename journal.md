@@ -20,6 +20,10 @@ I will need to learn how to display images via Qt. I must also decide how I want
 visualization action to work in practice. Who should be in charge of displaying the image?
 Exporting it to a file?
 
+**Update:** Added a new class, `ewiQt::ImgViewer`, to handle the image display and export.
+The idea is to pass a `QPixmap` via a signal from the controller and have the `EWIUi`
+instantiate a viewer in a receiving slot.
+
 ### 22 December 2024
 
 I was able to implement the proposed solution for the divide by zero error.
@@ -653,14 +657,14 @@ Here are some questions that have come up as I work this project.
     - [ ] Instantiation, comparison, arithmethmetic operations 
     - [ ] Manipulation, basic and advanced access
 - Qt
-    - [ ] Ch. 4 of Book
-    - [ ] Read fundamentals in docs
+    - [x] Ch. 4 of Book
+    - [x] Read fundamentals in docs
 - CMake Book
     - [x] Learn to write tests
     - [x] How to structure a project
     - [x] Compiling components
 - Notes Updates
     - [x] East-style const (basics)
-    - [ ] Function declarations using `auto` and `->`
+    - [x] Function declarations using `auto` and `->`
     - [ ] Important keywords (`explicit`, `noexcept`, `protected`, `friend`, `private/public`, `inline`, `static`, `constexpr`, `const`)
     - [ ] Making a third-party library visible

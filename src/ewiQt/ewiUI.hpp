@@ -13,6 +13,11 @@
 #define INCLUDED_QT_QTCORE
 #endif
 
+#ifndef INCLUDED_QT_QPIXMAP
+#include <QPixmap>
+#define INCLUDED_QT_QPIXMAP
+#endif
+
 
 class QAction;
 class QStackedWidget;
@@ -59,19 +64,26 @@ signals:
     void profileLoadedSig();
     /// The controller provides a set of personal survey questions to this object.
     void setPersonalQuestionsSig(QStringList questions);
-
+    /// Receive an image to display
+    void sendImg(QPixmap img);
     
 private slots:
     void about();
+    /// Displays the metrics to the screen
+    void displayImg(QPixmap img);
+    /// This method helps to ensure that user-related actions aren't available until all relevant
+    /// information is provided to the application. This is enforced by the conditions of
+    /// the firing signal.
+    void enableUserOpsButton();
+    void jobChanged(QStringList jobQuestions);
+    void profileLoaded();
+    void setPersonalQuestions(QStringList questions);
     /// This slot is needed in order to instantiate the survey form. 
     /// It's called in response to the controller object emitting the `serveSurveySig`
     /// signal.
     void serveSurvey(QString const& type);
     void viewHelp();
-    /// This method helps to ensure that user-related actions aren't available until all relevant
-    /// information is provided to the application. This is enforced by the conditions of
-    /// the firing signal.
-    void enableUserOpsButton();
+
     /// Signal-firing slots
     void fireAppShutdown();
     void fireCreateUser();
@@ -79,13 +91,10 @@ private slots:
     void fireGetMetrics();
     void fireLoadJob();
     void fireLoadUser();
-    void jobChanged(QStringList jobQuestions);
-    void profileLoaded();
     void sendSurveyResponses(QStringList responses);
-    void setPersonalQuestions(QStringList questions);
 
 private:
-    // Setup related functions
+    // SETUP-RELATED FUNCTIONS
     void createActions();
     void createConnections();
     /// Perform relevant widget setup actions
@@ -93,7 +102,7 @@ private:
     /// ensure all pointers are non-NULL
     void validatePtrs();
 
-    // Cnovenience methods
+    // CONVENIENCE METHODS
 
     /// Create a temporary dialog to gather data for user loading or creation.
     auto getUserData(bool create=false) -> QStringList;

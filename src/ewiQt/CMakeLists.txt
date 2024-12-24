@@ -11,6 +11,21 @@ add_executable(form_app form.t.cpp)
 target_link_libraries(form_app PRIVATE form)
 
 
+add_library(imgViewer imgViewer.cpp)
+target_link_libraries(imgViewer PUBLIC
+    Qt::Gui
+    Qt::Widgets
+)
+add_executable(imgViewerApp imgViewer.t.cpp)
+target_link_libraries(imgViewerApp PRIVATE imgViewer)
+#[[
+add_test(
+    NAME test_imgViewer 
+    COMMAND imgViewerApp "${PROJECT_SOURCE_DIR}/test_resources/ewiQt/test_ewi.png"
+)
+]]
+
+
 add_library(profileLoader profileLoader.cpp)
 target_link_libraries(profileLoader PUBLIC Qt::Widgets)
 add_executable(profileLoader_app profileLoader.t.cpp)
@@ -41,10 +56,12 @@ target_link_libraries(ewi_views_app PRIVATE
 
 add_library(ewiUI ewiUI.cpp)
 target_link_libraries(ewiUI PUBLIC
-    form
     ewi_views
+    form
+    imgViewer
     Qt::Core
     Qt::Widgets
+    Qt::Gui
 )
 add_executable(ewiUIApp ewiUI.t.cpp)
 target_link_libraries(ewiUIApp PRIVATE
@@ -52,4 +69,5 @@ target_link_libraries(ewiUIApp PRIVATE
     ewi_views
     profileLoader
 )
+target_compile_definitions(ewiUIApp PRIVATE PROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 

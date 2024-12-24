@@ -1,10 +1,14 @@
 // ewiUI.cpp
 #include "ewiUI.hpp"
-#include "views.hpp"
+//-
+#include <QtWidgets>
+#include <QPixmap>
+//-
+#include "form.hpp"
+#include "imgViewer.hpp"
 #include "profileLoader.hpp"
 #include "userOpsWidget.hpp"
-#include "form.hpp"
-#include <QtWidgets>
+#include "views.hpp"
 
 
 namespace ewiQt
@@ -18,6 +22,8 @@ namespace ewiQt
         validatePtrs();
         createConnections();
         setWindowTitle(tr("EWI App"));
+        // move to center of screen
+        move(screen()->geometry().center() - frameGeometry().center());
     }
 
     void EWIUi::createActions()
@@ -99,6 +105,7 @@ namespace ewiQt
         connect(this, &EWIUi::profileLoadedSig, this, &EWIUi::profileLoaded);
         connect(this, &EWIUi::setPersonalQuestionsSig, this, &EWIUi::setPersonalQuestions);
         connect(this, &EWIUi::jobChangedSig, this, &EWIUi::jobChanged);
+        connect(this, &EWIUi::sendImg, this, &EWIUi::displayImg);
 
     }
 
@@ -183,10 +190,6 @@ namespace ewiQt
 
     // SLOTS
    
-    void EWIUi::enableUserOpsButton()
-    {
-        d_appPages->d_userOpsButton->setEnabled(true);
-    }
     // TODO: Remove this QTextStream when implementing real functions.
     QTextStream qerr { stderr };
     void EWIUi::about()
@@ -195,11 +198,29 @@ namespace ewiQt
         qerr.flush();
     }
 
+    void EWIUi::displayImg(QPixmap img)
+    {
+        ImgViewer viewer { img, this };
+        viewer.exec();
+    }
+
+    void EWIUi::enableUserOpsButton()
+    {
+        d_appPages->d_userOpsButton->setEnabled(true);
+    }
+
+    void EWIUi::jobChanged(QStringList job_questions)
+    {
+        d_technicalQuestions = job_questions;
+    }
+
+    void EWIUi::profileLoaded()
+    {
+        enableUserOpsButton();
+    }
+
     void EWIUi::serveSurvey(QString const& surveyType)
     {
-        qerr << "serveSurvey: " << qPrintable(surveyType) << "\n";
-        qerr.flush();
-
         Form* survey {};
         if (surveyType == PERSONAL_SURVEY)
             survey = { new Form(d_personalQuestions, tr("Personal Survey"), this) };
@@ -211,11 +232,18 @@ namespace ewiQt
         survey->deleteLater();
     }
 
+    void EWIUi::setPersonalQuestions(QStringList questions)
+    {
+        d_personalQuestions = questions;
+    }
+
     void EWIUi::viewHelp()
     {
         qerr << "Help Page" << "\n";
         qerr.flush();
     }
+
+    // Signal-firing slots
 
     void EWIUi::fireAppShutdown()
     {
@@ -226,9 +254,6 @@ namespace ewiQt
 
     void EWIUi::fireCreateUser()
     {
-        qerr << "Create User Fired\n";
-        qerr.flush();
-
         QStringList userData { getUserData(true) };
         if (!userData.isEmpty())
             emit createUserSig(userData);
@@ -236,9 +261,6 @@ namespace ewiQt
 
     void EWIUi::fireExportUser()
     {
-        qerr << "Export User" << "\n";
-        qerr.flush();
-
         QString pathName = QFileDialog::getSaveFileName(
                 this,
                 tr("Export User Data"),
@@ -270,24 +292,9 @@ namespace ewiQt
             emit loadUserSig(userData[0]);
     }
 
-    void EWIUi::jobChanged(QStringList job_questions)
-    {
-        d_technicalQuestions = job_questions;
-    }
-
-    void EWIUi::profileLoaded()
-    {
-        enableUserOpsButton();
-    }
-
     void EWIUi::sendSurveyResponses(QStringList responses)
     {
         emit surveyResponsesSig(responses);
-    }
-
-    void EWIUi::setPersonalQuestions(QStringList questions)
-    {
-        d_personalQuestions = questions;
     }
 } // namespace ewiQt
 

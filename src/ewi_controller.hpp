@@ -4,9 +4,6 @@
 #ifndef INCLUDED_EWI_CONTROLLER
 #define INCLUDED_EWI_CONTROLLER
 
-#include "ewi/survey.hpp"
-#include "ewiQt/ewiUI.hpp"
-#include "ewiQt/views.hpp"
 #ifndef INCLUDED_STD_OPTIONAL
 #include <optional>
 #define INCLUDED_STD_OPTIONAL
@@ -19,6 +16,10 @@
 
 #ifndef INCLUDED_EWI_EMPLOYEE_RECORD
 #include <ewi/employee_record.hpp>
+#endif
+
+#ifndef INCLUDED_EWI_SURVEY
+#include <ewi/survey.hpp>
 #endif
 
 namespace ewiQt
