@@ -1,14 +1,14 @@
 // metrics.cpp
 #include "metrics.hpp"
-
+//- STL
+// #include <iostream>
 #include <optional>
-//-
+//- Third-party
 #include <Eigen/Eigen>
 #include <matplot/matplot.h>
-//-
+//- In-house
 #include <ewi/record.hpp>
 
-// #include <iostream>
 
 namespace ewi
 {

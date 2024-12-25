@@ -16,6 +16,12 @@
 #define INCLUDED_STD_EXPECTED
 #endif
 
+// std::reference_wrapper
+#ifndef INCLUDED_STD_FUNCTIONAL
+#include <functional>
+#define INCLUDED_STD_FUNCTIONAL
+#endif
+
 #ifndef INCLUDED_STD_OPTIONAL
 #include <optional>
 #define INCLUDED_STD_OPTIONAL
@@ -80,15 +86,6 @@ namespace ewi
 
             // ACCESSORS
 
-            /// Gets the direct index for a single entry, if it exists.
-            auto find(std::chrono::year_month_day date) const noexcept -> std::optional<int>;
-            /// Get the index range of entries within a given date range. Returns
-            /// singularity IndexRange (ex. {0, 0}) if a singularity DateRange is passed in
-            /// and an Entry exists for that date.
-            auto find(DateRange range) const noexcept -> std::optional<IndexRange>;
-            /// Retrieves a copy of the entry with the given date if it exists.
-            auto get(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>;
-          
             /// Iterators
             /// TODO: Read about std::ranges to understand how it works and what type I
             /// should return. Currently, I'm deriving the type via `auto` (and
@@ -97,14 +94,31 @@ namespace ewi
             inline auto begin() const noexcept { return d_entries.begin(); }
             inline auto end() const noexcept { return d_entries.end(); }
 
+            /// Gets the direct index for a single entry, if it exists.
+            auto find(std::chrono::year_month_day date) const noexcept -> std::optional<int>;
+            /// Get the index range of entries within a given date range. Returns
+            /// singularity IndexRange (ex. {0, 0}) if a singularity DateRange is passed in
+            /// and an Entry exists for that date.
+            auto find(DateRange range) const noexcept -> std::optional<IndexRange>;
+            /// Retrieves a reference to the entry with the given date(s) if it exists.
+            auto get(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<Entry const>>;
+            auto get(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<Entry const>>>;
+          
+
             /// Query if Record has no entries.
             auto is_empty() const noexcept -> bool; 
             /// Query how many metrics are recorded per entry.
             auto metric_dim() const noexcept -> int;
+            /// Retrieve metrics for a given date range.
+            auto metrics(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<std::vector<double> const>>;
+            auto metrics(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<std::vector<double> const>>>;
             /// Query number of entries in the record.
             auto size() const noexcept -> int;
-            /// Access the Record via numeric index. This is useful if one wants to access
-            /// the entries found via the `find` function.
+            /// Access the Record via numeric index. 
+            ///
+            /// Note: This method does not perform bounds checking. It's recommended to use
+            /// this method of access only after receiving valid indices from a call to
+            /// `Record::find()`;
             auto operator[] (int idx) const -> Entry const&; 
             auto operator<=> (Record const& rhs) const = default;
 

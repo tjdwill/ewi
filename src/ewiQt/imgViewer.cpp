@@ -1,12 +1,8 @@
 // imgViewer.cpp
 #include "imgViewer.hpp"
-//-
+//- Third-party
 #include <QtWidgets>
 #include <QtGui>
-#include <qboxlayout.h>
-#include <qmessagebox.h>
-#include <qpixmap.h>
-#include <qpushbutton.h>
 
 
 

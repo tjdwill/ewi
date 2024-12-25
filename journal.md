@@ -10,6 +10,21 @@
 
 ## Journal
 
+### 25 December 2024
+
+I realized that I forgot to include the personal survey results in the ewi calculation
+plot. When thinking about how to integrate this feature, I realized my code needs some
+refactoring. I think I can write `ewi::metrics` without the dependency on `ewi::record`.
+
+I'm also considering refactoring some of the public interface to `ewi::Record`, but this
+may not be a good idea. My trepidation was the use of custom types in the method
+signatures, but the types are defined in the component itself; users that use `Record`
+would have access to these types anyhow.
+
+Instead, I will focus on writing an additional method that returns metrics from a Record.
+My original thought process to exclude this makes little sense in hindsight, so I'm going
+to add this feature.
+
 ### 23 December 2024
 
 - Implemented a basic Qt ↔ STL type converter.

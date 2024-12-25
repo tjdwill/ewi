@@ -1,9 +1,9 @@
 // ewiUI.cpp
 #include "ewiUI.hpp"
-//-
+//- Third-party
 #include <QtWidgets>
 #include <QPixmap>
-//-
+//- In-house
 #include "form.hpp"
 #include "imgViewer.hpp"
 #include "profileLoader.hpp"

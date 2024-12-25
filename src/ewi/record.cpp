@@ -1,16 +1,19 @@
 // record.cpp
 #include "record.hpp"
-#include "entry.hpp"
-#include <utils/padded_view.hpp>   // PaddedView
-
+//- STL
 #include <algorithm>
 #include <chrono>
 #include <expected>
 #include <iostream>
 #include <optional>
 #include <vector>
+//- Thrid-party
 #include <cpperrors>
 #include <Eigen/Eigen>
+//- In-house
+#include "entry.hpp"
+#include <utils/padded_view.hpp>   // PaddedView
+
 
 // Helper Functions
 namespace
@@ -47,7 +50,7 @@ namespace ewi
          * entries.
          */
         if (!d_entries.empty()) {
-           for (int i=0; i < (int) d_entries.size()-1; ++i){
+           for (int i=0; i < static_cast<int>( d_entries.size() ) - 1; ++i){
                 if (!(d_entries[i+1].date() > d_entries[i].date()))
                     throw Exception("Each entry must be a later date than the previous.");
                 if (d_entries[i+1].metrics().size() != d_entries[i].metrics().size())
@@ -56,36 +59,16 @@ namespace ewi
         }
     }
 
-    auto Record::is_empty() const noexcept -> bool { return size() == 0;}
-    
-    auto Record::metric_dim() const noexcept -> int { return is_empty() ? 0 : d_entries[0].metrics().size(); }
-    
-    auto Record::size() const noexcept -> int { return (int) d_entries.size(); }
-    
-    auto Record::operator[] (int idx) const -> Entry const& { return d_entries[idx]; }
-
-    auto Record::add(Entry const& entry) noexcept -> std::expected<void, Err>
-    {
-        if (!d_entries.empty())
-        {
-            Entry prev = d_entries.back();
-            if (!(entry.date() > prev.date()))
-                return std::unexpected(Err::DisorderedDate);
-            if (entry.metrics().size() != prev.metrics().size())
-                return std::unexpected(Err::InconsistentMetrics);
-        }
-        d_entries.push_back(std::move(entry));
-        return {};
-    }
-
     auto Record::find(std::chrono::year_month_day date) const noexcept -> std::optional<int>
     {
-        auto idx = std::distance(
+        auto idx = static_cast<int>(std::distance(
                 d_entries.begin(), 
-                std::find_if(d_entries.begin(), d_entries.end(), 
-                    [date](Entry const& e )-> bool { return e.date() == date; })
-         );
-        if ((int) idx == (int) d_entries.size())
+                std::find_if(
+                    d_entries.begin(), d_entries.end(), 
+                    [date](Entry const& e)-> bool { return e.date() == date; }
+                )
+        ));
+        if (idx == size())
             return std::nullopt;
         else 
             return idx;
@@ -116,7 +99,7 @@ namespace ewi
         std::optional<int> index_max {}; 
 
         int global_min { 0 };  // padded container's left boundary
-        int global_max { (int) entries.size() - 1}; // padded container's right boundary
+        int global_max { static_cast<int>(entries.size() - 1)}; // padded container's right boundary
         // Find the entries with dates greater than or
         // equal to the minimum
         if (!date_range.min)
@@ -247,13 +230,67 @@ namespace ewi
             return IndexRange{ index_min, index_max };
     }
 
-    auto Record::get(std::chrono::year_month_day date) const noexcept -> std::optional<Entry>
+    auto Record::get(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<Entry const>>
     {
         auto idx = find(date);
         if (!idx)
             return std::nullopt;
         else 
             return d_entries[*idx]; // this copies!
+    }
+
+    auto Record::get(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<Entry const>>>
+    {
+        auto idxs = find(dates);
+        if (!idxs)
+            return std::nullopt;
+        std::vector<std::reference_wrapper<Entry const>> entries {};
+        for (int i { *(idxs->min) }; i <= *(idxs->max); ++i)
+            entries.push_back(operator[](i));
+        return entries;
+    }
+
+    auto Record::is_empty() const noexcept -> bool { return size() == 0; }
+    
+    auto Record::metric_dim() const noexcept -> int { return is_empty() ? 0 : d_entries[0].metrics().size(); }
+    
+    auto Record::metrics(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<std::vector<double> const>>
+    {
+        auto test = metrics({date, date});
+        if (!test)
+            return std::nullopt;
+        else
+            return test.value()[0].get();
+    }
+
+    auto Record::metrics(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<std::vector<double> const>>>
+    {
+        auto entries = get(dates);
+        if (!entries)
+            return std::nullopt;
+        std::vector<std::reference_wrapper<std::vector<double> const>> metrics {};
+        for (Entry const& e : *entries)
+            metrics.push_back(e.metrics());
+
+        return metrics;
+    }
+
+    auto Record::size() const noexcept -> int { return static_cast<int>(d_entries.size()); }
+    
+    auto Record::operator[] (int idx) const -> Entry const& { return d_entries[idx]; }
+
+    auto Record::add(Entry const& entry) noexcept -> std::expected<void, Err>
+    {
+        if (!d_entries.empty())
+        {
+            Entry prev = d_entries.back();
+            if (!(entry.date() > prev.date()))
+                return std::unexpected(Err::DisorderedDate);
+            if (entry.metrics().size() != prev.metrics().size())
+                return std::unexpected(Err::InconsistentMetrics);
+        }
+        d_entries.push_back(std::move(entry));
+        return {};
     }
 
     void Record::remove(std::chrono::year_month_day date)

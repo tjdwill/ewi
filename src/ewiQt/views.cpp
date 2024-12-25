@@ -1,8 +1,10 @@
 // views.cpp
 #include "views.hpp"
+//- Third-party
+#include <QtWidgets>
+//- In-house
 #include "profileLoader.hpp"
 #include "userOpsWidget.hpp"
-#include <QtWidgets>
 
 namespace ewiQt
 {

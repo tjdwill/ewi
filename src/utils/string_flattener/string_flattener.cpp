@@ -1,6 +1,6 @@
 // string_flattener.cpp
 #include "string_flattener.hpp"
-
+//- STL
 #include <string>
 
 namespace {

@@ -1,15 +1,18 @@
 // survey.cpp
 #include "survey.hpp"
-#include "ewi/basic_id.hpp"
-
+//- STL
 #include <cassert>
 #include <cstring>
-#include <cpperrors>
 #include <fstream>
 #include <ios>
 #include <sstream>
 #include <string>
 #include <vector>
+// Third-party
+#include <cpperrors>
+//- In-house
+#include "ewi/basic_id.hpp"
+
 
 using cpperrors::Exception;
 
@@ -45,8 +48,8 @@ namespace ewi
     {
         // 3 is the minimum length of a valid survey result std::vector.
         // It would be [date, metric_responses, notes]
-        assert((int) d_responses.size() > metric_cnt && metric_cnt > 0);
-        assert((int) d_responses.size() > 2); // must have at least three elements
+        assert(static_cast<int>(d_responses.size()) > metric_cnt && metric_cnt > 0);
+        assert(static_cast<int>(d_responses.size()) > 2); // must have at least three elements
     }
 
     auto SurveyResults::extract_metrics() const -> std::vector<double> const

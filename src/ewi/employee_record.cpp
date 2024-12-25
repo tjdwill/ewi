@@ -1,9 +1,8 @@
 // employee_record.cpp
 #include "employee_record.hpp"
-
+// STL
 #include <cassert>
 #include <chrono>
-#include <cpperrors>
 #include <expected>
 #include <format>
 #include <fstream>
@@ -15,7 +14,9 @@
 #include <string>
 #include <utility>   // std::pair
 #include <vector>
-
+// Third-party
+#include <cpperrors>
+// In-house
 #include <utils/string_flattener/string_flattener.hpp>
 
 

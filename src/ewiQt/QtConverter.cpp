@@ -1,10 +1,10 @@
 // QtConverter.cpp
 #include "QtConverter.hpp"
-//-
+//- STL
 #include <chrono>
 #include <sstream>
 #include <vector>
-//-
+//- Third-party
 #include <QtCore>
 
 
