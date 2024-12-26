@@ -22,8 +22,6 @@ namespace ewiQt
         validatePtrs();
         createConnections();
         setWindowTitle(tr("EWI App"));
-        // move to center of screen
-        move(screen()->geometry().center() - frameGeometry().center());
     }
 
     void EWIUi::createActions()

@@ -125,7 +125,28 @@ namespace ewi
         /// The delimiter to separate EmployeeID from informal name.
         static constexpr char ID_DELIM {':'};
         
-        // IMPORT Functions
+        static inline constexpr char get_token(RecordType type)
+        {
+            return type==RecordType::Technical ? TECHINCAL_TKN : PERSONAL_TKN;
+        }
+
+        /* EXPORT Functions */
+
+        /// Output the entry to the provided stream. 
+        /// This is function is intended to be used in order to preserve information for
+        /// temp_file purposes. If the program crashes before having exported the user, we
+        /// need to ensure the information was saved.
+        static void export_entry(
+                std::ostream& os,
+                Entry const& e,
+                JobID const& job,
+                RecordType type
+        );
+        /// Write an employee record to file in a format that is parsable by `load_record`.
+        /// Throws exception on I/O error.
+        static void export_record(EmployeeRecord const& rec, std::string const& path);
+
+        /* IMPORT Functions */
 
         /// Loads record from file based on provided employee ID.  In theory, the application
         /// stores employee data in a designated directory. Each employee is represented by
@@ -163,11 +184,7 @@ namespace ewi
         /// Seeks next non-whitespace character.
         static void seek_nonws(std::istringstream& iss);
 
-        // EXPORT Functions
 
-        /// Write an employee record to file in a format that is parsable by `load_record`.
-        /// Throws exception on I/O error.
-        static void export_record(EmployeeRecord const& rec, std::string const& path);
     };
 }  // namespace ewi
 #endif // INCLUDED_EWI_EMPLOYEE_RECORD

@@ -115,6 +115,31 @@ namespace ewi
 
 
     /* EmployeeRecordIOUtils */
+    /* EXPORT Functions */
+    
+    void EmployeeRecordIOUtils::export_entry(
+            std::ostream &os,
+            Entry const& e,
+            JobID const& job,
+            RecordType type
+    )
+    {
+        os << job.formal() << ' ' << get_token(type) << ' '
+            << std::format("{:%F}", e.date()) << ' ';
+        // Export Notes
+        for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
+            os << EmployeeRecordIOUtils::NOTES_DELIM;
+        os << StringFlattener::flatten(e.notes());
+        for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
+            os << EmployeeRecordIOUtils::NOTES_DELIM;
+        os << ' ';
+        // Export metrics
+        for (auto val: e.metrics())
+            os << val << ' ';
+
+        os << "\n";
+    }
+
     void EmployeeRecordIOUtils::export_record(EmployeeRecord const& rec, std::string const& path)
     {
         std::ofstream file {path, std::ios::trunc};
@@ -127,38 +152,23 @@ namespace ewi
         file << "\n";
 
         // Write out all Job WIRecords
+        using type_pair = std::pair<Record const&, RecordType>;
         for (auto const& job: rec.jobs())
         {
             auto const& wi_rec = rec.get(job);
-            // Write both techincal and personal records to file
-            using type_pair = std::pair<Record const&, char>;
+            // Write both technical and personal records to file
             for (auto [record, rec_type]: {
-                    type_pair(wi_rec.technical, EmployeeRecordIOUtils::TECHINCAL_TKN),
-                    type_pair(wi_rec.personal, EmployeeRecordIOUtils::PERSONAL_TKN) 
+                    type_pair(wi_rec.technical, RecordType::Technical),
+                    type_pair(wi_rec.personal, RecordType::Personal) 
                  }
             ) 
-            {
                 for (auto const& e: record)
-                {
-                    file << job.formal() << ' ' << rec_type << ' '
-                        << std::format("{:%F} ", e.date());
-                    // Export Notes
-                    for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
-                        file << EmployeeRecordIOUtils::NOTES_DELIM;
-                    file << StringFlattener::flatten(e.notes());
-                    for (int i {0}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i)
-                        file << EmployeeRecordIOUtils::NOTES_DELIM;
-                    file << ' ';
-                    // Export metrics
-                    for (auto val: e.metrics())
-                        file << val << ' ';
-
-                    file << "\n";
-                }
-            }
+                    export_entry(file, e, job, rec_type);
         }
         file.flush();
     }
+
+    /* IMPORT Functions */
 
     auto EmployeeRecordIOUtils::import_record(std::string const& path) -> EmployeeRecord
     {

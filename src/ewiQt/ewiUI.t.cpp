@@ -1,9 +1,7 @@
 #include "ewiUI.hpp"
 #include <QApplication>
 #include <QtWidgets>
-#include <qlist.h>
-#include <qpixmap.h>
-
+#include <QPixmap>
 
 using ewiQt::EWIUi;
 
@@ -12,9 +10,10 @@ QStringList TECHNICAL_Qs { "What technical questions?" };
 class EWIUiTestController : public QWidget
 {
     Q_OBJECT;
+
 public:
     EWIUiTestController(QWidget* parent=nullptr);
-    void show();
+
 private:
     void createConnections();
 
@@ -35,12 +34,16 @@ int main(int argc, char* argv[])
 EWIUiTestController::EWIUiTestController(QWidget* parent)
     : QWidget(parent)
 {
-    d_app = new EWIUi(this);
+    d_app = new EWIUi();
+    QHBoxLayout* layout = new QHBoxLayout;
+    layout->addWidget(d_app);
+    setLayout(layout);
     createConnections();
 
     emit d_app->setPersonalQuestionsSig(PERSONAL_Qs);
     emit d_app->jobChangedSig(TECHNICAL_Qs);
     emit d_app->profileLoadedSig();
+
 }
 
 void EWIUiTestController::createConnections()
@@ -106,8 +109,4 @@ void EWIUiTestController::createConnections()
     );
 }
 
-void EWIUiTestController::show()
-{
-    d_app->show();
-}
 #include "ewiUI.t.moc"
