@@ -40,6 +40,8 @@ namespace
 
 void test_to_eigen()
 {
+    std::cout << "\n<test_to_eigen>\n---------------" << "\n";
+
     Matrix4d m {
         {0, 1, 5, 6},
         {0, 1, 5, 6},
@@ -106,6 +108,7 @@ void test_ewi_calc()
 
 void test_stl_conversion()
 {
+    std::cout << "\n<test_stl_conversion>\n---------------------" << "\n";
     /*
     Eigen::MatrixXd m 
     {
@@ -122,7 +125,7 @@ void test_stl_conversion()
     };
 
     assert(to_std_vec(m) == check);
-    std::cerr << "Vec Size: " << to_std_vec(m).size() << "\n";
+    // std::cerr << "Vec Size: " << to_std_vec(m).size() << "\n";
 }
 
 void test_plot_ewi()

@@ -118,6 +118,7 @@ namespace ewi
     {
         namespace mpl = matplot;
         
+        // How many subplots?
         int cols {};
         if (personal_ewi)
             cols = 2;
@@ -127,6 +128,7 @@ namespace ewi
         auto fig = mpl::figure(true);
         fig->title(opts.title);
 
+        // Create the technical plot
         auto ax = fig->add_subplot(1, cols, 0);
         // Customization
         ax->grid(true);
@@ -143,7 +145,7 @@ namespace ewi
         ax->ylabel(opts.ylabel);
         ax->xlabel(opts.xlabel);
         
-        // Create the plot
+        // Plot the data
         ax->line(0, 1, ewi_vals.size() + 1, 1);  // Create a baseline at y=1
         ax->hold(true);                                                          
         std::vector<double> x = mpl::linspace(1, ewi_vals.size(), ewi_vals.size());
@@ -151,6 +153,7 @@ namespace ewi
             ->marker_color({ 1.f, 0.f, 0.f }) // Red
             .marker_face(true);
         
+        // Create the personal subplot
         if (personal_ewi)
         {
             auto pax = fig->add_subplot(1, cols, 1);
@@ -178,6 +181,7 @@ namespace ewi
                 ->location(mpl::legend::general_alignment::bottomright);
 
         }
+
         // Export plot
         return fig->save(opts.filename);
     }
