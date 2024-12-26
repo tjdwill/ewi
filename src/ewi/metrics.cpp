@@ -2,38 +2,18 @@
 #include "metrics.hpp"
 //- STL
 // #include <iostream>
+#include <functional>
 #include <optional>
 //- Third-party
 #include <Eigen/Eigen>
 #include <matplot/matplot.h>
-//- In-house
-#include <ewi/record.hpp>
+#include <vector>
 
 
 namespace ewi
 {
 
-    auto get_record_metrics(Record const& r) -> std::optional<Eigen::MatrixXd>
-    {
-        if (r.is_empty())
-            return std::nullopt;
-        int rows = r.size();
-        int cols = r.metric_dim(); 
-        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> r_metrics = Eigen::MatrixXd::Zero(rows, cols);
-
-        /// TODO: Likely the least-efficient implementation for filling the matrix, but we
-        /// will worry about performance later.
-        for (int i {0}; i < rows; ++i)
-        {
-            auto const& metric = r[i].metrics();
-            for (int j {0}; j < cols; ++j)
-               r_metrics(i, j) = metric[j];
-        }
-
-        return r_metrics;
-    }
-
-    auto get_record_means(Eigen::MatrixXd const& metrics, bool colwise) -> Eigen::VectorXd
+    auto get_means(Eigen::MatrixXd const& metrics, bool colwise) -> Eigen::VectorXd
     {
        assert(metrics.size() > 0);
        if (colwise)
@@ -92,6 +72,17 @@ namespace ewi
         return ewi_vals;
     }
 
+    auto calculate_ewi(double local_mean, double global_mean, double min_lim, double max_lim) -> double
+    {
+        assert(global_mean == (min_lim + max_lim)/2);
+        // Normalize local_mean to a value between [-1, 1]
+        // Ex. Given a range of values from [1, 5], the mean is 3.
+        // Subtracting three from all values results in [-2, 2].
+        // Normalizing by the upper limit results in [-1, 1].
+        double ewi = (local_mean - global_mean)/(max_lim-global_mean);
+        return ewi;
+    }
+
     auto to_std_vec(Eigen::VectorXd const& input) -> std::vector<double>
     {
         // https://stackoverflow.com/questions/26094379/typecasting-eigenvectorxd-to-stdvector
@@ -104,12 +95,39 @@ namespace ewi
         return stl;
     }
 
-    auto plot_ewi(std::vector<double> const& ewi_vals, PlotCustomization const& opts) -> bool
+    auto to_eigen(std::vector<double>& data) -> Eigen::VectorXd
+    {
+        Eigen::VectorXd vec = Eigen::Map<Eigen::VectorXd>(data.data(), data.size());
+        assert(vec.size() == data.size());
+        return vec;
+    }
+    
+    auto to_eigen(std::vector<std::reference_wrapper<std::vector<double>>> const& data) -> Eigen::MatrixXd
+    {
+        int rows = static_cast<int>(data.size());
+        int cols = static_cast<int>(data[0].get().size());
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> m(rows, cols);
+        for (int i {0}; i < rows; ++i)
+            m.row(i) = to_eigen(data[i].get());
+
+        assert(m.rows() == rows && m.cols() == cols);
+        return m;
+    }
+
+    auto plot_ewi(std::vector<double> const& ewi_vals, PlotCustomization const& opts, std::optional<double> personal_ewi) -> bool
     {
         namespace mpl = matplot;
         
+        int cols {};
+        if (personal_ewi)
+            cols = 2;
+        else
+            cols = 1;
+
         auto fig = mpl::figure(true);
-        auto ax = fig->current_axes();
+        fig->title(opts.title);
+
+        auto ax = fig->add_subplot(1, cols, 0);
         // Customization
         ax->grid(true);
         if (opts.xlim.has_value())
@@ -118,8 +136,8 @@ namespace ewi
             ax->xlim({0, static_cast<double>(ewi_vals.size() + 1)});
         if (opts.ylim.has_value())
             ax->ylim(opts.ylim.value());
-        ax->title(opts.title);
-        ax->legend({"Baseline", "EWI"});
+        ax->title("Technical Index");
+        ax->legend({"Base", "Idx"});
         ax->legend()
             ->location(mpl::legend::general_alignment::bottomright);
         ax->ylabel(opts.ylabel);
@@ -133,6 +151,33 @@ namespace ewi
             ->marker_color({ 1.f, 0.f, 0.f }) // Red
             .marker_face(true);
         
+        if (personal_ewi)
+        {
+            auto pax = fig->add_subplot(1, cols, 1);
+            pax->title("Personal Index");
+            pax->xlim({-1, 1});
+            pax->ylim({-1, 1});
+            //pax->grid(true);
+            pax->hold(true);
+            /*
+            pax->plot(
+                    std::vector<double>{-1, 1},
+                    std::vector<double>{0, 0}, 
+                    "--k"
+            );*/
+
+            pax->scatter({0}, {0}, opts.dot_size)
+                ->color("black")
+                .marker_face(true);
+            pax->scatter({0}, {personal_ewi.value()}, opts.dot_size)
+                ->color("blue")
+                .marker_face(true);
+            pax->line(0, -1, 0, 1);
+            pax->legend({"Base", "Idx"});
+            pax->legend()
+                ->location(mpl::legend::general_alignment::bottomright);
+
+        }
         // Export plot
         return fig->save(opts.filename);
     }

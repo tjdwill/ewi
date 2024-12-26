@@ -2,93 +2,70 @@
 #include "metrics.hpp"
 
 #include <cassert>
+#include <functional>
 #include <iostream>
 
 #include <Eigen/Eigen>
 
-#include <ewi/record.hpp>
-#include <ewi/entry.hpp>
-
-// imports 
-using namespace std::chrono_literals;
-using namespace ewi;
-using Date = std::chrono::year_month_day;
-
 
 // Helper functions
-void test_ewi_calc();
+void test_to_eigen();
 void test_mean_calc();
+void test_ewi_calc();
 void test_plot_ewi();
-void test_record_metrics();
+
 
 int main()
 {
-    test_record_metrics();
+    test_to_eigen();
     test_mean_calc();
     test_ewi_calc();
     test_plot_ewi();
 }
 
-
+using namespace ewi;
+using namespace Eigen;
 namespace 
 {
     static std::vector<double> METRICS { 0.0, 1.0, 5.0, 6.0 };
     // Global date vector for instantiation
-    std::vector<Date> const dates
+    std::vector<std::reference_wrapper<std::vector<double>>> const DATA
     {
-        Date{ 2024y / std::chrono::April / 25d },
-        Date{ 2024y / std::chrono::October / 26d },
-        Date{ 2025y / std::chrono::September / 27d },
-        Date{ 2028y / std::chrono::October / 28d },
+        std::ref(METRICS),
+        std::ref(METRICS),
+        std::ref(METRICS),
+        std::ref(METRICS),
     };
-
-
-    auto entry_from(Date d) -> Entry
-    {
-        return Entry(d, "", METRICS);
-    }
-
-    auto gen_record(int num_entries) -> Record
-    {
-        std::vector<Entry> entries {};
-        for (int i=0; i<num_entries; i++)
-            entries.push_back(entry_from(dates[i]));
-        return Record(entries);
-    }
 }
 
-
-void test_record_metrics()
+void test_to_eigen()
 {
-    std::cout << "\n<test_record_metrics>\n---------------------" << "\n";
+    Matrix4d m {
+        {0, 1, 5, 6},
+        {0, 1, 5, 6},
+        {0, 1, 5, 6},
+        {0, 1, 5, 6},
+    };
 
-    assert( !(get_record_metrics(Record {})) );
-
-    Record r = gen_record(static_cast<int>(dates.size()));
-    auto metrics = get_record_metrics(r);
-    assert(metrics);
-    assert(static_cast<int>(metrics.value().rows()) == r.size());
-    assert(static_cast<int>(metrics.value().cols()) == r.metric_dim());
-    std::cout << "The Record:\n" << r << "\n";
-    std::cout << "Record metrics:\n" << *metrics << "\n";
+    auto test_m = to_eigen(DATA);
+    assert(test_m.isApprox(m));
 }
 
 void test_mean_calc()
 {
     std::cout << "\n<test_mean_calc>\n----------------" << "\n";
 
-    Record r = gen_record(static_cast<int>(dates.size()));
-    auto metrics = get_record_metrics(r);
-    assert(metrics);
+    auto metrics = to_eigen(DATA);
+    std::cout << "Matrix: \n" << metrics << "\n";
 
-    auto means = get_record_means(metrics.value());
+    auto means = get_means(metrics);
     /// All entries in the defined record have the same metrics, so the means should equal
     /// the original values.
     auto baseline = Eigen::Map<Eigen::Vector<double, 4> >(METRICS.data());
     assert(means.isApprox(baseline));
 
 
-    auto rowwise_means = get_record_means(*metrics, false);
+    auto rowwise_means = get_means(metrics, false);
     /// The METRICS vector has a mean of 3.
     assert(rowwise_means.isApprox(Eigen::VectorXd::Ones(METRICS.size()) * 3));
     
@@ -155,14 +132,16 @@ void test_plot_ewi()
     PlotCustomization opts
     {
        "test_ewi.png",
-       "Test Plot Export",
+       "Test EWI Printout",
     };
     Eigen::VectorXd zeros = Eigen::VectorXd::Zero(5);
     Eigen::Vector<double, 5> locals { { -2, -1, 0, 1, 2 } };
     auto eigen = calculate_ewi(locals, zeros);
     auto data = to_std_vec(eigen);
+    double personal = calculate_ewi(3.5, 3.0, 1., 5.);
 
     assert(data.size() > 0);
 
-    assert(plot_ewi(data, opts));
+    assert(plot_ewi(data, opts, personal));
+    assert(plot_ewi(data, {"test_ewi2.png", "No Personal"}));
 }

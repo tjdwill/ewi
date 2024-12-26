@@ -100,18 +100,28 @@ namespace ewi
             /// singularity IndexRange (ex. {0, 0}) if a singularity DateRange is passed in
             /// and an Entry exists for that date.
             auto find(DateRange range) const noexcept -> std::optional<IndexRange>;
+
             /// Retrieves a reference to the entry with the given date(s) if it exists.
             auto get(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<Entry const>>;
             auto get(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<Entry const>>>;
-          
 
             /// Query if Record has no entries.
             auto is_empty() const noexcept -> bool; 
             /// Query how many metrics are recorded per entry.
             auto metric_dim() const noexcept -> int;
             /// Retrieve metrics for a given date range.
-            auto metrics(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<std::vector<double> const>>;
-            auto metrics(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<std::vector<double> const>>>;
+            ///
+            /// NOTE:
+            ///     The const on the metrics is cast away to be compatible with Eigen.  The
+            ///     assumption is that this method will never be used to modify metrics
+            ///     directly.
+            ///
+            ///     The alternative was to define multiple const/non-const variations of
+            ///     each method, even extending to changes in ewi::Entry. That may be
+            ///     viable in the future, but for now, I'll stick to this simple solution.
+            auto metrics(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<std::vector<double>>>;
+            auto metrics(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<std::vector<double>>>>;
+
             /// Query number of entries in the record.
             auto size() const noexcept -> int;
             /// Access the Record via numeric index. 

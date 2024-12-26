@@ -254,23 +254,28 @@ namespace ewi
     
     auto Record::metric_dim() const noexcept -> int { return is_empty() ? 0 : d_entries[0].metrics().size(); }
     
-    auto Record::metrics(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<std::vector<double> const>>
+    auto Record::metrics(std::chrono::year_month_day date) const noexcept -> std::optional<std::reference_wrapper<std::vector<double>>>
     {
         auto test = metrics({date, date});
         if (!test)
             return std::nullopt;
         else
-            return test.value()[0].get();
+            return (*test)[0].get();
     }
 
-    auto Record::metrics(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<std::vector<double> const>>>
+    auto Record::metrics(DateRange const& dates) const noexcept -> std::optional<std::vector<std::reference_wrapper<std::vector<double>>>>
     {
         auto entries = get(dates);
         if (!entries)
             return std::nullopt;
-        std::vector<std::reference_wrapper<std::vector<double> const>> metrics {};
+        std::vector<std::reference_wrapper<std::vector<double>>> metrics {};
+        /// The const on the metrics is cast away to be compatible with Eigen.
+        /// The assumption is that this method will never be used to modify metrics
+        /// directly.
         for (Entry const& e : *entries)
-            metrics.push_back(e.metrics());
+            metrics.push_back(std::ref(
+                        const_cast<std::vector<double>&>(e.metrics())
+            ));
 
         return metrics;
     }
