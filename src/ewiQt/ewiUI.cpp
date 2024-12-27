@@ -242,9 +242,15 @@ namespace ewiQt
     {
         Form* survey {};
         if (surveyType == PERSONAL_SURVEY)
-            survey = { new Form(d_personalQuestions, tr("Personal Survey"), this) };
+        {
+            QRegularExpression regex { "[1-4](\\.\\d*)?|5(\\.0)?" };
+            survey = { new Form(d_personalQuestions, regex, tr("Personal Survey"), this) };
+        }
         else
-            survey = { new Form(d_technicalQuestions, tr("Technical Survey"), this) };
+        {
+            QRegularExpression regex {"[+-]?\\d+(\\.\\d*)?"};
+            survey = { new Form(d_technicalQuestions, regex, tr("Technical Survey"), this) };
+        }
         connect(
                 survey, &Form::responsesReady,
                 this, [&surveyType, this](QStringList responses)

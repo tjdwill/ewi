@@ -3,6 +3,7 @@
 #ifndef INCLUDED_EWIQT_FORM
 #define INCLUDED_EWIQT_FORM
 
+#include <qlist.h>
 #ifndef INCLUDED_QT_QDIALOG
 #include <QDialog>
 #define INCLUDED_QT_QDIALOG
@@ -30,6 +31,12 @@ public:
     Form() = delete;
     Form(
             QStringList const& questions,
+            QString const& title="Survey Form",
+            QWidget* parent=nullptr
+    );
+    Form(
+            QStringList const& questions,
+            QRegularExpression const& inputFilter,
             QString const& title="Survey Form",
             QWidget* parent=nullptr
     );
@@ -65,6 +72,7 @@ private:
     void setConnections();
 
     QStringList d_results {};
+    QRegularExpression d_regex {};
     QVector<QLineEdit*> d_answers {};
     QDateEdit* d_date;
     QTextEdit* d_notes;

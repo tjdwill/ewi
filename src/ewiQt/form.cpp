@@ -25,6 +25,26 @@ Form::Form(
     //setMinimumSize(sizeHint());
 }
 
+Form::Form(
+        QStringList const& questions,
+        QRegularExpression const& inputFilter,
+        QString const& title,
+        QWidget* parent
+)
+    : QDialog(parent), d_regex(inputFilter)
+{
+    bool test = createForm(questions);
+    Q_ASSERT(test);
+          
+    // connect slots and signals
+    setConnections();
+
+    // final configs
+    setWindowTitle(title);
+    //setMinimumSize(sizeHint());
+}
+
+
 QStringList Form::getResponses()
 {
     return d_results;
@@ -67,7 +87,7 @@ auto Form::createForm(QStringList const& questions) -> bool
     // Create question and answers.
     // Each line must accept only numeric input.
     QValidator* validator { new QRegularExpressionValidator(
-            QRegularExpression("[+-]?\\d+(\\.\\d*)?"),
+            QRegularExpression(d_regex),
             this
     )};
     for (auto const& question : questions)
