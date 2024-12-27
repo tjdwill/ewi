@@ -2,6 +2,7 @@
 #include "ewi_controller.hpp"
 //- STL
 #include <optional>
+#include <qcoreapplication.h>
 #include <string>
 #include <vector>
 //- Third-party
@@ -35,6 +36,8 @@ EWIController::EWIController(QWidget* parent)
     setLayout(layout);
     setWindowTitle(tr("EWI Tracker"));
     // TODO: Move app window center to the screen center
+
+
     createConnections();
     // provide information to the app
     emit d_app->setPersonalQuestionsSig(QtC::from_stl(ewi::PersonalSurvey::questions()));
@@ -87,12 +90,13 @@ void EWIController::appShutdown()
 
 void EWIController::createUser(QStringList userData)
 {
+    /*
     qout << "User Creation: [";
     for (auto const& item : userData)
         qout << item << "; ";
     qout << "]\n";
     qout.flush();
-
+    */
     auto data = QtC::to_stl(userData);
     ewi::Employee emp { { data[0] }, data[1] };
     d_user_profile = ewi::EmployeeRecord { emp };
@@ -109,6 +113,9 @@ void EWIController::exportUser(QString pathName)
 {
     qout << "Export User to: " << pathName << "\n";
     qout.flush();
+
+    assert(d_user_profile);
+    ewi::EmployeeRecordIOUtils::export_record(*d_user_profile, QtC::to_stl(pathName));
 }
 
 void EWIController::loadJob(QString jobDefPath)
@@ -139,6 +146,23 @@ void EWIController::loadUser(QString userID)
 {
     qout << "Load User: " << userID << "\n";
     qout.flush();
+
+    // Let's assume the data is formed correctly.
+    QString userFile { QCoreApplication::applicationDirPath() + "/.usr/" + userID + ".txt" };
+    try {
+       d_user_profile = ewi::EmployeeRecordIOUtils::import_record(QtC::to_stl(userFile));
+    } catch (Exception const& e) {
+       std::string err_msg { "Load User Error:\n" + e.what()  };
+       sendError(err_msg);
+       return;
+    }
+    // Send signal that profile is loaded if necessary
+    if (!d_profile_loaded && d_job_profile)
+    {
+        d_profile_loaded = true;
+        emit d_app->profileLoadedSig();
+    }
+    
 }
 
 void EWIController::processMetrics(QVector<QDate> dates)

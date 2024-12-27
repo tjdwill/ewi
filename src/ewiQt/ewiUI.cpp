@@ -238,6 +238,15 @@ namespace ewiQt
         enableUserOpsButton();
     }
 
+    // TODO: The personal survey regex makes it such that this module now implicitly
+    // depends on ewi::survey via ewi::PersonalSurvey. I should find a way to remove
+    // this dependency. I may have to move form creation to the controller, completely
+    // removing the feature from this component.
+    //
+    // On the other hand, even if I were to change the max and min personal response values
+    // in ewi/survey.cpp, I would still need to change this file because the value is
+    // encoded in the regex literal. So, moving the logic wouldn't be a net positive in
+    // terms of maintenance.
     void EWIUi::serveSurvey(QString const& surveyType)
     {
         Form* survey {};

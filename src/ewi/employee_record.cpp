@@ -282,7 +282,8 @@ namespace ewi
         EmployeeRecordIOUtils::seek_nonws(iss);
         std::chrono::year_month_day date;
         std::chrono::from_stream(iss, "%Y-%m-%d", date);
-        assert(iss);
+        if (!iss)
+            throw Exception("Incorrect format: Could not read date.");
         return date;
     }
     auto EmployeeRecordIOUtils::parse_notes(std::istringstream& iss) -> std::string
@@ -293,7 +294,8 @@ namespace ewi
         /// Strip delimiter
         for (int i {}; i < EmployeeRecordIOUtils::NUM_NOTES_DELIMS; ++i) {
             iss >> tkn;
-            assert(tkn == EmployeeRecordIOUtils::NOTES_DELIM);
+            if (tkn != EmployeeRecordIOUtils::NOTES_DELIM)
+                throw Exception("Incorrect User Data Format.");
         }
 
         iss >> std::noskipws; 
@@ -337,7 +339,8 @@ namespace ewi
             // upper level in the development hierarchy.
             metrics.push_back(std::strtod(double_str.c_str(), &remaining_str));
         }
-        assert(iss.eof());
+        if(!iss && !iss.eof())
+            throw Exception("Could not get user metric data.");
         return metrics;
     }
     void EmployeeRecordIOUtils::seek_nonws(istringstream& iss)
