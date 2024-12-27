@@ -10,6 +10,16 @@
 
 ## Journal
 
+### 26 December 2024
+
+- Decided to change the EWIUi tester to hold the EWIUi object within its layout. Now, I
+  don't have to overload relevant display functions; Qt will handle it for me.
+- Refactored `EmployeeRecordIOUtils` to allow individual entry exports. The idea is to
+  provide the means to export newly created entries to a temp file for data loss
+  prevention. This will need additional thought, but at the mechanism is there now.
+- Had to change the survey response signal to include the survey type in the transmission.
+- Implemented `ewiQt::EWIUi` about page.
+
 ### 25 December 2024
 
 I realized that I forgot to include the personal survey results in the ewi calculation
@@ -24,6 +34,30 @@ would have access to these types anyhow.
 Instead, I will focus on writing an additional method that returns metrics from a Record.
 My original thought process to exclude this makes little sense in hindsight, so I'm going
 to add this feature.
+
+**Update:** I was able to implement the changes, but I want to note here that I wound up
+using a `const_cast` in order to get the parts playing nicely. Part of the motivation for
+this refactor was to instantiate the `Eigen` data types via references to vectors instead
+of copies. It makes little sense to have to copy all relevant metrics vectors during
+retrieval only to have them copied again in the matrix construction. 
+
+I learned about the use of `std::reference_wrapper` and helpers `std::ref()`/`std::cref`.
+As it turns out, `Eigen` doesn't want to instantiate Vector types from `const` STL vector
+references; it only worked with mutable references.  This was an issue because the entire
+`Entry` and `Record` APIs deal with const references pretty much exclusively. Instead of
+adding redundant getters and setters, leading to changing and extending multiple APIs, I
+decided to simply cast the `const` away in the implementented `Record::metrics()` function.
+I justify this by noting that metrics should never be modified, so there is no context in
+which they should be changed directly. Also, the internal data member storing metrics are
+non-const, so `const_cast` does not invoke undefined behavior.
+
+Time will tell if this was a wise decision.
+
+
+Also, I realized that I never included the data processing for personal surveys in my
+metrics component, so I did so. The Personal Index is a single value ranging from [-1, 1].
+It is calculated using the method I wrote about on [21 October 2024's
+entry](21-october-2024).
 
 ### 23 December 2024
 
@@ -631,12 +665,13 @@ Here are some questions that have come up as I work this project.
 
 ### Language
 
-- [ ] How do I compare two Eigen objects?
+- [x] How do I compare two Eigen objects?
+    - use the `isApprox()` method. The default delta for doubles is 1e-12.
 - [ ] When do I specify `noexcept`?
 - [x] East-style const?
 - [x] `class` vs. `struct`: semantic meanings?
 - [x] How are boolean comparision operator overloads implemented? What is the spaceship operator `<=>`?
-- [ ] Difference: Initialization vs. Assignment
+- [x] Difference: Initialization vs. Assignment
 
 ### Software Design/Project Management
 
@@ -660,10 +695,12 @@ Here are some questions that have come up as I work this project.
 
 ### Implementation
 
-- [ ] `ewi/metricstats.cpp`
+- [x] `ewi/metrics.cpp`
 - [x] `ewi/employee_record.cpp`
 - [x] `ewi/survey.cpp`
 - [ ] Front-end (UI, front-end/back-end coordinator)
+    - [ ] Add basic Quick Help page.
+    - [ ] Implement slots for the app controller.
 
 ### Learning
 
