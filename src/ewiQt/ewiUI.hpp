@@ -34,6 +34,10 @@ public:
     /// In practice, it would make sense to make the controller this object's parent.
     EWIUi(QWidget* parent=nullptr);
     
+    // CONSTANTS
+    QString const PERSONAL_SURVEY { "Personal" };
+    QString const TECHNICAL_SURVEY { "Technical" };
+
 public slots:
 
 signals:
@@ -48,11 +52,11 @@ signals:
     /// Sends date range for metric retrieval [fromDate, toDate]
     void getMetricsSig(QVector<QDate> dates);
     /// Send the path to the selected job definition file to load.
-    void loadJobSig(QString const& jobDefPath);
+    void loadJobSig(QString jobDefPath);
     /// Send a userID to load the user's data/
-    void loadUserSig(QString const& userID);
+    void loadUserSig(QString userID);
     /// Send responses to the controller
-    void surveyResponsesSig(QStringList responses);
+    void surveyResponsesSig(QStringList responses, QString const& surveyType);
 
     // Public Signals
     // These are signals intended to be fired by the controller to communicate with this
@@ -91,7 +95,7 @@ private slots:
     void fireGetMetrics();
     void fireLoadJob();
     void fireLoadUser();
-    void sendSurveyResponses(QStringList responses);
+    // void sendSurveyResponses(QStringList responses, QString const& surveyType);
 
 private:
     // SETUP-RELATED FUNCTIONS
@@ -107,12 +111,6 @@ private:
     /// Create a temporary dialog to gather data for user loading or creation.
     auto getUserData(bool create=false) -> QStringList;
     auto getDateRange() -> QVector<QDate>;
-
-
-    // CONSTANTS
-    QString const PERSONAL_SURVEY { "Personal" };
-    QString const TECHNICAL_SURVEY { "Technical" };
-
 
     // Data Members
     QStringList d_technicalQuestions {};

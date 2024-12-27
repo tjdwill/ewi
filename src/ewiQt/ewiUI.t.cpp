@@ -85,9 +85,10 @@ void EWIUiTestController::createConnections()
             }
     );
     connect(d_app, &EWIUi::surveyResponsesSig,
-            this, [this](QStringList responses)
+            this, [this](QStringList responses, QString const& surveyType)
             {
                 this->qout << "Responses\n---------" << "\n";
+                this->qout << "Survey Type: " << surveyType << "\n";
                 for (auto const& response : responses)
                     this->qout << response << "\n";
                 this->qout.flush();

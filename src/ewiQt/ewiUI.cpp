@@ -224,7 +224,13 @@ namespace ewiQt
             survey = { new Form(d_personalQuestions, tr("Personal Survey"), this) };
         else
             survey = { new Form(d_technicalQuestions, tr("Technical Survey"), this) };
-        connect(survey, &Form::responsesReady, this, &EWIUi::surveyResponsesSig);
+        connect(
+                survey, &Form::responsesReady,
+                this, [&surveyType, this](QStringList responses)
+                {
+                     emit surveyResponsesSig(responses, surveyType); 
+                }
+         );
 
         survey->exec();
         survey->deleteLater();
@@ -290,9 +296,11 @@ namespace ewiQt
             emit loadUserSig(userData[0]);
     }
 
-    void EWIUi::sendSurveyResponses(QStringList responses)
+    /*
+    void EWIUi::sendSurveyResponses(QStringList responses, QString const& surveyType)
     {
-        emit surveyResponsesSig(responses);
+        emit surveyResponsesSig(responses, surveyType);
     }
+    */
 } // namespace ewiQt
 
