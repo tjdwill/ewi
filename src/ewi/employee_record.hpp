@@ -183,8 +183,6 @@ namespace ewi
         static auto parse_metrics(std::istringstream& iss) -> std::vector<double>;
         /// Seeks next non-whitespace character.
         static void seek_nonws(std::istringstream& iss);
-
-
     };
 }  // namespace ewi
 #endif // INCLUDED_EWI_EMPLOYEE_RECORD

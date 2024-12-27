@@ -127,6 +127,7 @@ namespace ewi
 
         auto fig = mpl::figure(true);
         fig->title(opts.title);
+        fig->size(opts.img_width, opts.img_height); 
 
         // Create the technical plot
         auto ax = fig->add_subplot(1, cols, 0);

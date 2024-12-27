@@ -83,6 +83,9 @@ namespace ewi
         double dot_size { 10 }; // how large is a given scatter point
         std::optional<std::array<double, 2>> xlim {};
         std::optional<std::array<double, 2>> ylim {};
+        // Default image resolution
+        unsigned int img_width { 1280 };
+        unsigned int img_height { 720 };
     };
     /// Visualizes the workload and exports to a specified save location.
     auto plot_ewi(
