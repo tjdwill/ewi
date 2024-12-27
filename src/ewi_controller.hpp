@@ -68,6 +68,7 @@ private:  /* DATA MEMBERS */
 
 private:  /* METHODS */
     void createConnections();
+    void sendError(std::string const& err_msg);
     /// Ensure required directories are available to the program.
     /// Assumes this program is self-contained in that critical files are stored within the
     /// same directory structure as the executable.

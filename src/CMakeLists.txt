@@ -4,11 +4,17 @@ add_subdirectory(ewiQt)
 
 add_library(ewi_controller ewi_controller.cpp)
 target_link_libraries(ewi_controller PUBLIC 
-    Qt::Widgets
+    # utils
+
+    # ewi
     employee_record
     metrics
     survey
+    # ewiQt
     ewiUI
+    QtConverter
+    # Third-party
+    Qt::Widgets
     ${exception}
 )
 

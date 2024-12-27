@@ -2,7 +2,6 @@
 #include "ewi_controller.hpp"
 //- STL
 #include <optional>
-#include <qlist.h>
 #include <string>
 #include <vector>
 //- Third-party
@@ -19,6 +18,7 @@
 /* Imports */
 using cpperrors::Exception;
 using ewiQt::EWIUi;
+using QtC = ewiQt::QtConverter;
 
 /* Definitions */
 
@@ -36,7 +36,8 @@ EWIController::EWIController(QWidget* parent)
     setWindowTitle(tr("EWI Tracker"));
     // TODO: Move app window center to the screen center
     createConnections();
-
+    // provide information to the app
+    emit d_app->setPersonalQuestionsSig(QtC::from_stl(ewi::PersonalSurvey::questions()));
 }
 
 void EWIController::createConnections()
@@ -48,6 +49,11 @@ void EWIController::createConnections()
     connect(d_app, &EWIUi::loadJobSig, this, &EWIController::loadJob);
     connect(d_app, &EWIUi::loadUserSig, this, &EWIController::loadUser);
     connect(d_app, &EWIUi::surveyResponsesSig, this, &EWIController::processResponses);
+}
+
+void EWIController::sendError(std::string const& err_msg)
+{
+    emit d_app->errorMsgSig(QString::fromStdString(err_msg));
 }
 
 void EWIController::validateRuntimeEnv()
@@ -98,6 +104,24 @@ void EWIController::loadJob(QString jobDefPath)
 {
     qout << "Load Job from: " << jobDefPath << "\n";
     qout.flush();
+
+    std::string path { jobDefPath.toStdString() };
+    try {
+        d_job_profile = ewi::load_profile(path);
+        auto const& questions = d_job_profile.value().questions;
+        emit d_app->jobChangedSig(QtC::from_stl(questions)); 
+        if (!d_profile_loaded && d_user_profile)
+        {
+            d_profile_loaded = true;
+            emit d_app->profileLoadedSig();
+        }
+
+    } catch (Exception const& e) {
+        std::string err_msg { "Job Load Error:\n" + e.what() };
+        sendError(err_msg);
+        return;
+    }
+    
 }
 
 void EWIController::loadUser(QString userID)
