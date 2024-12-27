@@ -63,6 +63,7 @@ target_link_libraries(ewiUI PUBLIC
     Qt::Widgets
     Qt::Gui
 )
+target_compile_definitions(ewiUI PRIVATE EWI_VERSION="${PROJECT_VERSION}")
 add_executable(ewiUIApp ewiUI.t.cpp)
 target_link_libraries(ewiUIApp PRIVATE
     ewiUI

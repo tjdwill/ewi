@@ -8,4 +8,9 @@ target_link_libraries(ewi_controller PUBLIC
     employee_record
     metrics
     survey
+    ewiUI
+    ${exception}
 )
+
+add_executable(ewiTracker ewi_tracker.cpp)
+target_link_libraries(ewiTracker PRIVATE ewi_controller)

@@ -3,6 +3,9 @@
 //- Third-party
 #include <QtWidgets>
 #include <QPixmap>
+#include <qglobal.h>
+#include <qmessagebox.h>
+#include <qnamespace.h>
 //- In-house
 #include "form.hpp"
 #include "imgViewer.hpp"
@@ -192,8 +195,20 @@ namespace ewiQt
     QTextStream qerr { stderr };
     void EWIUi::about()
     {
-        qerr << "About\n";
-        qerr.flush();
+        QString aboutTxt {};
+        QTextStream qss { &aboutTxt };
+        qss << tr("## Employee Workload Index (EWI) Tracker") << "\n\n"
+            << tr("**License**: TODO") << "\n\n"
+            << tr("Source Code: ") << "https://github.com/tjdwill/ewi" << "\n\n"
+            << "Version " EWI_VERSION << " (Qt " << qVersion() << ')' << "\n\n"
+            << "Copyright 2025 &copy; Terrance Williams" << "\n"; 
+        qss.flush();
+
+        QMessageBox about { this };
+        about.setWindowTitle(tr("About EWI Tracker"));
+        about.setTextFormat(Qt::MarkdownText);
+        about.setText(aboutTxt);
+        about.exec();
     }
 
     void EWIUi::displayImg(QPixmap img)
