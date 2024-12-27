@@ -58,7 +58,7 @@ void EWIController::sendError(std::string const& err_msg)
 
 void EWIController::validateRuntimeEnv()
 {
-    QDir appRoot { QCoreApplication::applicationDirPath() };
+QDir appRoot { QCoreApplication::applicationDirPath() };
 
     // TODO: Handle temp folder check here. If the tmp folder exists, that means the app did
     // not shut down properly, meaning user changes may not have been written to their data
@@ -92,6 +92,17 @@ void EWIController::createUser(QStringList userData)
         qout << item << "; ";
     qout << "]\n";
     qout.flush();
+
+    auto data = QtC::to_stl(userData);
+    ewi::Employee emp { { data[0] }, data[1] };
+    d_user_profile = ewi::EmployeeRecord { emp };
+    
+    // Send signal that profile is loaded if necessary
+    if (!d_profile_loaded && d_job_profile)
+    {
+        d_profile_loaded = true;
+        emit d_app->profileLoadedSig();
+    }
 }
 
 void EWIController::exportUser(QString pathName)
@@ -133,7 +144,7 @@ void EWIController::loadUser(QString userID)
 void EWIController::processMetrics(QVector<QDate> dates)
 {
     qout << "Get metrics from " << dates[0].toString("yyyy-MM-dd")
-        << "to " << dates[1].toString("yyyy-MM-dd") << "\n";
+        << " to " << dates[1].toString("yyyy-MM-dd") << "\n";
     qout.flush();
 }
 
