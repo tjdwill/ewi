@@ -62,6 +62,8 @@ signals:
     // These are signals intended to be fired by the controller to communicate with this
     // object.
 
+    /// Get an error message to print to the user
+    void errorMsgSig(QString msg);
     /// The user has successfully changed the current job profile.
     void jobChangedSig(QStringList jobQuestions);
     /// Both the user and the job profile have been loaded.
@@ -79,6 +81,8 @@ private slots:
     /// information is provided to the application. This is enforced by the conditions of
     /// the firing signal.
     void enableUserOpsButton();
+    // Print an error message to screen
+    void errorMsg(QString msg);
     void jobChanged(QStringList jobQuestions);
     void profileLoaded();
     void setPersonalQuestions(QStringList questions);

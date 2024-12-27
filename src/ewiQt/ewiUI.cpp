@@ -107,6 +107,7 @@ namespace ewiQt
         connect(this, &EWIUi::setPersonalQuestionsSig, this, &EWIUi::setPersonalQuestions);
         connect(this, &EWIUi::jobChangedSig, this, &EWIUi::jobChanged);
         connect(this, &EWIUi::sendImg, this, &EWIUi::displayImg);
+        connect(this, &EWIUi::errorMsgSig, this, &EWIUi::errorMsg);
 
     }
 
@@ -220,6 +221,11 @@ namespace ewiQt
     void EWIUi::enableUserOpsButton()
     {
         d_appPages->d_userOpsButton->setEnabled(true);
+    }
+
+    void EWIUi::errorMsg(QString msg)
+    {
+        QMessageBox::about(this, tr("Error Message"), msg);
     }
 
     void EWIUi::jobChanged(QStringList job_questions)

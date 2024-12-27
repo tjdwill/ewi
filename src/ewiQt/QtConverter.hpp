@@ -9,6 +9,12 @@
 #define INCLUDED_STD_CHRONO
 #endif
 
+#ifndef INCLUDED_STD_STRING
+#include <string>
+#define INCLUDED_STD_STRING
+#endif
+
+
 #ifndef INCLUDED_STD_VECTOR
 #include <vector>
 #define INCLUDED_STD_VECTOR
@@ -25,10 +31,17 @@ namespace ewiQt
 struct QtConverter
 {
     /// convert between QDate and std::chrono::year_month_day
-    static auto to_ymd(QDate const& date) -> std::chrono::year_month_day;
-    static auto to_ymd(QVector<QDate> const& dates) -> std::vector<std::chrono::year_month_day>;
-    static auto from_ymd(std::chrono::year_month_day const& date) -> QDate;
-    static auto from_ymd(std::vector<std::chrono::year_month_day> const& dates) -> QVector<QDate>;
+    static auto to_stl(QDate const& date) -> std::chrono::year_month_day;
+    static auto to_stl(QVector<QDate> const& dates) -> std::vector<std::chrono::year_month_day>;
+    static auto from_stl(std::chrono::year_month_day const& date) -> QDate;
+    static auto from_stl(std::vector<std::chrono::year_month_day> const& dates) -> QVector<QDate>;
+
+    // Convert btw. std::string and QString
+    static auto to_stl(QString const& s) -> std::string;
+    static auto to_stl(QStringList const& strings) -> std::vector<std::string>;
+    static auto from_stl(std::string const& s) -> QString;
+    static auto from_stl(std::vector<std::string> const& strings) -> QStringList;
+
 };
 } // namespace ewiQt
 #endif // INCLUDED_EWIQT_QTCONVERTER
