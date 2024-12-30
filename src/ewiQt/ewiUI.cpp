@@ -278,6 +278,29 @@ namespace ewiQt
     {
         qerr << "Help Page" << "\n";
         qerr.flush();
+
+        QString helpTxt {};
+        QTextStream qss { &helpTxt };
+        qss << tr("## EWI Quick Help") << "\n\n"
+            << tr("### Enable the `Actions` Button \n\n - Load a User Profile\n- Load a Job Profile")
+            << "\n\n"
+            << tr("### Making an Entry\n\nOnce both user and job are loaded, select a"
+                   " survey type to take. **Technical** surveys are intended to be taken"
+                   " daily. **Personal** surveys, surveys intended to help track the user's"
+                   " emotional satisfaction, should be take on an approximately weekly basis.")
+            << "\n\n"
+            << tr("### View EWI Visualization\n\n Click the \"`Actions->View Workload...`\" "
+                  "button, and pass in the desired date range.")
+            << "\n\n"
+            << tr("### Further Help\n\nPlease refer to the documentation included in this program's folder.")
+            << "\n";
+        qss.flush();
+
+        QMessageBox help { this };
+        help.setWindowTitle(tr("Quick Help"));
+        help.setTextFormat(Qt::MarkdownText);
+        help.setText(helpTxt);
+        help.exec();
     }
 
     // Signal-firing slots

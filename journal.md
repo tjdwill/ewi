@@ -22,6 +22,12 @@ As a result, basic backups will need to be done by the user (copying the relevan
 directories).
 
 - Changed `ewiQt/views.cpp` to disable (hide) export.
+- Changed `ewi/record.cpp` to use exceptions instead of `std::expected` for consistency.
+    - Same with `ewi/employee_record.cpp`
+- Updated `ewi/employee_record.cpp` `import_record()` to handle empty record case.
+- Update `ewi/survey` to instantiate `Entry` from results.
+- Implement survey response processing in app.
+- `ewiQt/ewiUI.cpp` implement help slot.
 
 ### 26 December 2024
 
@@ -714,6 +720,8 @@ Here are some questions that have come up as I work this project.
 - [ ] Front-end (UI, front-end/back-end coordinator)
     - [ ] Add basic Quick Help page.
     - [ ] Implement slots for the app controller.
+    - [ ] Add User Display Name to user action page.
+    - [ ] Refactor export/import user feature.
 
 ### Learning
 

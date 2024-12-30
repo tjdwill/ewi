@@ -25,7 +25,7 @@
 namespace ewi
 {
     /// A given data entry. Can be for either job-related surveys or personal surveys.
-    struct Entry 
+    class Entry 
     {
         public:
             // CONSTRUCTORS

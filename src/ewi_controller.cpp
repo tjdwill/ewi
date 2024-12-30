@@ -1,9 +1,13 @@
 // ewi_controller.cpp
 #include "ewi_controller.hpp"
 //- STL
+#include <bits/chrono_io.h>
+#include <chrono>
 #include <optional>
-#include <qcoreapplication.h>
+#include <qaction.h>
+#include <qchar.h>
 #include <string>
+#include <unistd.h>
 #include <vector>
 //- Third-party
 #include <cpperrors>
@@ -22,6 +26,25 @@ using ewiQt::EWIUi;
 using QtC = ewiQt::QtConverter;
 
 /* Definitions */
+
+//------------- Helpers ---------------
+QString const USR_DIR {".usr"};
+QString const TMP_DIR { ".tmp"};
+QString const JOB_DIR { ".jobs" };
+QStringList const APP_DIRS { TMP_DIR, USR_DIR, JOB_DIR };
+QString const FILE_EXT { ".txt" };
+
+auto getUserPath(QString const& userID) -> QString
+{
+    return QCoreApplication::applicationDirPath() + '/' + USR_DIR + '/' + userID + FILE_EXT;
+}
+auto getUserPath(std::string const& user_id) -> QString
+{
+    return getUserPath(QtC::from_stl(user_id));
+}
+
+//-------------------------------------
+
 
 EWIController::EWIController(QWidget* parent)
     : QWidget(parent)
@@ -68,8 +91,7 @@ QDir appRoot { QCoreApplication::applicationDirPath() };
     // file.
 
     // Handle subdirectories
-    QStringList subdirs {".tmp", ".usr", ".jobs"};
-    for (auto const& d : subdirs)
+    for (auto const& d : APP_DIRS)
     {
         if(!appRoot.exists(d))
             if(!appRoot.mkdir(d))
@@ -86,6 +108,10 @@ void EWIController::appShutdown()
 {
     qout << "Shutdown Triggered" << "\n";
     qout.flush();
+
+    if (d_profile_loaded)
+        exportUser(getUserPath(d_user_profile->who().id.formal()));
+    close();
 }
 
 void EWIController::createUser(QStringList userData)
@@ -124,7 +150,8 @@ void EWIController::loadJob(QString jobDefPath)
     qout.flush();
 
     std::string path { jobDefPath.toStdString() };
-    try {
+    try 
+    {
         d_job_profile = ewi::load_profile(path);
         auto const& questions = d_job_profile.value().questions;
         emit d_app->jobChangedSig(QtC::from_stl(questions)); 
@@ -134,7 +161,9 @@ void EWIController::loadJob(QString jobDefPath)
             emit d_app->profileLoadedSig();
         }
 
-    } catch (Exception const& e) {
+    }
+    catch (Exception const& e) 
+    {
         std::string err_msg { "Job Load Error:\n" + e.what() };
         sendError(err_msg);
         return;
@@ -148,10 +177,13 @@ void EWIController::loadUser(QString userID)
     qout.flush();
 
     // Let's assume the data is formed correctly.
-    QString userFile { QCoreApplication::applicationDirPath() + "/.usr/" + userID + ".txt" };
-    try {
+    QString userFile { getUserPath(userID) };
+    try 
+    {
        d_user_profile = ewi::EmployeeRecordIOUtils::import_record(QtC::to_stl(userFile));
-    } catch (Exception const& e) {
+    }
+    catch (Exception const& e) 
+    {
        std::string err_msg { "Load User Error:\n" + e.what()  };
        sendError(err_msg);
        return;
@@ -170,13 +202,34 @@ void EWIController::processMetrics(QVector<QDate> dates)
     qout << "Get metrics from " << dates[0].toString("yyyy-MM-dd")
         << " to " << dates[1].toString("yyyy-MM-dd") << "\n";
     qout.flush();
+
+    auto stl_dates = QtC::to_stl(dates);
 }
 
 void EWIController::processResponses(QStringList responses, QString const& surveyType)
 {
+    /*
     qout << "Responses\n---------" << "\n";
     qout << "Survey Type: " << surveyType << "\n";
     for (auto const& response : responses)
         qout << response << "\n";
     qout.flush();
+    */
+    ewi::SurveyResults results { QtC::to_stl(responses), d_job_profile->metric_cnt() };
+    
+    // Create the entry and update the record
+    try
+    {
+        if (surveyType == d_app->TECHNICAL_SURVEY)
+            d_user_profile->add( d_job_profile->job_label.id, ewi::RecordType::Technical, results.to_entry() );
+        else
+            d_user_profile->add( d_job_profile->job_label.id, ewi::RecordType::Personal, results.to_entry() );
+
+        // TODO: Marking temp file update point.
+        // export_entry(results.to_entry); to the relevant file.
+    }
+    catch (Exception const& e)
+    {
+        sendError(e.what());
+    }
 }

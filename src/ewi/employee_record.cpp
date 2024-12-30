@@ -71,7 +71,7 @@ namespace ewi
     auto EmployeeRecord::get_mut(JobID job) -> WIRecord& 
     {
         try {
-            return d_data.at(job);
+            return d_data[job];
         } catch (std::out_of_range const& e) {
             throw Exception(e.what());
         }
@@ -178,6 +178,9 @@ namespace ewi
             // default behavior of an istream to skip whitespace.
             if (iss >> check)
                 break;
+            else if (file.eof())
+                // Blank record
+                return output;
         }
         // Parse Entries
         //

@@ -190,7 +190,7 @@ namespace ewi
         std::istringstream iss { answers[0] };
         std::chrono::year_month_day date;
         std::chrono::from_stream(iss, "%F", date);
-        assert(iss.eof());
+        assert(iss);
 
         // Notes
         std::string notes { utils::StringFlattener::flatten(answers.back()) };
