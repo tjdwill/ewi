@@ -136,7 +136,7 @@ void test_record_ops()
     //std::cout << "\nFirst Replacement\n" << rec << "\n";
     rec.update(insertion0);
     assert(rec.size() == ORIG_SIZE + 1);
-    assert(rec.add(insertion1));
+    rec.add(insertion1);
     assert(rec.size() == ORIG_SIZE + 2);
     
     //std::cout << "\nBefore Deletion\n" << rec << "\n";

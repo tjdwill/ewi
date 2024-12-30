@@ -2,6 +2,7 @@
 #include "survey.hpp"
 //- STL
 #include <cassert>
+#include <chrono>
 #include <cstring>
 #include <fstream>
 #include <ios>
@@ -11,7 +12,9 @@
 // Third-party
 #include <cpperrors>
 //- In-house
-#include "ewi/basic_id.hpp"
+#include <ewi/basic_id.hpp>
+#include <ewi/entry.hpp>
+#include <utils/string_flattener/string_flattener.hpp>
 
 
 using cpperrors::Exception;
@@ -178,5 +181,23 @@ namespace ewi
                 throw Exception("File read error.");
         }
         return ParsedProfile { job, questions, averages };
+    }
+
+    auto SurveyResults::to_entry() const -> Entry
+    {
+        auto answers = get_responses();
+        // Date
+        std::istringstream iss { answers[0] };
+        std::chrono::year_month_day date;
+        std::chrono::from_stream(iss, "%F", date);
+        assert(iss.eof());
+
+        // Notes
+        std::string notes { utils::StringFlattener::flatten(answers.back()) };
+
+        // Metrics
+        auto metrics = extract_metrics();
+
+        return Entry {date, notes, metrics};
     }
 } // namespace ewi

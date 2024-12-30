@@ -39,7 +39,12 @@ add_test(NAME employee_record.t COMMAND test_employee_record)
 
 
 add_library(survey survey.cpp)
-target_link_libraries(survey PUBLIC ${exception} basic_id)
+target_link_libraries(survey 
+    PUBLIC 
+    ${exception}
+    basic_id
+    entry
+)
 add_executable(test_survey survey.t.cpp)
 target_link_libraries(test_survey PRIVATE survey)
 add_test(

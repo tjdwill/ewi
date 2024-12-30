@@ -18,11 +18,6 @@
 #define INCLUDED_STD_CHRONO
 #endif
 
-#ifndef INCLUDED_STD_EXPECTED
-#include <expected>
-#define INCLUDED_STD_EXPECTED
-#endif
-
 #ifndef INCLUDED_STD_MAP
 #include <map>
 #define INCLUDED_STD_MAP
@@ -86,9 +81,9 @@ namespace ewi
 
             /// Adds a new job to the data set. Returns `false` and does no operation if the job is
             /// already present.
-            auto add(JobID job, WIRecord const& wi_rec) -> std::expected<void, std::string>;
+            void add(JobID job, WIRecord const& wi_rec);
             /// Adds an Entry to the structure
-            auto add(JobID job, RecordType type, Entry const& entry) -> std::expected<void, std::string>;
+            void add(JobID job, RecordType type, Entry const& entry);
             /// Returns a mutable reference to tbe given work record.
             /// Throws exception if the job isn't present.
             auto get_mut(JobID job) -> WIRecord&;

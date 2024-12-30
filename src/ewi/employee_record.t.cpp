@@ -52,8 +52,8 @@ void test_ER_IO()
     WIRecord lt {gen_record(), gen_record()};
 
     EmployeeRecord emp_rec { person };
-    assert(emp_rec.add(merry_melodies, mm));
-    assert(emp_rec.add(looney_tunes, lt));
+    emp_rec.add(merry_melodies, mm);
+    emp_rec.add(looney_tunes, lt);
 
     // Try parsing functions
     std::string file_name {"bugs_record_00.txt"};

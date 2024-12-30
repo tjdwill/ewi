@@ -11,11 +11,6 @@
 #define INCLUDED_STD_CHRONO
 #endif
 
-#ifndef INCLUDED_STD_EXPECTED
-#include <expected>
-#define INCLUDED_STD_EXPECTED
-#endif
-
 // std::reference_wrapper
 #ifndef INCLUDED_STD_FUNCTIONAL
 #include <functional>
@@ -135,7 +130,7 @@ namespace ewi
             // MANIPULATORS
 
             /// Inserts an entry to the record.
-            auto add(Entry const& entry) noexcept -> std::expected<void, Err>;
+            void add(Entry const& entry);
             /// Removes entry with specified date.
             /// If no such entry exists, do nothing.
             void remove(std::chrono::year_month_day date);

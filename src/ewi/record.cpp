@@ -3,7 +3,6 @@
 //- STL
 #include <algorithm>
 #include <chrono>
-#include <expected>
 #include <iostream>
 #include <optional>
 #include <vector>
@@ -284,18 +283,17 @@ namespace ewi
     
     auto Record::operator[] (int idx) const -> Entry const& { return d_entries[idx]; }
 
-    auto Record::add(Entry const& entry) noexcept -> std::expected<void, Err>
+    void Record::add(Entry const& entry)
     {
         if (!d_entries.empty())
         {
             Entry prev = d_entries.back();
             if (!(entry.date() > prev.date()))
-                return std::unexpected(Err::DisorderedDate);
+                throw Exception("Could not add entry to record; Date is earlier than latest entry currently in record.");
             if (entry.metrics().size() != prev.metrics().size())
-                return std::unexpected(Err::InconsistentMetrics);
+                throw Exception("Could not add entry to record; Metric count is inconsistent with previous entries.");
         }
         d_entries.push_back(std::move(entry));
-        return {};
     }
 
     void Record::remove(std::chrono::year_month_day date)

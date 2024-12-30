@@ -1,9 +1,8 @@
-// employee_record.cpp
+
 #include "employee_record.hpp"
 // STL
 #include <cassert>
 #include <chrono>
-#include <expected>
 #include <format>
 #include <fstream>
 #include <ios>       // std::{skipws, noskipws}
@@ -26,68 +25,47 @@ using utils::StringFlattener;
 namespace ewi
 {
     /* EmployeeRecord */
-    auto EmployeeRecord::add(JobID job, WIRecord const& wi_rec) -> std::expected<void, std::string> 
+    void EmployeeRecord::add(JobID job, WIRecord const& wi_rec)
     { 
         if (!d_data.insert({job, wi_rec}).second)
-            return std::unexpected("Job already exists for this record.");
-        else 
-            return {};
+            throw Exception("Job already exists for this record.");
     }
 
-    auto EmployeeRecord::add(JobID job, RecordType type, Entry const& e) -> std::expected<void, std::string>
+    void EmployeeRecord::add(JobID job, RecordType type, Entry const& e)
     {
         if (auto test = d_data.find(job); test != d_data.end())
         {
             // Try to add the Entry to the specified Record.
-            std::string msg {};
             auto& wi_rec = get_mut(job);
-            std::expected<void, Record::Err> result;
             switch (type) 
             {
                 case RecordType::Technical:
-                    result = wi_rec.technical.add(e);
+                    wi_rec.technical.add(e);
                     break;
                 case RecordType::Personal:
-                    result = wi_rec.personal.add(e);
+                    wi_rec.personal.add(e);
+                    break;
+                default:
+                    throw Exception("Unknown RecordType");
+            }    
+        }
+        else
+        {
+            // Key doesn't exist, so create record.
+            WIRecord wi_rec {};
+            switch (type)
+            {
+                case RecordType::Technical:
+                    wi_rec.technical.add(e);  // should never fail.
+                    break;
+                case RecordType::Personal:
+                    wi_rec.personal.add(e);
                     break;
                 default:
                     throw Exception("Unknown RecordType");
             }
-            // check results of the operation.
-            if (!result)
-            {
-                switch (result.error())
-                {
-                    case Record::Err::DisorderedDate:
-                        msg = "Attempted to add Entry earlier than last Entry date.";
-                        break;
-                    case Record::Err::InconsistentMetrics:
-                        msg = "Entry metrics are incompatible in quantity with those already present in the record.";
-                        break;
-                    default:
-                        throw Exception("Unknown Record::Err type.");
-                }
-            }
-            
-            if (!msg.empty())
-                return std::unexpected(msg);
-            else 
-                return {};
+            add(job, wi_rec);
         }
-        // Key doesn't exist, so create record.
-        WIRecord wi_rec {};
-        switch (type)
-        {
-            case RecordType::Technical:
-                assert(wi_rec.technical.add(e));  // should never fail.
-                break;
-            case RecordType::Personal:
-                assert(wi_rec.personal.add(e));
-                break;
-            default:
-                throw Exception("Unknown RecordType");
-        }
-        return add(job, wi_rec);
     }
     
     auto EmployeeRecord::get_mut(JobID job) -> WIRecord& 
@@ -224,7 +202,7 @@ namespace ewi
             auto metrics = parse_metrics(iss);
             assert(iss.eof());  // eof in this case means "end of line"
             Entry e (date, notes, metrics);
-            assert(output.add(job, type, e)); 
+            output.add(job, type, e); 
 
             // Get next line; This is done at the end of the iteration due to the way the
             // function is structured. Not doing so would skip the first entry since we

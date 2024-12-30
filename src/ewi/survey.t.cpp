@@ -1,14 +1,45 @@
 #include "survey.hpp"
 
 #include <cassert>
+#include <chrono>
 #include <cpperrors>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
+
+#include <ewi/entry.hpp>
+#include <utils/string_flattener/string_flattener.hpp>
 
 
 using cpperrors::Exception;
 using ewi::SurveyResults;
+using namespace std::chrono_literals;
+
+void test_metrics_extraction();
+void test_to_entry();
+void test_profile_loader(std::string const& path);
+
+int main(int argc, char* argv[])
+{
+    if (argc != 2)
+    {
+        std::cerr << "Usage: test_survey some_path" << "\n";
+        std::exit(1);
+    }
+    std::string path {argv[1]};
+    try 
+    {
+        test_metrics_extraction();
+        test_profile_loader(path);
+    }
+    catch (Exception const& e) 
+    {
+        std::cerr << e.report() << "\n";
+        throw;
+    }
+}
+
 
 void test_metrics_extraction()
 {
@@ -41,20 +72,17 @@ void test_profile_loader(std::string const& path)
     assert(job_profile.questions.size() == 3 && job_profile.questions.size() == job_profile.metric_cnt());
 }
 
-int main(int argc, char* argv[])
+void test_to_entry()
 {
-    if (argc != 2)
-    {
-        std::cerr << "Usage: test_survey some_path" << "\n";
-        std::exit(1);
-    }
-    std::string path {argv[1]};
-    try {
-        test_metrics_extraction();
-        test_profile_loader(path);
-    }
-    catch (Exception const& e) {
-        std::cerr << e.report() << "\n";
-        throw;
-    }
+    std::string NOTES { "Here are some\nnotes" };
+    
+    std::chrono::year_month_day DATE { 2024y / std::chrono::December / 30d };
+    std::ostringstream oss {};
+    oss << DATE;
+    std::string DATE_STR { oss.str() };
+    
+    std::vector<std::string> RESULTS { DATE_STR, "2", "1.5", NOTES };
+    ewi::Entry TEST { DATE, utils::StringFlattener::flatten(NOTES), {2, 1.5}};
+
+    assert(TEST == SurveyResults(RESULTS, 2).to_entry());
 }
