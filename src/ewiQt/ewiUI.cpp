@@ -3,9 +3,6 @@
 //- Third-party
 #include <QtWidgets>
 #include <QPixmap>
-#include <qglobal.h>
-#include <qmessagebox.h>
-#include <qnamespace.h>
 //- In-house
 #include "form.hpp"
 #include "imgViewer.hpp"

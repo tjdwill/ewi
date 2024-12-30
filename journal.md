@@ -10,6 +10,19 @@
 
 ## Journal
 
+### 30 December 2024
+
+I realized that I need to add some restrictions to the app due to my desire to release in a
+timely manner. For one, I will need to disable the export user metrics feature; the code
+must be reorganized to handle loading externally-saved profiles. Currently, the load user
+function only expects data relevant to the user itself, but loading from a file would
+require processing a file path instead. I need to spend time refactoring *after* release.
+
+As a result, basic backups will need to be done by the user (copying the relevant
+directories).
+
+- Changed `ewiQt/views.cpp` to disable (hide) export.
+
 ### 26 December 2024
 
 - Decided to change the EWIUi tester to hold the EWIUi object within its layout. Now, I

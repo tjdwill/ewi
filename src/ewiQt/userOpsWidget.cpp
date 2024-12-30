@@ -30,12 +30,18 @@ namespace ewiQt
         metricsBox->setLayout(MBLayout);
         mainLayout->addWidget(metricsBox);
 
+        
+        // TODO: 30 December 2024 - disabling the export
+        // metrics button in order to prevent it being
+        // used. The export/load feature will need to be
+        // refactored.
+        /*
         QGroupBox* exportBox { new QGroupBox(tr("Export")) };
         QHBoxLayout* EBLayout { new QHBoxLayout };
         EBLayout->addWidget(d_exportRecordButton);
         exportBox->setLayout(EBLayout);
         mainLayout->addWidget(exportBox);
-        
+        */
         mainLayout->addStretch();
         setLayout(mainLayout);
         
