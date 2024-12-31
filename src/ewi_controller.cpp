@@ -242,8 +242,17 @@ void EWIController::processMetrics(QVector<QDate> dates)
             Eigen::MatrixXd tech_matrix = ewi::to_eigen(*metrics);
             Eigen::VectorXd tech_means = ewi::get_means(tech_matrix);
             Eigen::VectorXd global_tech_means = ewi::to_eigen(d_job_profile->averages);
+            auto temp_twi = ewi::calculate_ewi(tech_means, global_tech_means);
+
+            // Update options (set ylim)
+            double ymin = std::floor(temp_twi.minCoeff());
+            ymin = (ymin < 0) ? ymin : 0;
+            double ymax = std::floor(temp_twi.maxCoeff()) + 1.0;
+            ymax = (ymax > 1) ? ymax : 2.0;
+            opts.ylim = { ymin, ymax };
+
             std::vector<double> twi = ewi::to_std_vec(
-                    ewi::calculate_ewi(tech_means, global_tech_means)
+                   temp_twi 
             );
             // Add Personal Work Index if data is present
             if (!wi_rec.personal.is_empty())
