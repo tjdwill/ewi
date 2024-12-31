@@ -196,10 +196,21 @@ namespace ewiQt
         QString aboutTxt {};
         QTextStream qss { &aboutTxt };
         qss << tr("## Employee Workload Index (EWI) Tracker") << "\n\n"
-            << tr("**License**: TODO") << "\n\n"
-            << tr("Source Code: ") << "https://github.com/tjdwill/ewi" << "\n\n"
-            << "Version " EWI_VERSION << " (Qt " << qVersion() << ')' << "\n\n"
-            << "Copyright 2025 &copy; Terrance Williams" << "\n"; 
+            << "Copyright &copy; 2025 Terrance Williams" << "\n\n" 
+            << "**Version**: " EWI_VERSION << " (Qt " << qVersion() << ')' << "\n\n"
+            << tr("**License**: GNU General Public License v3.0") << "\n\n"
+            << tr("**Source Code**: ") << "https://github.com/tjdwill/ewi" << "\n\n"
+            << tr("### Disclaimer Notice") << "\n\n"
+            << tr("This program is free software: you can redistribute it and/or modify ")
+            << tr("it under the terms of the GNU General Public License (version 3) as ")
+            << tr("published by the Free Software Foundation.") << "\n\n"
+            << tr("This program is distributed in the hope that it will be useful, but ")
+            << tr("WITHOUT ANY WARRANTY; without even the implied warranty of ")
+            << tr("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. ")
+            << tr("See the GNU General Public License for more details.") << "\n\n"
+            << tr("You should have received a copy of the GNU General Public License ")
+            << tr("along with this program. If not, see ") << "<https://www.gnu.org/licenses/>."
+            << "\n";
         qss.flush();
 
         QMessageBox about { this };
@@ -282,15 +293,15 @@ namespace ewiQt
         QString helpTxt {};
         QTextStream qss { &helpTxt };
         qss << tr("## EWI Quick Help") << "\n\n"
-            << tr("### Enable the `Actions` Button \n\n - Load a User Profile\n- Load a Job Profile")
+            << tr("### Enable the `Actions` Button \n\n - Create/Load a User Profile\n- Load a Job Profile")
             << "\n\n"
             << tr("### Making an Entry\n\nOnce both user and job are loaded, select a"
                    " survey type to take. **Technical** surveys are intended to be taken"
                    " daily. **Personal** surveys, surveys intended to help track the user's"
-                   " emotional satisfaction, should be take on an approximately weekly basis.")
+                   " emotional satisfaction, should be taken weekly (give or take).")
             << "\n\n"
             << tr("### View EWI Visualization\n\n Click the \"`Actions->View Workload...`\" "
-                  "button, and pass in the desired date range.")
+                  "button, and provide the desired date range.")
             << "\n\n"
             << tr("### Further Help\n\nPlease refer to the documentation included in this program's folder.")
             << "\n";
