@@ -1,16 +1,13 @@
 // ewi_controller.cpp
 #include "ewi_controller.hpp"
 //- STL
-#include <bits/chrono_io.h>
 #include <chrono>
 #include <optional>
-#include <qaction.h>
-#include <qchar.h>
-#include <string>
-#include <unistd.h>
+#include <thread>  // for sleeping
 #include <vector>
 //- Third-party
 #include <cpperrors>
+#include <Eigen/Eigen>
 #include <QtWidgets>
 //- In-house
 #include <ewiQt/ewiUI.hpp>
@@ -42,7 +39,10 @@ auto getUserPath(std::string const& user_id) -> QString
 {
     return getUserPath(QtC::from_stl(user_id));
 }
-
+auto getTmpPath() -> QString
+{
+    return QCoreApplication::applicationDirPath() + '/' + TMP_DIR;
+}
 //-------------------------------------
 
 
@@ -203,7 +203,87 @@ void EWIController::processMetrics(QVector<QDate> dates)
         << " to " << dates[1].toString("yyyy-MM-dd") << "\n";
     qout.flush();
 
+    static std::string const plot_path = QtC::to_stl(getTmpPath()) + "/plot.png";
+
     auto stl_dates = QtC::to_stl(dates);
+    // We know from the form that the dates are valid in that the `from` date is less than or
+    // equal to the `to` date, so checks can be omitted.
+    try 
+    {
+        auto const& wi_rec = d_user_profile->get(d_job_profile->job_label.id);
+        if (!wi_rec.technical.is_empty())
+        
+        {
+            // Plot Configuration
+            auto datetime = QDateTime::currentDateTime()
+                .toString("yyyy-MM-dd hh:mm:ss")
+                .toStdString();
+            ewi::PlotCustomization opts {
+                plot_path,
+                d_user_profile->who().name + "'s " + " EWI Report (" + datetime +')'
+            };
+            // get metrics 
+            auto const rec = wi_rec.technical;
+            auto metrics = rec.metrics({ stl_dates[0], stl_dates[1] });
+            if (!metrics)
+            {
+                std::ostringstream oss {};
+                oss << "No metrics recorded for specified date range: "
+                    << stl_dates[0] << " to " << stl_dates[1];
+                sendError(oss.str());
+                return;
+            }
+            // Eigen processing
+            Eigen::MatrixXd tech_matrix = ewi::to_eigen(*metrics);
+            Eigen::VectorXd tech_means = ewi::get_means(tech_matrix);
+            Eigen::VectorXd global_tech_means = ewi::to_eigen(d_job_profile->averages);
+            std::vector<double> twi = ewi::to_std_vec(
+                    ewi::calculate_ewi(tech_means, global_tech_means)
+            );
+            // Add Personal Work Index if data is present
+            if (!wi_rec.personal.is_empty())
+            {
+                auto const& p_metrics = wi_rec.personal.metrics( { stl_dates[0], stl_dates[1] } );
+                if (p_metrics)
+                {
+                    double p_mean = ewi::to_eigen(*p_metrics).mean();
+                    double pwi = ewi::calculate_ewi(
+                            p_mean,
+                            ewi::PersonalSurvey::IDEAL_MEAN,
+                            ewi::PersonalSurvey::MIN_VAL,
+                            ewi::PersonalSurvey::MAX_VAL
+                    );
+                    bool success = ewi::plot_ewi(twi, opts, pwi);
+                    assert(success);
+                }
+            }
+            else
+            {
+                // Only plot the technical data
+                bool success = ewi::plot_ewi(twi, opts );
+                assert(success);
+            }
+            // Send image for display
+            // Sleep for a small duration to ensure I/O flushes
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            QPixmap plot { QtC::from_stl(plot_path) };
+            emit d_app->sendImg(plot);
+        }
+        else {
+            std::ostringstream oss {};
+            oss << "No metrics recorded for specified date range: "
+                << stl_dates[0] << " to " << stl_dates[1];
+            sendError(oss.str());
+            return;
+        }
+    }
+    catch (Exception const& e)
+    {
+        qout << QtC::from_stl(e.report()) << "\n";
+        qout.flush();
+        sendError("No entries recorded for the current job.");
+        return;
+    }
 }
 
 void EWIController::processResponses(QStringList responses, QString const& surveyType)

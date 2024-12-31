@@ -14,6 +14,7 @@ target_link_libraries(ewi_controller PUBLIC
     ewiUI
     QtConverter
     # Third-party
+    Eigen3::Eigen
     Qt::Widgets
     ${exception}
 )

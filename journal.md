@@ -28,6 +28,8 @@ directories).
 - Update `ewi/survey` to instantiate `Entry` from results.
 - Implement survey response processing in app.
 - `ewiQt/ewiUI.cpp` implement help slot.
+- `ewi/record.cpp` : Fixed bug in `Record::find` that caused undefined behavior.
+    - NOTE: I should really learn how to use a debugger.
 
 ### 26 December 2024
 
