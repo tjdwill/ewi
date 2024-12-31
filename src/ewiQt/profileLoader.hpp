@@ -37,7 +37,7 @@ public:
     /// QString returned is Null, the user cancelled the operation.  Qt functions
     /// treat nulled strings as empty strings (exception is the QString::isNull
     /// method), so just check if the received string is empty.
-    auto loadJob() -> QString;
+    auto loadJob(QString initialDir="./") -> QString;
     /// A convenience function to create the user-data-gathering dialog.
     /// If the bool parameter is set to `true`, the function adapts the presented
     /// form accordingly to collect additional data for user creation.

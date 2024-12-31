@@ -42,12 +42,12 @@ namespace ewiQt
         setWindowTitle(tr("Profile Loader"));
     }
 
-    auto ProfileLoader::loadJob() -> QString
+    auto ProfileLoader::loadJob(QString initialDir) -> QString
     {
        QString job_file = QFileDialog::getOpenFileName(
                 this, 
                 tr("Select a Job Definition File"),
-                QCoreApplication::applicationDirPath() + "/.jobs",
+                initialDir, 
                 "Text files (*.txt)"
        );
        return job_file;

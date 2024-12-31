@@ -10,6 +10,7 @@
 #include <Eigen/Eigen>
 #include <QtWidgets>
 //- In-house
+#include <ewiQt/appConstants.hpp>
 #include <ewiQt/ewiUI.hpp>
 #include <ewiQt/QtConverter.hpp>
 #include <ewi/employee_record.hpp>
@@ -21,31 +22,9 @@
 using cpperrors::Exception;
 using ewiQt::EWIUi;
 using QtC = ewiQt::QtConverter;
+using AC = ewiQt::AppConstants;
 
 /* Definitions */
-
-//------------- Helpers ---------------
-QString const USR_DIR {".usr"};
-QString const TMP_DIR { ".tmp"};
-QString const JOB_DIR { ".jobs" };
-QStringList const APP_DIRS { TMP_DIR, USR_DIR, JOB_DIR };
-QString const FILE_EXT { ".txt" };
-
-auto getUserPath(QString const& userID) -> QString
-{
-    return QCoreApplication::applicationDirPath() + '/' + USR_DIR + '/' + userID + FILE_EXT;
-}
-auto getUserPath(std::string const& user_id) -> QString
-{
-    return getUserPath(QtC::from_stl(user_id));
-}
-auto getTmpPath() -> QString
-{
-    return QCoreApplication::applicationDirPath() + '/' + TMP_DIR;
-}
-//-------------------------------------
-
-
 EWIController::EWIController(QWidget* parent)
     : QWidget(parent)
 {
@@ -91,7 +70,7 @@ QDir appRoot { QCoreApplication::applicationDirPath() };
     // file.
 
     // Handle subdirectories
-    for (auto const& d : APP_DIRS)
+    for (auto const& d : AC::APP_DIRS)
     {
         if(!appRoot.exists(d))
             if(!appRoot.mkdir(d))
@@ -111,7 +90,11 @@ void EWIController::appShutdown()
     qout.flush();
     */
     if (d_profile_loaded)
-        exportUser(getUserPath(d_user_profile->who().id.formal()));
+        exportUser(AC::getUserPath(d_user_profile->who().id.formal()));
+    // Delete tmp 
+    QDir tmpDir { AC::getTmpDir() };
+    bool test = tmpDir.removeRecursively();
+    assert(test);
     close();
 }
 
@@ -181,7 +164,7 @@ void EWIController::loadUser(QString userID)
     qout.flush();
     */
     // Let's assume the data is formed correctly.
-    QString userFile { getUserPath(userID) };
+    QString userFile { AC::getUserPath(userID) };
     try 
     {
        d_user_profile = ewi::EmployeeRecordIOUtils::import_record(QtC::to_stl(userFile));
@@ -208,7 +191,7 @@ void EWIController::processMetrics(QVector<QDate> dates)
         << " to " << dates[1].toString("yyyy-MM-dd") << "\n";
     qout.flush();
     */
-    static std::string const plot_path = QtC::to_stl(getTmpPath()) + "/plot.png";
+    static std::string const plot_path = QtC::to_stl(AC::getPlotFile());
 
     auto stl_dates = QtC::to_stl(dates);
     // We know from the form that the dates are valid in that the `from` date is less than or

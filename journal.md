@@ -10,6 +10,23 @@
 
 ## Journal
 
+### 31 December 2024
+
+So, last night marked the completion of the app prototype (PY). Now, I need to refine the
+prototype that I have (no new features though unless necessary).
+
+- `ewiQt/ewiUI.cpp`: Revised "Help" and "About" pages
+- Added `ewiQt/appConstants` to both define app-specific values in one place as well as
+  make common values available to all components of `ewiQt` if necessary.
+- Updated `ewi_controller.cpp/processMetrics` to calculate and set y-axis limits
+- Updated `ewiQt/profileLoader` to be more "robust" by allowing the user to pass in a
+  starting directory (removing app-specific information in the implementation).
+  - The app-specific info has been moved to the job load call within `ewiQt/ewiUI.cpp`
+- Version num bump (0.2.0)
+
+Now, I need to add license notices and the like to source files (I finally decided to go
+GPLv3).
+
 ### 30 December 2024
 
 I realized that I need to add some restrictions to the app due to my desire to release in a

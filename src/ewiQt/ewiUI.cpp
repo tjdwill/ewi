@@ -4,6 +4,7 @@
 #include <QtWidgets>
 #include <QPixmap>
 //- In-house
+#include "appConstants.hpp"
 #include "form.hpp"
 #include "imgViewer.hpp"
 #include "profileLoader.hpp"
@@ -351,7 +352,7 @@ namespace ewiQt
 
     void EWIUi::fireLoadJob()
     {
-        QString jobDefPath { d_appPages->getProfileLoader()->loadJob() };
+        QString jobDefPath { d_appPages->getProfileLoader()->loadJob(AppConstants::getJobDir()) };
         if (!jobDefPath.isEmpty())
             emit loadJobSig(jobDefPath);
     }

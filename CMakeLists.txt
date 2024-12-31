@@ -1,7 +1,7 @@
 # EWI Top-level CMakeLists.txt
 cmake_minimum_required(VERSION 3.20)
 project(EWI
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION "A tool to visualize one's workload."
     HOMEPAGE_URL "https://github.com/tjdwill/ewi"
     LANGUAGES CXX
