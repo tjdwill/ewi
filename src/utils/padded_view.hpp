@@ -1,4 +1,20 @@
 // padded_view.hpp
+/*
+* Copyright (C) 2024 Terrance Williams
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 #ifndef INCLUDED_PADDED_VIEW
 #define INCLUDED_PADDED_VIEW
 
@@ -14,11 +30,9 @@
 
 namespace utils
 {
-    /// Pads a view of a given container, allowing us to
-    /// treat the boundaries of the container like they are
-    /// non-boundary components. Since this holds a
-    /// reference to an object, ensure the referrent lives
-    /// at least as long as this instantiated object.
+    /// Pads a view of a given container, allowing us to treat the boundaries of the
+    /// container like they are non-boundary components. Since this holds a reference to an
+    /// object, ensure the referrent lives at least as long as this instantiated object.
     template<typename T>
     class PaddedView 
     {
@@ -37,9 +51,8 @@ namespace utils
     };
 
     /// Access the padded view. 
-    /// Implementation Detail:
-    /// accessing the left or right padding area returns
-    /// the first or last element in the real container.
+    /// Implementation Detail: accessing the left or right padding area returns the first or
+    /// last element in the real container.
     template<typename T>
     auto PaddedView<T>::operator[](int pos) const -> T const&
     {
