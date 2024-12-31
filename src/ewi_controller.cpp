@@ -219,12 +219,19 @@ void EWIController::processMetrics(QVector<QDate> dates)
         
         {
             // Plot Configuration
-            auto datetime = QDateTime::currentDateTime()
+            std::string datetime = QDateTime::currentDateTime()
                 .toString("yyyy-MM-dd hh:mm:ss")
                 .toStdString();
+            std::string fig_title = d_user_profile->who().name + "'s "
+                + " EWI Report (" + datetime + ')';
+            std::string tech_title {
+                d_job_profile->job_label.title
+                + " (" + d_job_profile->job_label.id.formal() + ')'
+            };
             ewi::PlotCustomization opts {
                 plot_path,
-                d_user_profile->who().name + "'s " + " EWI Report (" + datetime +')'
+                fig_title,
+                tech_title
             };
             // get metrics 
             auto const rec = wi_rec.technical;

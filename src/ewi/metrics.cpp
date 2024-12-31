@@ -155,7 +155,7 @@ namespace ewi
             ax->xlim({0, static_cast<double>(ewi_vals.size() + 1)});
         if (opts.ylim.has_value())
             ax->ylim(opts.ylim.value());
-        ax->title("Technical Index");
+        ax->title(opts.tech_title);
         ax->legend({"Base", "Idx"});
         ax->legend()
             ->location(mpl::legend::general_alignment::bottomright);
@@ -174,17 +174,11 @@ namespace ewi
         if (personal_ewi)
         {
             auto pax = fig->add_subplot(1, cols, 1);
-            pax->title("Personal Index");
+            pax->title(opts.personal_title);
             pax->xlim({-1, 1});
             pax->ylim({-1, 1});
             //pax->grid(true);
             pax->hold(true);
-            /*
-            pax->plot(
-                    std::vector<double>{-1, 1},
-                    std::vector<double>{0, 0}, 
-                    "--k"
-            );*/
 
             pax->scatter({0}, {0}, opts.dot_size)
                 ->color("black")

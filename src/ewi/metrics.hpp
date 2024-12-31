@@ -93,6 +93,8 @@ namespace ewi
     {
         std::string filename {};
         std::string title {};
+        std::string tech_title { "Technical Index" };
+        std::string personal_title { "Personal Index" };
         std::string xlabel {"Question Num."};
         std::string ylabel { "Index Value" };
         double dot_size { 10 }; // how large is a given scatter point

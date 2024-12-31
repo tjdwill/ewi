@@ -27,6 +27,11 @@ prototype that I have (no new features though unless necessary).
 Now, I need to add license notices and the like to source files (I finally decided to go
 GPLv3).
 
+**Update**: License added.
+
+- `ewi/metrics`: Add ability to specify subplot titles
+- `ewi_controller.cpp`: Add Job name and ID to plot visualization.
+
 ### 30 December 2024
 
 I realized that I need to add some restrictions to the app due to my desire to release in a
