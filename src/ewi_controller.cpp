@@ -79,7 +79,7 @@ void EWIController::sendError(std::string const& err_msg)
 
 void EWIController::validateRuntimeEnv()
 {
-QDir appRoot { QCoreApplication::applicationDirPath() };
+    QDir appRoot { AC::getExeDir() }; 
 
     // TODO: Handle temp folder check here. If the tmp folder exists, that means the app did
     // not shut down properly, meaning user changes may not have been written to their data
