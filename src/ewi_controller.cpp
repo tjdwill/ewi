@@ -106,9 +106,10 @@ QDir appRoot { QCoreApplication::applicationDirPath() };
 QTextStream qout { stdout };
 void EWIController::appShutdown()
 {
+    /*
     qout << "Shutdown Triggered" << "\n";
     qout.flush();
-
+    */
     if (d_profile_loaded)
         exportUser(getUserPath(d_user_profile->who().id.formal()));
     close();
@@ -137,18 +138,20 @@ void EWIController::createUser(QStringList userData)
 
 void EWIController::exportUser(QString pathName)
 {
+    /*
     qout << "Export User to: " << pathName << "\n";
     qout.flush();
-
+    */
     assert(d_user_profile);
     ewi::EmployeeRecordIOUtils::export_record(*d_user_profile, QtC::to_stl(pathName));
 }
 
 void EWIController::loadJob(QString jobDefPath)
 {
+    /*
     qout << "Load Job from: " << jobDefPath << "\n";
     qout.flush();
-
+    */
     std::string path { jobDefPath.toStdString() };
     try 
     {
@@ -173,9 +176,10 @@ void EWIController::loadJob(QString jobDefPath)
 
 void EWIController::loadUser(QString userID)
 {
+    /*
     qout << "Load User: " << userID << "\n";
     qout.flush();
-
+    */
     // Let's assume the data is formed correctly.
     QString userFile { getUserPath(userID) };
     try 
@@ -199,10 +203,11 @@ void EWIController::loadUser(QString userID)
 
 void EWIController::processMetrics(QVector<QDate> dates)
 {
+    /*
     qout << "Get metrics from " << dates[0].toString("yyyy-MM-dd")
         << " to " << dates[1].toString("yyyy-MM-dd") << "\n";
     qout.flush();
-
+    */
     static std::string const plot_path = QtC::to_stl(getTmpPath()) + "/plot.png";
 
     auto stl_dates = QtC::to_stl(dates);
