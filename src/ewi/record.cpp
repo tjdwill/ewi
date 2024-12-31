@@ -177,8 +177,14 @@ namespace ewi
                 else  
                     index_min = 0;
             } 
-            else if (poll_idx == global_max && (entries[poll_idx].date() < smallest_date))
-                index_min = std::nullopt;
+            else if (poll_idx == global_max)
+            {
+                if (entries[poll_idx].date() < smallest_date)
+                    index_min = std::nullopt;
+                else
+                // padding adjustment
+                    index_min = poll_idx - 2;
+            }
             else 
                 // padding adjustment
                 index_min = poll_idx-1;
@@ -217,8 +223,14 @@ namespace ewi
                 else  
                     index_max = 0;
             }
-            else if (poll_idx == global_max && (entries[poll_idx].date() > largest_date)) 
-                index_max = std::nullopt;
+            else if (poll_idx == global_max)
+            {
+                if (entries[poll_idx].date() > largest_date)
+                    index_max = std::nullopt;
+                else
+                    // Padding adjustment
+                    index_max = poll_idx - 2;
+            }
             else 
                 index_max = poll_idx - 1;
         }
