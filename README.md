@@ -77,21 +77,119 @@ personal aspect index is negative, a given employer or superior wouldn't be able
 visualization *which* questions were answered negatively. It is also intended to encourage leaders
 to communicate with those they lead.
 
-
 ## Getting Started
+
+The app navigation bar shows all of the options available to the user:
+
+- `Home`: The Home Page
+- `Profile`: load the profiles necessary to use the app
+- `Actions`: Actions available to the user once the profiles are loaded.
+- `Help`: A "Quick Help" menu to get the user up and running.
+- `About`: Information about this application's development.
+- `Exit`: Exit the application, saving any updated changes in the process.
 
 ## Profile Menu
 
-### Defining a Job Profile
+The `Profile` menu houses options for the app to retrieve information necessary for it to operate.
+The user must provide both a user profile and a job profile for the app's actions to become enabled.
+The user profile consists of basic information: a user ID and a display name. The ID is intended to
+be a unique identifier (ex. your employee ID). The display name can be any name the user chooses,
+but be aware that this name appears on the visualization image.
+
+The job profile consists of the identifier (job code + human-readable title) and a list of questions
+and metrics for tracking. More on the job profile will be discussed in a later section.
 
 ### Creating a User Profile
 
+In order to create a profile for use, click the `Create` button located under the "User Profile"
+heading. A window will appear requesting information from the intended user. Once both fields are
+occupied with text, the "Ok" button appears. Pressing this button will create the user.
+
 **Note:** In order to save your newly-created profile, ensure you shut down the program via the
-navigation bar's `Exit` button. If this is not done, the program will not be able to locate the user
-on the next run. In general, make it a habit to use the `Exit` button.
+navigation bar's `Exit` button once you're done with the session. If this is not done, the program
+will not be able to locate the user on the next run. In general, make it a habit to use the `Exit`
+button.
 
 ### Loading a User Profile
 
+To load a previously-created user, click the `Load...` button under the "User Profile" heading and
+input the user's ID.
+
+### Loading a Job Profile
+
+To load a job profile, select the `Select Job...` button under the "Job Profile" heading. This will
+open a file selection dialog, allowing the user to select a job profile that's been defined. The
+program expects profiles to be stored in its `.jobs` directory, but job files may be loaded from
+anywhere.
+
+### Defining a Job Profile
+
+A job file is simply a text file formatted in a specific way. The first line defines the job's
+identifier—its formal code and human-readable name. The format is:
+
+```
+<job code>: <human-readable name>
+```
+without the angle brackets. Spaces are allowed in the human-readable name. By "human-readable", I
+mean the job's title. For example, one role in a restaurant may have a job code `5555` but the
+"human-readable" name would be "Line Cook".
+
+A blank line should follow the identifier line.
+
+The rest of the document defines the metrics to track for the role. One metric is defined per line.
+A given line is formatted as:
+
+```
+<Metric question> | <estimated average>
+```
+
+again, no angled brackets. The `|` character is typed by `SHIFT + \` on a typical QWERTY keyboard.
+Each metric has a question that is presented to the user when making an entry (ex. "How many calls
+were made?"). The estimated average is the value that will be used to compare the user's tracked
+data for that metric. The program expects a number for this value. `-` signs are allowed.
+
+To summarize, a job profile consists of the following:
+
+- an identifier
+- blank space
+- Metric question-average pairs.
+
+Here is an example of a fully-formed job profile:
+
+```
+0260: NETC EEO Informal Process Counselor
+
+Time spent on communication (hr)? | 3
+Active cases? | 2
+Informal contacts? | 2
+```
+
+This results in the following entry survey:
+
+INSERT IMG HERE
+
+
+Finally, job profiles can be loaded from anywhere, but it may be easier to store them with the
+program itself. Save the file to `<program location>/.jobs`. If this folder is not visible, ensure
+`View Hidden Items` is enabled on whatever file explorer you are using.
+
 ### Changing Profiles
 
+Profiles can be changed by running through the desired process. Simply load another job and/or user.
+
+## Action Menu
+
+### Taking a Survey
+
+### Viewing EWI
+
 ## Exporting Data 
+
+At the time of writing, there is no functional export feature for this app; the user must do it
+manually. 
+
+In short:
+
+1. Locate where the program executable is located.
+2. In your file explorer, ensure `View Hidden Items` is enabled.
+3. Copy the `.usr` folder to backup users and the `.jobs` folder to save jobs.
