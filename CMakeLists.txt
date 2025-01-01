@@ -14,7 +14,6 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("$ENV{HOME}/.local/include/eigen3")
 include_directories("src")
-option(BUILD_SHARED_LIBS "Build shareable libraries" ON)
 
 #=============== Packages =====================
 # Qt config
@@ -41,8 +40,6 @@ FetchContent_Declare(
   GIT_TAG           f3887449389dde51d7c87528ffa802806518ad0e
 )
 FetchContent_MakeAvailable(cpperrors)
-#find_package(cpptrace REQUIRED)
-#find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(Matplot++ REQUIRED)
 
 #========== TARGETS ================
