@@ -166,8 +166,7 @@ Informal contacts? | 2
 
 This results in the following entry survey:
 
-INSERT IMG HERE
-
+![Example Survey](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/exTechSurvey.png)
 
 Finally, job profiles can be loaded from anywhere, but it may be easier to store them with the
 program itself. Save the file to `<program location>/.jobs`. If this folder is not visible, ensure
