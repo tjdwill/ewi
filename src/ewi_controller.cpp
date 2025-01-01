@@ -123,6 +123,20 @@ void EWIController::createUser(QStringList userData)
     qout << "]\n";
     qout.flush();
     */
+    /*
+        Check if employee exists already
+    */
+    QString userFile { AC::getUserPath(userData[0]) };
+    if (QFile::exists(userFile))
+    {
+        QString err_msg { 
+            "User \"" + userData[0] + '"' + " already exists. Delete\n`" + userFile
+            + "`\nif you really want to recreate the user."
+        };
+        sendError(QtC::to_stl(err_msg));
+        return;
+    }
+
     auto data = QtC::to_stl(userData);
     ewi::Employee emp { { data[0] }, data[1] };
     d_user_profile = ewi::EmployeeRecord { emp };
