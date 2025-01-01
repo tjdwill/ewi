@@ -189,6 +189,9 @@ program itself. Save the file to `<program location>/.jobs`. If this folder is n
 ### Changing Profiles
 
 Profiles can be changed by running through the desired process. Simply load another job and/or user.
+If the user is changed by either loading or creating another profile, the previous profile is saved
+before the new profile is loaded into the program.
+
 
 ## Action Menu
 

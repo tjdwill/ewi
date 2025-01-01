@@ -62,7 +62,7 @@ void test_date()
     QDate QT_DATE { 2024, 12, 23 };
 
     assert(STL_DATE == QtC::to_stl(QT_DATE));
-    assert(QT_DATE == QtC::from_stl(STL_DATE));
+    assert(QT_DATE == QtC::toQt(STL_DATE));
 }
 
 void test_dates()
@@ -72,17 +72,17 @@ void test_dates()
     fill_date_vecs(STL_DATES, QT_DATES);
     
     assert(QtC::to_stl(QT_DATES) == STL_DATES);
-    assert(QtC::from_stl(STL_DATES) == QT_DATES);
+    assert(QtC::toQt(STL_DATES) == QT_DATES);
 }
 
 void test_string()
 {
     assert(QtC::to_stl(Qt_STRINGS[0]) == STL_STRINGS[0]);
-    assert(QtC::from_stl(STL_STRINGS[0]) == Qt_STRINGS[0]);
+    assert(QtC::toQt(STL_STRINGS[0]) == Qt_STRINGS[0]);
 }
 
 void test_strings()
 {
     assert(QtC::to_stl(Qt_STRINGS) == STL_STRINGS);
-    assert(QtC::from_stl(STL_STRINGS) == Qt_STRINGS);
+    assert(QtC::toQt(STL_STRINGS) == Qt_STRINGS);
 }

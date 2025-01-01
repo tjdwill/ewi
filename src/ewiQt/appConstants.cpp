@@ -50,7 +50,7 @@ namespace ewiQt
     }
     auto AppConstants::getUserPath(std::string const& user_id) -> QString
     {
-        return getUserPath(QtC::from_stl(user_id));
+        return getUserPath(QtC::toQt(user_id));
     }
     auto AppConstants::getTmpDir() -> QString
     {

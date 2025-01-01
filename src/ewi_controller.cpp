@@ -58,7 +58,7 @@ EWIController::EWIController(QWidget* parent)
 
     createConnections();
     // provide information to the app
-    emit d_app->setPersonalQuestionsSig(QtC::from_stl(ewi::PersonalSurvey::questions()));
+    emit d_app->setPersonalQuestionsSig(QtC::toQt(ewi::PersonalSurvey::questions()));
 }
 
 void EWIController::createConnections()
@@ -137,6 +137,10 @@ void EWIController::createUser(QStringList userData)
         return;
     }
 
+    // Save the user current loaded
+    if (d_user_profile)
+        exportUser(AC::getUserPath(d_user_profile->who().id.formal()));
+
     auto data = QtC::to_stl(userData);
     ewi::Employee emp { { data[0] }, data[1] };
     d_user_profile = ewi::EmployeeRecord { emp };
@@ -170,7 +174,7 @@ void EWIController::loadJob(QString jobDefPath)
     {
         d_job_profile = ewi::load_profile(path);
         auto const& questions = d_job_profile.value().questions;
-        emit d_app->jobChangedSig(QtC::from_stl(questions)); 
+        emit d_app->jobChangedSig(QtC::toQt(questions)); 
         if (!d_profile_loaded && d_user_profile)
         {
             d_profile_loaded = true;
@@ -193,6 +197,9 @@ void EWIController::loadUser(QString userID)
     qout << "Load User: " << userID << "\n";
     qout.flush();
     */
+    // if user already loaded, save any changes
+    if (d_user_profile)
+        exportUser(AC::getUserPath(d_user_profile->who().id.formal()));
     // Let's assume the data is formed correctly.
     QString userFile { AC::getUserPath(userID) };
     try 
@@ -236,8 +243,11 @@ void EWIController::processMetrics(QVector<QDate> dates)
             std::string datetime = QDateTime::currentDateTime()
                 .toString("yyyy-MM-dd hh:mm:ss")
                 .toStdString();
+
+            std::string start_date { QtC::to_stl(dates[0].toString(QtC::QT_DATE_FORMAT)) };
+            std::string end_date { QtC::to_stl(dates[1].toString(QtC::QT_DATE_FORMAT)) };
             std::string fig_title = d_user_profile->who().name + "'s "
-                + " EWI Report (" + datetime + ')';
+                + " EWI Report (" + start_date + " to " + end_date + ')';
             std::string tech_title {
                 d_job_profile->job_label.title
                 + " (" + d_job_profile->job_label.id.formal() + ')'
@@ -300,7 +310,7 @@ void EWIController::processMetrics(QVector<QDate> dates)
             // Send image for display
             // Sleep for a small duration to ensure I/O flushes
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            QPixmap plot { QtC::from_stl(plot_path) };
+            QPixmap plot { QtC::toQt(plot_path) };
             emit d_app->sendImg(plot);
         }
         else {
@@ -313,7 +323,7 @@ void EWIController::processMetrics(QVector<QDate> dates)
     }
     catch (Exception const& e)
     {
-        qout << QtC::from_stl(e.report()) << "\n";
+        qout << QtC::toQt(e.report()) << "\n";
         qout.flush();
         sendError("No entries recorded for the current job.");
         return;

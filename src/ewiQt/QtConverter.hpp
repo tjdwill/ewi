@@ -46,17 +46,19 @@ namespace ewiQt
 /// A struct for converting between Qt and STL data types.
 struct QtConverter
 {
+    static QString const QT_DATE_FORMAT;
+    static std::string const STL_DATE_FORMAT;
     /// convert between QDate and std::chrono::year_month_day
     static auto to_stl(QDate const& date) -> std::chrono::year_month_day;
     static auto to_stl(QVector<QDate> const& dates) -> std::vector<std::chrono::year_month_day>;
-    static auto from_stl(std::chrono::year_month_day const& date) -> QDate;
-    static auto from_stl(std::vector<std::chrono::year_month_day> const& dates) -> QVector<QDate>;
+    static auto toQt(std::chrono::year_month_day const& date) -> QDate;
+    static auto toQt(std::vector<std::chrono::year_month_day> const& dates) -> QVector<QDate>;
 
     // Convert btw. std::string and QString
     static auto to_stl(QString const& s) -> std::string;
     static auto to_stl(QStringList const& strings) -> std::vector<std::string>;
-    static auto from_stl(std::string const& s) -> QString;
-    static auto from_stl(std::vector<std::string> const& strings) -> QStringList;
+    static auto toQt(std::string const& s) -> QString;
+    static auto toQt(std::vector<std::string> const& strings) -> QStringList;
 
 };
 } // namespace ewiQt

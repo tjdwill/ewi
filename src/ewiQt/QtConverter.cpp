@@ -31,11 +31,11 @@ namespace ewiQt
     // 
     // This format was chosen to conform with the default format used in `std::chrono`,
     // specifically, the `operator<<` overload.
-    QString QT_DATE_FORMAT { "yyyy-MM-dd" }; 
+    QString const QtConverter::QT_DATE_FORMAT { "yyyy-MM-dd" }; 
     // The STL format is the same as `%F` but written explicitly for conformity to the Qt
     // version.                                                     
     // https://en.cppreference.com/w/cpp/chrono/year_month_day/formatter
-    std::string STL_DATE_FORMAT { "%Y-%m-%d" };   
+    std::string const QtConverter::STL_DATE_FORMAT { "%Y-%m-%d" };   
 
     auto QtConverter::to_stl(QDate const& date) -> std::chrono::year_month_day
     {
@@ -56,7 +56,7 @@ namespace ewiQt
         return stl_dates;
     }
 
-    auto QtConverter::from_stl(std::chrono::year_month_day const& date) -> QDate
+    auto QtConverter::toQt(std::chrono::year_month_day const& date) -> QDate
     {
         std::ostringstream oss {};
         oss << date;
@@ -65,11 +65,11 @@ namespace ewiQt
         return QDate::fromString(qtDateString, QT_DATE_FORMAT);
     }
 
-    auto QtConverter::from_stl(std::vector<std::chrono::year_month_day> const& dates) -> QVector<QDate>
+    auto QtConverter::toQt(std::vector<std::chrono::year_month_day> const& dates) -> QVector<QDate>
     {
         QVector<QDate> qtDates {};
         for (auto const& date : dates)
-            qtDates.push_back(QtConverter::from_stl(date));
+            qtDates.push_back(QtConverter::toQt(date));
 
         return qtDates;
     }
@@ -78,7 +78,7 @@ namespace ewiQt
     {
         return s.toStdString();
     }
-    auto QtConverter::from_stl(std::string const& s) -> QString
+    auto QtConverter::toQt(std::string const& s) -> QString
     {
         return QString::fromStdString(s);
     }
@@ -91,11 +91,11 @@ namespace ewiQt
         return v;
     }
 
-    auto QtConverter::from_stl(std::vector<std::string> const& strings) -> QStringList
+    auto QtConverter::toQt(std::vector<std::string> const& strings) -> QStringList
     {
         QStringList qsl {};
         for (auto const& s : strings)
-            qsl.push_back(QtConverter::from_stl(s));
+            qsl.push_back(QtConverter::toQt(s));
         return qsl;
     }
 } // namespace ewiQt
