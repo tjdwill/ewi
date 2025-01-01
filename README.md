@@ -88,7 +88,14 @@ The app navigation bar shows all of the options available to the user:
 - `About`: Information about this application's development.
 - `Exit`: Exit the application, saving any updated changes in the process.
 
+Nav Bar (Action Button Disabled) | Nav Bar (Action Button Enabled)
+:-------------------------------:|:--------------------------------:
+![Nav Bar](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/navBar_actionDisabled.png) |  ![Nav Bar (Action Enabled)](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/navBar_actionEnabled.png)
+
+
 ## Profile Menu
+
+![Profile Menu](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/profileMenu.png) 
 
 The `Profile` menu houses options for the app to retrieve information necessary for it to operate.
 The user must provide both a user profile and a job profile for the app's actions to become enabled.
@@ -177,6 +184,8 @@ program itself. Save the file to `<program location>/.jobs`. If this folder is n
 Profiles can be changed by running through the desired process. Simply load another job and/or user.
 
 ## Action Menu
+
+![Action Menu](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/actionMenu.png)
 
 ### Taking a Survey
 
