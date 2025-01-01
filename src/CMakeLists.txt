@@ -14,9 +14,8 @@ target_link_libraries(ewi_controller PUBLIC
     ewiUI
     QtConverter
     # Third-party
-    Eigen3::Eigen
     Qt::Widgets
-    ${exception}
+    cpperrors
 )
 # Make the App!
 add_executable(ewiTracker ewi_tracker.cpp)

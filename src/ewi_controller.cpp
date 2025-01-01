@@ -98,13 +98,8 @@ void EWIController::validateRuntimeEnv()
 }
 
 // TODO: Remove after implementation is complete.
-QTextStream qout { stdout };
 void EWIController::appShutdown()
 {
-    /*
-    qout << "Shutdown Triggered" << "\n";
-    qout.flush();
-    */
     if (d_profile_loaded)
         exportUser(AC::getUserPath(d_user_profile->who().id.formal()));
     // Delete tmp 
@@ -116,13 +111,6 @@ void EWIController::appShutdown()
 
 void EWIController::createUser(QStringList userData)
 {
-    /*
-    qout << "User Creation: [";
-    for (auto const& item : userData)
-        qout << item << "; ";
-    qout << "]\n";
-    qout.flush();
-    */
     /*
         Check if employee exists already
     */
@@ -155,20 +143,12 @@ void EWIController::createUser(QStringList userData)
 
 void EWIController::exportUser(QString pathName)
 {
-    /*
-    qout << "Export User to: " << pathName << "\n";
-    qout.flush();
-    */
     assert(d_user_profile);
     ewi::EmployeeRecordIOUtils::export_record(*d_user_profile, QtC::to_stl(pathName));
 }
 
 void EWIController::loadJob(QString jobDefPath)
 {
-    /*
-    qout << "Load Job from: " << jobDefPath << "\n";
-    qout.flush();
-    */
     std::string path { jobDefPath.toStdString() };
     try 
     {
@@ -193,10 +173,6 @@ void EWIController::loadJob(QString jobDefPath)
 
 void EWIController::loadUser(QString userID)
 {
-    /*
-    qout << "Load User: " << userID << "\n";
-    qout.flush();
-    */
     // if user already loaded, save any changes
     if (d_user_profile)
         exportUser(AC::getUserPath(d_user_profile->who().id.formal()));
@@ -223,11 +199,6 @@ void EWIController::loadUser(QString userID)
 
 void EWIController::processMetrics(QVector<QDate> dates)
 {
-    /*
-    qout << "Get metrics from " << dates[0].toString("yyyy-MM-dd")
-        << " to " << dates[1].toString("yyyy-MM-dd") << "\n";
-    qout.flush();
-    */
     static std::string const plot_path = QtC::to_stl(AC::getPlotFile());
 
     auto stl_dates = QtC::to_stl(dates);
@@ -323,22 +294,12 @@ void EWIController::processMetrics(QVector<QDate> dates)
     }
     catch (Exception const& e)
     {
-        qout << QtC::toQt(e.report()) << "\n";
-        qout.flush();
         sendError("No entries recorded for the current job.");
-        return;
     }
 }
 
 void EWIController::processResponses(QStringList responses, QString const& surveyType)
 {
-    /*
-    qout << "Responses\n---------" << "\n";
-    qout << "Survey Type: " << surveyType << "\n";
-    for (auto const& response : responses)
-        qout << response << "\n";
-    qout.flush();
-    */
     ewi::SurveyResults results { QtC::to_stl(responses), d_job_profile->metric_cnt() };
     
     // Create the entry and update the record

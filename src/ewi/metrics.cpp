@@ -20,10 +20,10 @@
 // #include <iostream>
 #include <functional>
 #include <optional>
+#include <vector>
 //- Third-party
 #include <Eigen/Eigen>
 #include <matplot/matplot.h>
-#include <vector>
 
 
 namespace ewi

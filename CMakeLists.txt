@@ -34,13 +34,16 @@ else()
 endif()
 
 ## Other dependencies
-find_package(cpptrace REQUIRED)
-find_package(Eigen3 REQUIRED NO_MODULE)
+include(FetchContent)
+FetchContent_Declare(
+  cpperrors
+  GIT_REPOSITORY    https://github.com/tjdwill/cpp-errors.git
+  GIT_TAG           f3887449389dde51d7c87528ffa802806518ad0e
+)
+FetchContent_MakeAvailable(cpperrors)
+#find_package(cpptrace REQUIRED)
+#find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(Matplot++ REQUIRED)
-#find_package(cpperrors)  # No .cmake file
-## Workaround until I figure out how to make my errors
-## library a single package.
-set(exception cpptrace cpperrors)
 
 #========== TARGETS ================
 add_subdirectory(src)

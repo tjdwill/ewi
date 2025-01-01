@@ -16,7 +16,7 @@ add_test(NAME entry.t COMMAND test_entry)
 add_library(record record.cpp) 
 target_link_libraries(record
     PUBLIC
-    ${exception}
+    cpperrors
     entry
     padded_view
 )
@@ -31,17 +31,17 @@ target_link_libraries(employee_record PUBLIC
     basic_id
     record
     string_flattener
-    ${exception}
+    cpperrors
 )
 add_executable(test_employee_record employee_record.t.cpp)
-target_link_libraries(test_employee_record PRIVATE employee_record ${exception})
+target_link_libraries(test_employee_record PRIVATE employee_record cpperrors)
 add_test(NAME employee_record.t COMMAND test_employee_record)
 
 
 add_library(survey survey.cpp)
 target_link_libraries(survey 
     PUBLIC 
-    ${exception}
+    cpperrors
     basic_id
     entry
 )
@@ -56,7 +56,6 @@ add_test(
 
 add_library(metrics metrics.cpp)
 target_link_libraries(metrics PUBLIC 
-    Eigen3::Eigen
     Matplot++::matplot
 )
 add_executable(test_metrics metrics.t.cpp)
