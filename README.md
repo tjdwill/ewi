@@ -23,7 +23,7 @@ sometimes acknowledged in passing (ex. "company morale"), it is difficult to est
 method to evaluate such a thing. This difficulty is exacerbated by:
 
 1. Varying levels of emotional intelligence/empathy among leaders.
-2. Trepedation on part of the employee due to fear of indirect reprisal.
+2. Trepidation on part of the employee due to fear of indirect reprisal.
 
 However, it is important to explicitly acknowledge this component. Someone who is emotionally
 fulfilled/invested in their job would likely perceive a high technical workload in a more positive
