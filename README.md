@@ -248,3 +248,21 @@ In short:
 1. Locate where the program executable is located.
 2. In your file explorer, ensure `View Hidden Items` is enabled.
 3. Copy the `.usr` folder to backup users and the `.jobs` folder to save jobs.
+
+---
+
+## Dependencies
+
+- cpperrors
+    - cpptrace (0.7.3)
+- Eigen (3.4.90)
+- Matplot++ (1.2.1)
+- Qt (5.15.2)
+
+### Build Deps
+
+- CMake (3.30.5)
+- vcpkg (2024-11-12-eb492805e92a2c14a230f5c3deb3e89f6771c321)
+- Clang (19.1.5)
+- gcc (14.2.1)
+- Ninja (1.12.1)
