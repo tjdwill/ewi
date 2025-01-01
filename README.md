@@ -88,14 +88,19 @@ The app navigation bar shows all of the options available to the user:
 - `About`: Information about this application's development.
 - `Exit`: Exit the application, saving any updated changes in the process.
 
+<div align="center">
+
 Nav Bar (Action Button Disabled) | Nav Bar (Action Button Enabled)
 :-------------------------------:|:--------------------------------:
 ![Nav Bar](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/navBar_actionDisabled.png) |  ![Nav Bar (Action Enabled)](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/navBar_actionEnabled.png)
 
+</div>
 
 ## Profile Menu
 
-![Profile Menu](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/profileMenu.png) 
+<p align="center">
+    <img src="https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/profileMenu.png" alt="Profile Menu" />
+</p>
 
 The `Profile` menu houses options for the app to retrieve information necessary for it to operate.
 The user must provide both a user profile and a job profile for the app's actions to become enabled.
@@ -173,7 +178,9 @@ Informal contacts? | 2
 
 This results in the following entry survey:
 
-![Example Survey](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/exTechSurvey.png)
+<p align="center">
+    <img src="https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/exTechSurvey.png" alt="Example Survey" />
+</p>
 
 Finally, job profiles can be loaded from anywhere, but it may be easier to store them with the
 program itself. Save the file to `<program location>/.jobs`. If this folder is not visible, ensure
@@ -185,7 +192,9 @@ Profiles can be changed by running through the desired process. Simply load anot
 
 ## Action Menu
 
-![Action Menu](https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/actionMenu.png)
+<p align="center">
+    <img src="https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/actionMenu.png" alt="Action Menu" />
+</p>
 
 ### Taking a Survey
 
