@@ -186,6 +186,10 @@ Finally, job profiles can be loaded from anywhere, but it may be easier to store
 program itself. Save the file to `<program location>/.jobs`. If this folder is not visible, ensure
 `View Hidden Items` is enabled on whatever file explorer you are using.
 
+**Caution**: Unfortunately, once data for a job profile is recorded, the job profile cannot be
+changed. This is due to inexperience on the author's part and will hopefully be changed in a future
+iteration.
+
 ### Changing Profiles
 
 Profiles can be changed by running through the desired process. Simply load another job and/or user.
@@ -199,9 +203,40 @@ before the new profile is loaded into the program.
     <img src="https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/actionMenu.png" alt="Action Menu" />
 </p>
 
+The `Action` menu houses the operations relevant to recording and reporting metrics. The first heading on the page allows the user to take surveys. To record technical metrics, take the technical survey. For personal metrics, take the personal survey. The program will then open a form that the user will fill out. Technical forms will present the questions defined in the job profile. Each field only allows numeric input with the exception of "Additional Notes", a field that allows the user to record any additional information that may be relevant to that entry.
+
+**Note**: In the future, the author plans to implement an action that allows the user to an entry from a specified date. At the time of initial release, the user can always view the desired entries in their file located in the `.usr` directory.
+
 ### Taking a Survey
 
+Taking a survey is as easy as clicking the desired survey button. The form is programmed such that it will only allow submission once all *metric* fields are populated. The "Additional Notes" can be empty. It is important to note that the program expects and enforces chronologically-ordered entries. In other words, each technical entry *must* have a date that is later than the previous entry. If the user intends to submit multiple entries (say if they hadn't been able to access their computer for some time), the entries should be made from earliest to latest date. The same rule applies to personal entries. However, technical and personal entries are independent of one another; the program does not enforce chronological ordering between the two. 
+
+How often surveys are taken depends on the user as well as the job profile definition. Some metrics may be written to be recorded daily in some industries; others may have a longer timescale. Personal surveys are intended to be taken weekly, but the program does not enforce this. Frequency is solely up to the user.
+
 ### Viewing EWI
+
+To view the EWI report, click the `View Workload...` button under the "Metrics" heading. The program will then ask for the desired date range for the report. It is an inclusive range, so if both the `From` and `To` fields have the same date, the program will generate a report for that day if entries exist for it.
+
+The following is an example report based on contrived metric values for the job defined earlier in this document:
+
+<p align="center">
+    <img src="https://github.com/tjdwill/ewi/blob/main/test_resources/ewiQt/test_ewi.png" alt="Example EWI Report">
+</p>
+
+Let's discuss how to interpret the plot. If the user only recorded technical data for a given date range, only the technical plot will be displayed. If the user had entries for both technical and personal data within the date range, the program will output a two-part plot. The left will have the technical data, and the right will have the personal data.
+If there is no technical data at all for that date range, no plot is shown.
+
+#### Technical Plot
+
+The technical plot consists of a baseline at `y=1` and a series of scatter points. The baseline represents the global average for each metric; since each metric can have varying value scales, the program normalizes each metric such that the global average is 1. 
+
+A given scatter point `(x, y)` represents `(Question num, Technical Index)`, where question number `1` corresponds to question `1` on the job profile. The `Technical Index` (Idx) is the workload approximation. A `y` value of 4 for example means the user has 4x the average expected workload for that metric. Knowing this, we can see visually how much the user's workload deviates from the norm at a glance for each metric.
+
+#### Personal Plot
+
+The right side of the two-part plot displays the Personal Index. This plot is simple to interpret; where does the non-black point fall on the vertical line? If it is above the black point, the user's responses indicated a positive disposition with intensity increasing the closer the index is to 1. If below the black point, the responses indicated a negative disposition. Finally, if the non-black point is on the black point (Idx=0), the responses indicated that the user is exactly neutral. 
+
+The user can save the generated visualization to their file system via the `Export` button.
 
 ## Exporting Data 
 
