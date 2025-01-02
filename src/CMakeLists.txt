@@ -24,3 +24,6 @@ target_include_directories(ewi_controller PUBLIC
 # Make the App!
 add_executable(ewiTracker ewi_tracker.cpp)
 target_link_libraries(ewiTracker PRIVATE ewi_controller)
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_property(TARGET ewiTracker PROPERTY WIN32_EXECUTABLE true)
+endif()
