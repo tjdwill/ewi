@@ -24,7 +24,6 @@
 #include <vector>
 //- Third-party
 #include <cpperrors>
-#include <Eigen/Eigen>
 //- In-house
 #include "entry.hpp"
 #include <utils/padded_view.hpp>   // PaddedView
