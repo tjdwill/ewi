@@ -43,15 +43,19 @@ include_directories("src")
 # Qt config
 set(QT_VSN Qt5 CACHE STRING "Sets the Qt version to use.")
 
-list(APPEND 
-# In practice, it may be better to simply set the `Qt_DIR` variable on the command-line when
-# dealing with mulitple installations for various architectures.
-    CMAKE_PREFIX_PATH
-    "${MY_QT_DIR}/6.8.0/gcc_64"
-    "${MY_QT_DIR}/5.15.2/gcc_64"
-    "${MY_QT_DIR}/5.15.2/msvc2019"
-)
+if (NOT DEFINED Qt5_DIR)
+    list(APPEND 
+    # In practice, it may be better to simply set the `Qt_DIR` variable on the command-line when
+    # dealing with mulitple installations for various architectures.
+        CMAKE_PREFIX_PATH
+        "${MY_QT_DIR}/6.8.0/gcc_64"
+        "${MY_QT_DIR}/5.15.2/gcc_64"
+        "${MY_QT_DIR}/5.15.2/msvc2019"
+    )
+endif()
+
 message("Prefix Path: " ${CMAKE_PREFIX_PATH})
+
 if (QT_VSN STREQUAL Qt6)
     find_package(Qt6 REQUIRED COMPONENTS Widgets)
     qt_standard_project_setup()
