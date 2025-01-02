@@ -14,6 +14,7 @@ add_test(NAME entry.t COMMAND test_entry)
 
 
 add_library(record record.cpp) 
+target_include_directories(record PUBLIC ${MY_CPPERRORS_DIR})
 target_link_libraries(record
     PUBLIC
     cpperrors
@@ -27,6 +28,7 @@ add_test(NAME record.t COMMAND test_record)
 
 
 add_library(employee_record employee_record.cpp)
+target_include_directories(employee_record PUBLIC ${MY_CPPERRORS_DIR})
 target_link_libraries(employee_record PUBLIC 
     basic_id
     record
@@ -39,6 +41,7 @@ add_test(NAME employee_record.t COMMAND test_employee_record)
 
 
 add_library(survey survey.cpp)
+target_include_directories(survey PUBLIC ${MY_CPPERRORS_DIR})
 target_link_libraries(survey 
     PUBLIC 
     cpperrors
@@ -55,9 +58,8 @@ add_test(
 
 
 add_library(metrics metrics.cpp)
-target_link_libraries(metrics PUBLIC 
-    Matplot++::matplot
-)
+target_include_directories(metrics PUBLIC ${MY_EIGEN_DIR})
+target_link_libraries(metrics PUBLIC Matplot++::matplot)
 add_executable(test_metrics metrics.t.cpp)
 target_link_libraries(test_metrics PRIVATE metrics entry record)
 add_test(NAME metrics.t COMMAND test_metrics)

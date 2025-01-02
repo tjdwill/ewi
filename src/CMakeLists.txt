@@ -17,6 +17,10 @@ target_link_libraries(ewi_controller PUBLIC
     Qt::Widgets
     cpperrors
 )
+target_include_directories(ewi_controller PUBLIC
+    ${MY_CPPERRORS_DIR}
+    ${MY_EIGEN_DIR}
+)
 # Make the App!
 add_executable(ewiTracker ewi_tracker.cpp)
 target_link_libraries(ewiTracker PRIVATE ewi_controller)
