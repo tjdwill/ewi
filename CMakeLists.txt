@@ -45,7 +45,7 @@ set(QT_VSN Qt5 CACHE STRING "Sets the Qt version to use.")
 
 if (NOT DEFINED Qt5_DIR)
     list(APPEND 
-    # In practice, it may be better to simply set the `Qt_DIR` variable on the command-line when
+    # In practice, it may be better to simply set the `Qt5_DIR` variable on the command-line when
     # dealing with mulitple installations for various architectures.
         CMAKE_PREFIX_PATH
         "${MY_QT_DIR}/6.8.0/gcc_64"
