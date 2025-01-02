@@ -17,6 +17,7 @@
 */
 #include "ewi_controller.hpp"
 //- STL
+#include <cassert>
 #include <chrono>
 #include <optional>
 #include <thread>  // for sleeping
@@ -39,6 +40,46 @@ using cpperrors::Exception;
 using ewiQt::EWIUi;
 using QtC = ewiQt::QtConverter;
 using AC = ewiQt::AppConstants;
+
+//---------- Helper Function(s) -------------------
+/// A deletion function for when recursiveRemove fails.
+static void attemptRemove(QString const& dirName)
+{
+    QString SELF { "." };
+    QString PARENT{ ".." };
+    QTextStream qout { stdout };
+    bool permCheck = QFile::setPermissions(dirName, QFile::ReadOther | QFile::WriteOther);
+    assert(permCheck);
+    QDir dir { dirName };
+
+    // Assumes NON-RECURSIVE structure
+    for (auto const& entryName : dir.entryList())
+    {
+        /*
+            It was discovered on Windows tests that `gnuplot.exe` prevents the plot temp file from
+            being closed if the user generated a plot during the session. Therefore, the file will
+            need to be skipped. However, it *can* be deleted on startup, so I will likely include
+            a special case for that in the relevant section of the code.
+        */
+        if (entryName == SELF || entryName == PARENT || entryName == AC::PLOT_FILE)
+            continue;
+        QString entry { dir.absoluteFilePath(entryName) };
+        QDir checkDir { entry };
+        if (checkDir.exists() && checkDir.absolutePath() != dirName)
+            attemptRemove(checkDir.absolutePath());
+        else
+        {
+            QFile f { entry };
+            bool permissionChange = f.setPermissions(QFile::ReadOther | QFile::WriteOther);
+            assert(permissionChange);
+            bool removeCheck = QFile::remove(entry);
+            assert(removeCheck);
+        }
+    }
+    return;
+}
+
+//-------------------------------------------------
 
 /* Definitions */
 EWIController::EWIController(QWidget* parent)
@@ -84,6 +125,16 @@ void EWIController::validateRuntimeEnv()
     // TODO: Handle temp folder check here. If the tmp folder exists, that means the app did
     // not shut down properly, meaning user changes may not have been written to their data
     // file.
+    
+    // 2 January 2025:
+    // Check if the plot tmp file still exists and delete if so. 
+    // This is to workaroud the Windows behavior where gnuplot.exe keeps the file hostage.
+    QFile plotFile { AC::getPlotFile() };
+    if (plotFile.exists())
+    {
+        bool rmTest = plotFile.remove();
+        assert(rmTest);
+    }
 
     // Handle subdirectories
     for (auto const& d : AC::APP_DIRS)
@@ -105,7 +156,10 @@ void EWIController::appShutdown()
     // Delete tmp 
     QDir tmpDir { AC::getTmpDir() };
     bool test = tmpDir.removeRecursively();
-    assert(test);
+    if (!test)
+        // The plot file likely couldn't be removed on Windows due to gnuplot.exe.
+        // Try deleting everything else.
+        attemptRemove(AC::getTmpDir());
     close();
 }
 
@@ -199,6 +253,7 @@ void EWIController::loadUser(QString userID)
 
 void EWIController::processMetrics(QVector<QDate> dates)
 {
+    constexpr int SLEEP_TIME { 100 }; // ms
     static std::string const plot_path = QtC::to_stl(AC::getPlotFile());
 
     auto stl_dates = QtC::to_stl(dates);
@@ -280,9 +335,19 @@ void EWIController::processMetrics(QVector<QDate> dates)
             }
             // Send image for display
             // Sleep for a small duration to ensure I/O flushes
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            QPixmap plot { QtC::toQt(plot_path) };
-            emit d_app->sendImg(plot);
+            QString plotPath { AC::getPlotFile() };
+            QFile testFile{ plotPath };
+            while (!testFile.exists() || !(testFile.size() > 0))
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+            }
+            QPixmap plotImg { plotPath };
+            while (plotImg.isNull())
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+                plotImg.load(plotPath);
+            }
+            emit d_app->sendImg(plotImg);
         }
         else {
             std::ostringstream oss {};
