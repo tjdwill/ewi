@@ -38,7 +38,7 @@ Form::Form(
 
     // final configs
     setWindowTitle(title);
-    //setMinimumSize(sizeHint());
+    setMinimumSize(sizeHint());
 }
 
 Form::Form(

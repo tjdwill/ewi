@@ -193,7 +193,7 @@ namespace ewiQt
         );
         connect(from, &QDateEdit::dateChanged, enableOkButton);
         connect(to, &QDateEdit::dateChanged, enableOkButton);
-
+        dateQuery->setMinimumSize(dateQuery->sizeHint());
         if(dateQuery->exec())
         {
             dates.push_back(from->date());
@@ -206,8 +206,6 @@ namespace ewiQt
 
     // SLOTS
    
-    // TODO: Remove this QTextStream when implementing real functions.
-    QTextStream qerr { stderr };
     void EWIUi::about()
     {
         QString aboutTxt {};
@@ -293,7 +291,7 @@ namespace ewiQt
                      emit surveyResponsesSig(responses, surveyType); 
                 }
          );
-
+        
         survey->exec();
         survey->deleteLater();
     }
@@ -305,9 +303,6 @@ namespace ewiQt
 
     void EWIUi::viewHelp()
     {
-        qerr << "Help Page" << "\n";
-        qerr.flush();
-
         QString helpTxt {};
         QTextStream qss { &helpTxt };
         qss << tr("## EWI Quick Help") << "\n\n"
@@ -321,7 +316,9 @@ namespace ewiQt
             << tr("### View EWI Visualization\n\n Click the \"`Actions->View Workload...`\" "
                   "button, and provide the desired date range.")
             << "\n\n"
-            << tr("### Further Help\n\nPlease refer to the documentation included in this program's folder.")
+            << tr("### Further Help\n\nPlease refer to the documentation included in this ")
+            << tr("program's folder, or, if not present for some reason, to the ")
+            << "[README](https://github.com/tjdwill/ewi/blob/main/README.md)."
             << "\n";
         qss.flush();
 
@@ -329,6 +326,7 @@ namespace ewiQt
         help.setWindowTitle(tr("Quick Help"));
         help.setTextFormat(Qt::MarkdownText);
         help.setText(helpTxt);
+        help.resize(help.sizeHint());
         help.exec();
     }
 

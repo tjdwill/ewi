@@ -24,7 +24,12 @@
 namespace ewiQt
 {
     ImgViewer::ImgViewer(QPixmap img, QWidget* parent)
-        : QDialog(parent), d_img(img)
+        : QDialog(parent, 
+            Qt::CustomizeWindowHint | 
+            Qt::WindowTitleHint |
+            Qt::WindowMaximizeButtonHint | 
+            Qt::WindowCloseButtonHint
+        ), d_img(img)
     {
         d_exportbutton = new QPushButton(tr("Export..."));
         d_okButton = new QPushButton(tr("Ok"));
@@ -65,12 +70,14 @@ namespace ewiQt
             QMessageBox err { this };
             err.setText(tr("File could not be saved due to unknown error."));
             err.setInformativeText(tr("One potential cause is invalid file type (use either *.jpg or *.png)."));
+            err.setMinimumSize(err.sizeHint());
             err.exec();
         }
         else 
         {
             QMessageBox success { this };
             success.setText(tr("Success."));
+            success.resize(success.sizeHint());
             success.exec();
         }
     }
