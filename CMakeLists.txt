@@ -13,6 +13,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if (MSVC)
+        # warning level 4
+        add_compile_options(/W4)
+    else()
+        # additional warnings
+        add_compile_options(-Wall -Wextra -Wpedantic)
+    endif()
+endif()
+
 #[[
     Environment Variable Check
 

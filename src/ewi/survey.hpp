@@ -110,7 +110,7 @@ namespace ewi
 
             // ACCESSORS
             inline auto get_responses() const -> std::vector<std::string> const& { return d_responses; }
-            inline auto metric_cnt() const -> int const { return d_metric_cnt; }
+            inline auto metric_cnt() const -> int { return d_metric_cnt; }
             auto extract_metrics() const -> std::vector<double> const;
             auto to_entry() const -> Entry;
         private:

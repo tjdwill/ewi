@@ -79,6 +79,43 @@ to communicate with those they lead.
 
 ## Getting Started
 
+Whether using this application on Windows or Linux, the `gnuplot` software is required. 
+
+For Windows users, the software distributors provide [a simple installer accessed
+here](https://sourceforge.net/projects/gnuplot/). Download the latest version for simplicity. When
+running the installer, take the default options until reaching the "Select Additional Tasks" page.
+On this page, scroll to the bottom and make sure the `Add application directory to your PATH
+environment variable` option is *checked*. It is important to do so in order for this program to
+generate visualizations. If `gnuplot` is installed without checking this option (i.e. you forgot),
+simply uninstall it and run through the installation process again.
+
+<p align="center">
+    <img src="https://github.com/tjdwill/ewi/blob/assets/ewiTrackerImgs/gnuplotInstallation.png" alt="gnuplot Installation with PATH option enabled" />
+</p>
+
+
+Linux users can either find `gnuplot` via their package manager or build from source.
+
+On Fedora Linux:
+
+```bash
+$ sudo dnf install gnuplot
+```
+
+On Ubuntu/Debian:
+
+```bash
+$ sudo apt install gnuplot  # This should work, but is untested by the author
+```
+
+Ensure the version is at least `5.2.6`.
+
+Finally, Linux users must have access to the Qt5 binaries. At the time of writing, the author is
+unfamiliar with distribution for Linux (and, admittedly, is also inexperienced for Windows), so it
+may be easier to build this application from source.
+
+### Quick Tour
+
 The app navigation bar shows all of the options available to the user:
 
 - `Home`: The Home Page
@@ -253,16 +290,21 @@ In short:
 
 ## Dependencies
 
-- cpperrors
-    - cpptrace (0.7.3)
+- cpperrors (0.1.0)
 - Eigen (3.4.90)
 - Matplot++ (1.2.1)
+    - gnuplot (at least 5.2.6) 
 - Qt (5.15.2)
 
-### Build Deps
+### Linux Build Deps
 
 - CMake (3.30.5)
 - vcpkg (2024-11-12-eb492805e92a2c14a230f5c3deb3e89f6771c321)
 - Clang (19.1.5)
 - gcc (14.2.1)
 - Ninja (1.12.1)
+
+### Windows Build Deps
+
+- Visual Studio 2022 (Community Edition)
+ 
