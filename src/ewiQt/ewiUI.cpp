@@ -163,13 +163,16 @@ namespace ewiQt
         QDialog* dateQuery { new QDialog(this) };
         QFormLayout* layout { new QFormLayout };
 
+        QString dateFormat{ "dd-MM-yyyy" };
         QDateEdit* from { new QDateEdit(QDate::currentDate()) };
-        from->setDisplayFormat("dd-MM-yyyy");
-        layout->addRow(tr("From:"), from);
+        from->setDisplayFormat(dateFormat);
+        QString fromLabel{ tr("From") + " (" + dateFormat.toLower() + "):"};
+        layout->addRow(fromLabel, from);
 
         QDateEdit* to { new QDateEdit(QDate::currentDate()) };
-        to->setDisplayFormat("dd-MM-yyyy");
-        layout->addRow(tr("To:"), to);
+        to->setDisplayFormat(dateFormat);
+        QString toLabel{ tr("To") + " (" + dateFormat.toLower() + "):"};
+        layout->addRow(toLabel, to);
         dateQuery->setLayout(layout);
 
 
@@ -305,19 +308,21 @@ namespace ewiQt
     {
         QString helpTxt {};
         QTextStream qss { &helpTxt };
+        // The text is formatted using Markdown.
         qss << tr("## EWI Quick Help") << "\n\n"
             << tr("### Enable the `Actions` Button \n\n - Create/Load a User Profile\n- Load a Job Profile")
             << "\n\n"
-            << tr("### Making an Entry\n\nOnce both user and job are loaded, select a"
-                   " survey type to take. **Technical** surveys are intended to be taken"
-                   " daily. **Personal** surveys, surveys intended to help track the user's"
-                   " emotional satisfaction, should be taken weekly (give or take).")
+            << tr("### Making an Entry\n\nOnce both user and job are loaded, select the "
+                   "survey type you wish to take. **Technical** surveys are intended to be taken "
+                   "daily, but this depends on how the job profile is defined. ")
+            << tr("**Personal** surveys, surveys intended to help track the user's "
+                   "emotional satisfaction, should be taken weekly (give or take).")
             << "\n\n"
             << tr("### View EWI Visualization\n\n Click the \"`Actions->View Workload...`\" "
                   "button, and provide the desired date range.")
             << "\n\n"
-            << tr("### Further Help\n\nPlease refer to the documentation included in this ")
-            << tr("program's folder, or, if not present for some reason, to the ")
+            << tr("### Further Help\n\nPlease refer to the documentation included with this ")
+            << tr("program. If absent, see the project's ")
             << "[README](https://github.com/tjdwill/ewi/blob/main/README.md)."
             << "\n";
         qss.flush();
