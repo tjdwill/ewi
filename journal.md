@@ -10,6 +10,85 @@
 
 ## Journal
 
+### 2 January 2024
+
+The primary focus for today was to get the application working on Windows. By the grace of
+TMH, I succeeded. It was a lot though, so I'm going to try to summarize what I've learned.
+
+- Visual Studio provides tools that allow us to specify whether a build is targeted for
+  native x86 or x64. I can build the application for both platforms by switching both the
+  tool and the Qt installation being used.
+- `gnuplot` keeps the generated image file open on Windows, meaning I can't delete it while
+  the program is running. To get around this, I ignore the image file on shutdown and
+  delete it on the following start up. It is possible that `gnuplot` has the save behavior
+  on Linux, but I'm able to delete the file just fine. 
+- `Qt/<version>/msvc2019[_64]/bin/windeployqt.exe` is a lifesaver.
+    - This was also necessary to use to run the test for `ewiQt/QtConverter`
+- Windows will open a console window when the application runs. This was
+  fixed by setting the `WIN32_EXECUTABLE` property for the relevant target.
+
+
+Long story short, the program works on Windows, and I'm able to use it multiple machines!
+
+Currently, I'm packaging the releases manually, but I intend to read more on CMake and the
+like to learn how to automate the process. 
+
+As an aside, I bumped the version number to 0.2.0 in the project, but this makes no sense
+since I've never actually released it. However, moving *back* to 0.1.0 seems like a really
+bad idea in terms of project consistency, so I'll just stick to 0.2.0 and learn for next
+time.
+
+### 1 January 2024
+
+Now is the big moment; I need to build for Windows. The clients requesting this application
+work exclusively in Windows, but I've been developing on Linux. As this is also my first
+substantive C++ project and my first ever GUI project, I have no idea how to port to
+Windows. I've read about cross-compilation in passing, and the entire reason for learning
+CMake and Qt for this project was for the cross-platform compatibility, but I'm not sure
+how to actually *do* it. 
+
+After careful deliberation and, honestly, fruitless research, I think it's easier/more
+practical at my current level to simply try to build the application on Windows itself.
+
+**Update**: This was the correct move. I installed Visual Studio 2022 (Community Edition)
+and got to work. The first thing I realized was that 
+
+#### Making `cpperrors` Portable
+
+So, this app uses the [`cpperrors` library](https://github.com/tjdwill/cpp-errors) I made
+for C++ practice. If I have a little knowledge about building portable projects at the time of writing this entry, I had zero when that was constructed. I still need to learn how people create CMake packages and releases (amongst other things like cross-compilation), but for now, I was able to get away with modifying `cpperrors` to pull in `cpptrace` and statically link to it using `FetchContent` in the `CMakeLists.txt` for that project. I then used `FetchContent` on the `cpperrors` repo in the EWI project's top-level `CMakeLists.txt`.
+
+The project still builds properly.
+
+#### Building on Windows
+
+First thing I learned is that Powershell does not set environment variables automatically;
+I have to set them in my local console session via 
+
+```powershell
+> $env:VAR=VAL
+```
+
+Next, I decided to revise all of the `CMakeLists.txt` in the project such that the build is
+more robust on multiple platforms. For example, adding variables that the user can define
+to determine *where* the important dependencies are located.
+
+When using the Qt installation, I was confused initially because the binaries in `lib` were
+all static `.lib` files. However, I learned that, for Windows, the `.dll`s are in the `bin`
+subdirectory. I *also* learned about `windeployqt.exe` which is a program that analyzes
+your application for Qt-related dependencies and automatically adds all of them as needed
+for Windows. Life saver.
+
+Finally, I learned that Windows is a bit wonky in how it resolves symbols when linking. I
+don't know the technical details behind it, but the linker would still look for `.lib`
+files even if the CMake targets produced `.dll`s. I didn't know how to fix that, so I just
+build everything via static linking. Luckily, the project is licensed under GPLv3 anyway,
+so nothing was lost here in terms of proprietary interest.
+
+After a lot of experimentation, I was able to at least get everything compiled and linked.
+However, there were some runtime bugs that I did not experience on Linux. That's for
+tomorrow.
+
 ### 31 December 2024
 
 So, last night marked the completion of the app prototype (PY). Now, I need to refine the
@@ -741,11 +820,12 @@ Here are some questions that have come up as I work this project.
 - [x] `ewi/metrics.cpp`
 - [x] `ewi/employee_record.cpp`
 - [x] `ewi/survey.cpp`
-- [ ] Front-end (UI, front-end/back-end coordinator)
-    - [ ] Add basic Quick Help page.
-    - [ ] Implement slots for the app controller.
+- [x] Front-end (UI, front-end/back-end coordinator)
+    - [x] Add basic Quick Help page.
+    - [x] Implement slots for the app controller.
     - [ ] Add User Display Name to user action page.
     - [ ] Refactor export/import user feature.
+- [ ] LaTeX the documentation?
 
 ### Learning
 
