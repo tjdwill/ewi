@@ -16,7 +16,7 @@ example, the number of emails, phone calls, and meetings one participates in
 can take up a substantial amount of one's workday, even if no tangible
 performance metric results from the effort. Another factor in one's workload,
 though rarely discussed, is how much time one spends on tasks outside of his or
-her official role. It is no uncommon for employees to help peers, juniors, and
+her official role. It is not uncommon for employees to help peers, juniors, and
 even superiors with their work, especially if the employee in question is a
 high performer. This volume of work may not be reflected in official
 performance metrics (ex. helping a peer revise a presentation, troubleshooting
