@@ -33,8 +33,8 @@ namespace ewi
         if (a.notes() != b.notes())
             return false;
         // vector comp
-        auto a_vec = a.metrics();
-        auto b_vec = b.metrics();
+        auto const& a_vec = a.metrics();
+        auto const& b_vec = b.metrics();
         if (a_vec.size() != b_vec.size())
             return false;
         return a_vec == b_vec;
