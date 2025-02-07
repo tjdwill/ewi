@@ -79,10 +79,12 @@ namespace ewi
         std::optional<T> max;
     };
     template<typename T>
-    inline auto operator==(InclusiveRange<T> const& a, InclusiveRange<T> const& b) { return a.min==b.min && a.max==b.max; }
+    inline auto operator==(InclusiveRange<T> const& a, InclusiveRange<T> const& b)
+    {
+        return a.min==b.min && a.max==b.max;
+    }
     using DateRange = InclusiveRange<std::chrono::year_month_day>;
     using IndexRange = InclusiveRange<int>;
-    // std::ostream& operator<< (std::ostream& os, DateRange const&);
     std::ostream& operator<< (std::ostream& os, IndexRange const&);
 
     
@@ -98,10 +100,6 @@ namespace ewi
             // ACCESSORS
 
             /// Iterators
-            /// TODO: Read about std::ranges to understand how it works and what type I
-            /// should return. Currently, I'm deriving the type via `auto` (and
-            /// inlining the function) because I don't
-            /// know how to define the signature myself.
             inline auto begin() const noexcept { return d_entries.begin(); }
             inline auto end() const noexcept { return d_entries.end(); }
 
@@ -150,7 +148,7 @@ namespace ewi
             /// Removes entry with specified date.
             /// If no such entry exists, do nothing.
             void remove(std::chrono::year_month_day date);
-            /// Replace exisiting entry with a new one.
+            /// Replace existing entry with a new one.
             /// If no such entry exists, it's added.
             void update(Entry const& entry);
         private:

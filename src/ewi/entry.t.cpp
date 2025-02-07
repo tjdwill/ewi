@@ -29,6 +29,16 @@
 using Date = std::chrono::year_month_day;
 using ewi::Entry;
 
+void date_comp_test();
+void equal_comp_test();
+
+int main() 
+{
+    date_comp_test();
+    equal_comp_test();
+}
+
+//------------------------------------------------------------------------------
 void date_comp_test() 
 {    
     using namespace std::chrono;
@@ -75,10 +85,4 @@ void equal_comp_test()
     assert(a == a);
     assert(a != b);
     assert((b != c) && (a != c));
-}
-
-int main() 
-{
-    date_comp_test();
-    equal_comp_test();
 }

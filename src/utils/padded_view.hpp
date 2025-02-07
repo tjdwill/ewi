@@ -44,7 +44,7 @@ namespace utils
                     throw cpperrors::Exception("Cannot pad an empty vector.");
             }
             
-           inline auto size() const -> int { return ((int)d_vec.size()) + 2; }
+           inline auto size() const -> int { return static_cast<int>( d_vec.size()) + 2; }
            auto operator[] (int pos) const  -> T const&;
         private:
             std::vector<T> const& d_vec;
