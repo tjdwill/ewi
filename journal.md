@@ -3,6 +3,7 @@
 ## Quick Navigation
 
 - [Journal](#journal)
+- [Build Guide](#build-guide)
 - [Living Questions List](#living-questions) 
 - [To-Do List](#ewi-todo)
 
@@ -10,7 +11,13 @@
 
 ## Journal
 
-### 2 January 2024
+### 7 February 2025
+
+After a break, I'm back to review the project. During the break, I found a way to fix the problem of job profiles being non-modifiable. Basically, the reason is because the association between a given metric question and its response from the user is loose and not strictly-enforced; I only use the position numbers.
+
+To make the project more flexible, I need to find a way to create an explicit association between the two. For example, maybe finding a way to hash each question in a profile such that the program's response data is associated with the relevant key. That way, even if the profile changes, the key won't be reused and the data remains associated.
+
+### 2 January 2025
 
 The primary focus for today was to get the application working on Windows. By the grace of
 TMH, I succeeded. It was a lot though, so I'm going to try to summarize what I've learned.
@@ -38,7 +45,7 @@ since I've never actually released it. However, moving *back* to 0.1.0 seems lik
 bad idea in terms of project consistency, so I'll just stick to 0.2.0 and learn for next
 time.
 
-### 1 January 2024
+### 1 January 2025
 
 Now is the big moment; I need to build for Windows. The clients requesting this application
 work exclusively in Windows, but I've been developing on Linux. As this is also my first
@@ -778,6 +785,76 @@ three.
 
 I'm honestly not sure how to structure this data. Should a given entry be a type? What is the domain
 language for this application's business logic?
+
+---
+
+## Build Guide
+
+For building this on Linux, here's a list of things to do:
+
+### Requirements
+
+- Qt 5.15
+- Matplot++
+- cpperrors (need header)
+- Eigen
+
+Libraries (except for Matplot++) are expected to be found in some `$HOME/.local/include` by default.
+
+#### Downloading Qt
+
+Use `aqtinstall`.
+
+1. [Install `uv`](https://docs.astral.sh/uv/getting-started/installation/) for Python package management
+2. Create a virtual environment `uv venv <name> --python 3.12` in a location to find it.
+    - Activate the virtual env.
+3. Install `aqtinstall` (https://github.com/miurahr/aqtinstall)
+
+    ```bash
+    $ uv pip install aqtinstall
+    ```
+
+4. Change to your default install location and install Qt
+
+    ```bash
+    $ aqt list-qt linux desktop [--arch <versionNum>]
+    # Versions available for installation listed here.
+
+    $ aqt install-qt linux desktop 5.15.2 gcc_64
+    ```   
+
+5. In order to actually link properly, we need OpenGL code. On Fedora, install `mesa-libGL-devel` via dnf.
+    - On Ubuntu, it should be in the `libglew-dev` family.
+
+#### cpperrors
+
+The actual functionalities are built by CMake via FetchContent, but we still need the header for includes.
+
+
+1. Clone the `cpperrors` repo 
+    
+    ```bash
+    $ git clone https://github.com/tjdwill/ewi.git
+    ```
+
+2. Copy `src/exception.hpp` to your default library location as `cpperrors`.
+
+#### Eigen
+
+1. Download Eigen [from the website](https://eigen.tuxfamily.org/)
+2. Rename the installed folder to `eigen3` and place it in the default location.
+
+#### Matplot++
+
+1. [Install and setup `vcpkg`](https://learn.microsoft.com/en-us/vcpkg/get_started/overview)
+2. Run vcpkg install in the `ewi` directory. The `vcpkg` manifest is already present.
+
+
+### CMakeUserPresets.json
+
+Finally, create a user presets file to make different builds easier to perform. Inherit from the `vcpkg` preset found in `CMakePresets.json` in the `ewi` directory.
+
+With all that done, try to build the application.
 
 ---
 
