@@ -21,9 +21,10 @@
 #include <cassert>
 #include <chrono>
 //#include <iostream>
+#include <optional>
 #include <vector>
 //- In-house
-#include "entry.hpp"
+#include <ewi/entry.hpp>
 
 
 void test_find_entries();
@@ -108,17 +109,17 @@ void test_find_entries()
     result = r2.find(DateRange { 2024y/std::chrono::January/1d, 2024y/std::chrono::December/31d } );
     assert(result);
     assert(( *result == IndexRange{ 0, 1 } ));
-    result = r2.find(DateRange { .min=2024y/std::chrono::September/30d } );
+    result = r2.find(DateRange { .min=2024y/std::chrono::September/30d, .max=std::nullopt } );
     assert(result && (*result == IndexRange{ 1,1 }));
     
     // Test 3+-element case
     //// Before 2026
     assert(dates.size() > 2);
     Record r3 = gen_record(static_cast<int>(dates.size()));
-    result = r3.find(DateRange { .max=2025y/std::chrono::December/31d });
+    result = r3.find(DateRange { .min=std::nullopt, .max=2025y/std::chrono::December/31d });
     assert(result && (*result == IndexRange{ 0, 2 }));
     //// After 2026
-    result = r3.find(DateRange { .min=2026y/std::chrono::January/1d });
+    result = r3.find(DateRange { .min=2026y/std::chrono::January/1d, .max=std::nullopt });
     assert(result && (*result == IndexRange { 3, 3 }));
     //// Between Summer 2024 and Beginning of 2026
     result = r3.find(DateRange {2024y/std::chrono::June/20d, 2025y/std::chrono::December/31d });
@@ -127,7 +128,7 @@ void test_find_entries()
     result = r3.find(all);
     assert(result && (*result == IndexRange { 0, (static_cast<int>(dates.size())-1) })); 
     //// No entries match
-    result = r3.find(DateRange { .max=1999y/std::chrono::December/31d });
+    result = r3.find(DateRange { .min=std::nullopt, .max=1999y/std::chrono::December/31d });
     assert(!result);
 }
 
@@ -167,7 +168,7 @@ void test_metric_retrieval()
     auto rec = gen_record(SIZE);
     auto metrics = rec.metrics({ std::nullopt, 2024y/std::chrono::December/31d });
     assert(metrics);
-    assert(metrics->size() == NUM_ENTRIES);
+    assert(static_cast<int>(metrics->size()) == NUM_ENTRIES);
     for (auto const& vec : *metrics)
        assert (vec.get() == METRICS); 
 }
