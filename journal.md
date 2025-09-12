@@ -10,7 +10,7 @@
 
 ## Journal
 
-### 2 January 2024
+### 2 January 2025
 
 The primary focus for today was to get the application working on Windows. By the grace of
 TMH, I succeeded. It was a lot though, so I'm going to try to summarize what I've learned.
@@ -38,7 +38,7 @@ since I've never actually released it. However, moving *back* to 0.1.0 seems lik
 bad idea in terms of project consistency, so I'll just stick to 0.2.0 and learn for next
 time.
 
-### 1 January 2024
+### 1 January 2025
 
 Now is the big moment; I need to build for Windows. The clients requesting this application
 work exclusively in Windows, but I've been developing on Linux. As this is also my first
